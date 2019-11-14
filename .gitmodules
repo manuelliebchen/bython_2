@@ -1,15 +1,13 @@
-[submodule "third-party/gtest"]
-	path = dep/gtest
-	url = ../googletest.git
-	ignore = dirty 
-[submodule "third-party/cpp-peglib"]
+
+[submodule "dep/cpp-peglib"]
 	path = dep/cpp-peglib
-	url = ../cpp-peglib.git
-	ignore = dirty 
+	url = https://github.com/yhirose/cpp-peglib
 [submodule "stdlib"]
 	path = stdlib
-    url = ../bython-stdlib.git
-    ignore = dirty
-[submodule "third-party/cxxopts"]
+	url = https://gitlab.com/compilerbau-ovgu/bython-stdlib
+[submodule "dep/cxxopts"]
 	path = dep/cxxopts
-	url = https://github.com/jarro2783/cxxopts.git
+	url = https://github.com/jarro2783/cxxopts
+[submodule "dep/gtest"]
+	path = dep/gtest
+	url = https://github.com/jarro2783/cxxopts
