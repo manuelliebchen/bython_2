@@ -1,0 +1,11 @@
+func ggt = n: Int, k: Int -> Int {
+    if k == 0 {
+        n
+    } else {
+        ggt(k, n % k)
+    }
+}
+
+func main = argc: Int -> Int {
+    ggt(42, 77)
+}

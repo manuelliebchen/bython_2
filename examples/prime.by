@@ -1,0 +1,28 @@
+func isprime = n : Int -> Int {
+    if n > 1 {
+        isprime_(n,2)
+    } else {
+        0
+    }
+}
+
+func isprime_ = n:Int, k:Int -> Int {
+    if n != k {
+        if n % k != 0 {
+            isprime_(n,k+1)
+        } else {
+            0
+        }
+    } else {
+        1
+    }
+}
+
+func main = args:Int -> Int {
+    if isprime(4001) ==0 {
+    println_int(0)
+    }
+    else {
+    println_int(1)
+    };
+}

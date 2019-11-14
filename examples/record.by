@@ -1,0 +1,10 @@
+record Worker {
+    person: Person,
+    occupation: String
+}
+
+
+record Person {
+    name: String,
+    age: Int
+}

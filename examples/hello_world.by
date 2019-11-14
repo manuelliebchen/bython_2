@@ -1,0 +1,4 @@
+func main = argv: Int -> Int {
+    println_str("Hello World!");
+    0
+}

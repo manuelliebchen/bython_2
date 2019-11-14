@@ -1,0 +1,4 @@
+func main = argc: Int -> Int {
+  let i = 1;
+  i
+}

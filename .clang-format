@@ -1,0 +1,50 @@
+﻿---
+AlignEscapedNewlinesLeft: 'false'
+AlignTrailingComments: 'true'
+AllowShortBlocksOnASingleLine: 'false'
+AllowShortFunctionsOnASingleLine: None
+AllowShortIfStatementsOnASingleLine: 'false'
+AllowShortLoopsOnASingleLine: 'false'
+AlwaysBreakBeforeMultilineStrings: 'true'
+AlwaysBreakTemplateDeclarations: 'true'
+BinPackParameters: 'false'
+BreakBeforeBinaryOperators: 'false'
+BreakBeforeBraces: Stroustrup
+BreakBeforeTernaryOperators: 'true'
+BreakConstructorInitializersBeforeComma: 'true'
+ConstructorInitializerAllOnOneLineOrOnePerLine: 'true'
+Cpp11BracedListStyle: 'true'
+DerivePointerAlignment: 'false'
+ExperimentalAutoDetectBinPacking: 'true'
+IncludeBlocks: 'Regroup'
+IncludeCategories:
+  - Regex:           '^"(llvm|llvm-c|clang|clang-c)/'
+    Priority:        1
+  - Regex:           '^(<|"(gtest|gmock|isl|json)/)'
+    Priority:        10
+  - Regex:           '^(<|"(include)/)'
+    Priority:        200
+  - Regex:           '<[[:alnum:].]+>'
+    Priority:        1000
+  - Regex:           '.*'
+    Priority:        10000
+IndentCaseLabels: 'true'
+IndentWidth: '4'
+KeepEmptyLinesAtTheStartOfBlocks: 'false'
+Language: Cpp
+NamespaceIndentation: None
+ObjCSpaceAfterProperty: 'false'
+PointerAlignment: Left
+SpaceAfterCStyleCast: 'true'
+SpaceBeforeAssignmentOperators: 'true'
+SpaceBeforeParens: ControlStatements
+SpaceInEmptyParentheses: 'false'
+SpacesInAngles: 'false'
+SpacesInCStyleCastParentheses: 'false'
+SpacesInContainerLiterals: 'true'
+SpacesInParentheses: 'false'
+Standard: Auto
+TabWidth: '4'
+UseTab: Always
+
+...

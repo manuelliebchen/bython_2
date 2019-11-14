@@ -1,0 +1,23 @@
+func main = args:Int -> Int {
+let list : List[Int] = List[Int]::new();
+    list_int_init(list);
+    list_push_back(list, 5);
+    list_push_back(list, 3);
+    list_push_back(list, 6);
+    list_push_back(list, 4);
+    list_push_back(list, 7);
+    list_push_back(list, 8);
+    list_push_back(list, 1);
+    list_push_back(list, 9);
+
+    let nlist = bubblesort(list);
+
+    println_list(nlist);
+}
+
+
+func bubblesort = unsorted: List[Int] -> List[Int] {
+
+}
+
+func _bubblesort =

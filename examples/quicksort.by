@@ -1,0 +1,79 @@
+func largerSortedHelper = list: List[Int], accum: List[Int], pivot: Int, position: Int -> List[Int] {
+    if position == list_size(list) {
+        accum
+    }
+    else {
+        let value = list_get_int(list, position);
+        let new_accum = if value >= pivot {
+            list_push_back(accum, value)
+        } else {
+            accum
+        };
+
+        largerSortedHelper(list, new_accum, pivot, position + 1)
+    }
+}
+
+
+func largerSorted = list: List[Int], pivot: Int -> List[Int] {
+    largerSortedHelper(list, list_int_init(), pivot, 0)
+}
+
+
+func smallerSortedHelper = list: List[Int], accum: List[Int], pivot: Int, position: Int -> List[Int] {
+    if position == list_size(list) {
+        accum
+    }
+    else {
+        let value = list_get_int(list, position);
+        let new_accum = if value < pivot {
+            list_push_back(accum, value)
+        } else {
+            accum
+        };
+
+        smallerSortedHelper(list, new_accum, pivot, position + 1)
+    }
+}
+
+
+func smallerSorted = list: List[Int], pivot: Int -> List[Int] {
+    smallerSortedHelper(list, list_int_init(), pivot, 0)
+}
+
+
+func quickSort = list: List[Int] -> List[Int] {
+    if list_size(list) <= 1 {
+        list
+    }
+    else {
+        let pivot = list_get_int(list, 0);
+        let unordered = list_pop_front(list);
+
+        let lhs = quickSort(smallerSorted(unordered, pivot));
+        let rhs = quickSort(largerSorted(unordered, pivot));
+
+        list_merge(list_push_back(lhs, pivot), rhs)
+    }
+}
+
+
+func debugPushBack = list: List[Int], x: Int -> List[Int] {
+    list_push_back(list, x)
+}
+
+func main = argc: Int -> Int {
+    let list0 = list_int_init();
+    let list1 = debugPushBack(list0, 1);
+    let list2 = debugPushBack(list1, 2);
+    let list3 = debugPushBack(list2, 3);
+    let list4 = debugPushBack(list3, 4);
+    let list5 = debugPushBack(list4, 8);
+    let list6 = debugPushBack(list5, 7);
+    let list7 = debugPushBack(list6, 6);
+    let list8 = debugPushBack(list7, 5);
+
+    let nlist = quickSort(list8);
+    list_print(nlist);
+    0
+}

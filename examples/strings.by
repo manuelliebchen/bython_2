@@ -1,0 +1,6 @@
+func main = argc: Int -> Int {
+  let i = "Test";
+  let j = "Test";
+  println_str(i);
+  println_str(j);
+}

@@ -1,0 +1,18 @@
+func float_compare = x: Float, y:Float -> Bool {
+    if x != y {
+        false
+    } else {
+        true
+    }
+}
+
+func main = args: Int -> Int {
+    if float_compare(2.0, 3.0) {
+        println_str("same")
+    }
+    else {
+        println_str("different")
+    };
+    0
+}
+
