@@ -1,9 +1,4 @@
-project(bython-util)
-set(CMAKE_CXX_STANDARD 17)
-
-set(BYTHON_UTIL_SOURCE_FILES
-    ${CMAKE_CURRENT_SOURCE_DIR}/utillib.cpp
-)
+FILE(GLOB_RECURSE BYTHON_UTIL_SOURCE_FILES ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp)
 
 add_library(bython-util ${BYTHON_UTIL_SOURCE_FILES})
 target_include_directories(bython-util PRIVATE

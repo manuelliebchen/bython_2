@@ -5,9 +5,7 @@ project(bython)
 
 find_program(CLANG_TIDY
         NAMES "clang-tidy")
-if (NOT CLANG_TIDY)
-    message(STATUS "clang-tidy not found!")
-else()
+if (CLANG_TIDY)
     message(STATUS "clang-tidy found: ${CLANG_TIDY}")
     set(CLANG_TIDY_COMMAND
             "${CLANG_TIDY}" -checks=-*,bugprone-*,cert-*,clang-*,cppcoreguidelines-*,modernize-*,performance-*,readability-* -header-filter='^include')
@@ -21,6 +19,21 @@ set(EXTERNAL_INSTALL_LOCATION ${PROJECT_SOURCE_DIR}/dep)
 add_subdirectory(src)
 add_subdirectory(stdlib)
 
+FILE(GLOB_RECURSE ALL_BYTHON_SOURCE_FILES ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp ${CMAKE_CURRENT_SOURCE_DIR}/src/*.hpp)
+
+# Adding clang-format target if executable is found
+find_program(CLANG_FORMAT "clang-format")
+if(CLANG_FORMAT)
+  add_custom_target(
+    clang-format ALL
+    COMMAND ${CLANG_FORMAT}
+    -i
+    -style=LLVM
+    ${ALL_BYTHON_SOURCE_FILES}
+    )
+else()
+  message(STATUS "Could not find clang-format")
+endif()
 
 OPTION(BUILD_DOXYGEN "Build the documentation" ON)
 if(BUILD_DOXYGEN)

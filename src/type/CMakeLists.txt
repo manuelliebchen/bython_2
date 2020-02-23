@@ -1,14 +1,8 @@
-project(bython-type)
-set(CMAKE_CXX_STANDARD 17)
-
 find_package(LLVM REQUIRED CONFIG)
 
-set(BYTHON_AST_SOURCE_FILES
-    ${CMAKE_CURRENT_SOURCE_DIR}/FunctionType.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/TypeName.cpp
-)
+FILE(GLOB_RECURSE BYTHON_TYPE_SOURCE_FILES ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp)
 
-add_library(bython-type ${BYTHON_AST_SOURCE_FILES})
+add_library(bython-type ${BYTHON_TYPE_SOURCE_FILES})
 target_include_directories(bython-type PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/
     ${CMAKE_CURRENT_SOURCE_DIR}/../ast/
