@@ -5,8 +5,8 @@
  *      Author: Manuel Liebchen
  */
 
-#ifndef SRC_AST_ASTCONSTANT_ASTSTRINGCONSTANT_HPP_
-#define SRC_AST_ASTCONSTANT_ASTSTRINGCONSTANT_HPP_
+#ifndef SRC_AST_CONSTANT_STRING_CONSTANT_HPP_
+#define SRC_AST_CONSTANT_STRING_CONSTANT_HPP_
 
 #include <string>
 
@@ -37,4 +37,4 @@ inline std::ostream& operator<<(std::ostream& os, const ASTStringConstant& str)
 
 } /* namespace by::ast */
 
-#endif /* SRC_AST_ASTCONSTANT_ASTSTRINGCONSTANT_HPP_ */
+#endif /* SRC_AST_CONSTANT_STRING_CONSTANT_HPP_ */

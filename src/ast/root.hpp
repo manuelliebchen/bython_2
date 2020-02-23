@@ -12,8 +12,8 @@
 #include <peglib.h>
 #include <vector>
 
-#include "../ast/ASTBase.hpp"
-#include "../ast/ASTFunction.hpp"
+#include "base.hpp"
+#include "function.hpp"
 
 namespace by::ast {
 

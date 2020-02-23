@@ -5,7 +5,7 @@
  *      Author: Manuel Liebchen
  */
 
-#include "ASTFloatConstant.hpp"
+#include "float_constant.hpp"
 
 namespace by::ast {
 

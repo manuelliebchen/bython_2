@@ -10,7 +10,7 @@
 
 #include <memory>
 
-#include "../../ast/ASTExpression/ASTExpression.hpp"
+#include "expression.hpp"
 #include "peglib.h"
 
 namespace by::ast {

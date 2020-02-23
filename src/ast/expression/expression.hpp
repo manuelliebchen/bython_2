@@ -11,9 +11,9 @@
 #include <llvm/IR/Value.h>
 #include <memory>
 
-#include "../../ast/ASTBase.hpp"
 #include "../../bc/BuildContext.hpp"
 #include "../../type/TypeName.hpp"
+#include "../base.hpp"
 #include "peglib.h"
 #include "utillib.hpp"
 

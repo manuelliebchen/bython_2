@@ -5,17 +5,17 @@
  *      Author: Manuel Liebchen
  */
 
-#include "ASTNoneArithmeticExpression.hpp"
+#include "none_arithmetic_expression.hpp"
 
-#include "ASTBlockExpression.hpp"
-#include "ASTBooleanConstant.hpp"
-#include "ASTCallExpression.hpp"
-#include "ASTFloatConstant.hpp"
-#include "ASTIfExpression.hpp"
-#include "ASTIntegerConstant.hpp"
-#include "ASTLetStatement.hpp"
-#include "ASTStringConstant.hpp"
-#include "ASTVariableExpression.hpp"
+#include "../constant/boolean_constant.hpp"
+#include "../constant/float_constant.hpp"
+#include "../constant/integer_constant.hpp"
+#include "../constant/string_constant.hpp"
+#include "block_expression.hpp"
+#include "call_expression.hpp"
+#include "if_expression.hpp"
+#include "let_statement.hpp"
+#include "variable_expression.hpp"
 
 namespace by::ast {
 

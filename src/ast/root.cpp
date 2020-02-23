@@ -5,7 +5,7 @@
  *      Author: Manuel Liebchen
  */
 
-#include "ASTRoot.hpp"
+#include "root.hpp"
 
 namespace by::ast {
 

@@ -5,19 +5,19 @@
  *      Author: Manuel Liebchen
  */
 
-#include "ASTExpression.hpp"
+#include "expression.hpp"
 
 #include <unordered_set>
 
-#include "ASTArithmeticExpression.hpp"
-#include "ASTBase.hpp"
-#include "ASTBlockExpression.hpp"
-#include "ASTCallExpression.hpp"
-#include "ASTConstant.hpp"
-#include "ASTIfExpression.hpp"
-#include "ASTLetStatement.hpp"
-#include "ASTNoneArithmeticExpression.hpp"
-#include "ASTVariableExpression.hpp"
+#include "../base.hpp"
+#include "../constant/constant.hpp"
+#include "../expression/arithmetic_expression.hpp"
+#include "block_expression.hpp"
+#include "call_expression.hpp"
+#include "if_expression.hpp"
+#include "let_statement.hpp"
+#include "none_arithmetic_expression.hpp"
+#include "variable_expression.hpp"
 
 namespace by::ast {
 ASTExpression::ASTExpression(const std::shared_ptr<peg::Ast>& ast,

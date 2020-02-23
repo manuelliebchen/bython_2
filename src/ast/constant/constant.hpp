@@ -8,7 +8,7 @@
 #ifndef SRC_AST_ASTCONSTANT_HPP_
 #define SRC_AST_ASTCONSTANT_HPP_
 
-#include "../../ast/ASTExpression/ASTExpression.hpp"
+#include "../expression/expression.hpp"
 
 namespace by::ast {
 

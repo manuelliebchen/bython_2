@@ -5,7 +5,7 @@
  *      Author: Manuel Liebchen
  */
 
-#include "../../ast/ASTConstant/ASTStringConstant.hpp"
+#include "string_constant.hpp"
 
 namespace by::ast {
 

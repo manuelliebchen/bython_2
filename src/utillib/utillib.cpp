@@ -11,8 +11,8 @@
 #include <unordered_map>
 #include <unordered_set>
 
-#include "../ast/ASTBase.hpp"
-#include "../ast/ASTRoot.hpp"
+#include "../ast/base.hpp"
+#include "../ast/root.hpp"
 #include "../type/FunctionType.hpp"
 #include "../type/TypeName.hpp"
 

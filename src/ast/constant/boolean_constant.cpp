@@ -5,7 +5,7 @@
  *      Author: Manuel Liebchen
  */
 
-#include "../../ast/ASTConstant/ASTBooleanConstant.hpp"
+#include "boolean_constant.hpp"
 
 namespace by::ast {
 

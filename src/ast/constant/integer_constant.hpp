@@ -8,7 +8,7 @@
 #ifndef SRC_AST_ASTINTEGERCONSTANT_HPP_
 #define SRC_AST_ASTINTEGERCONSTANT_HPP_
 
-#include "../../ast/ASTConstant/ASTConstant.hpp"
+#include "../constant/ASTConstant.hpp"
 
 namespace by::ast {
 

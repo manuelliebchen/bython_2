@@ -5,10 +5,10 @@
  *      Author: Manuel Liebchen
  */
 
-#ifndef SRC_AST_ASTCONSTANT_ASTBOOLEANCONSTANT_HPP_
-#define SRC_AST_ASTCONSTANT_ASTBOOLEANCONSTANT_HPP_
+#ifndef SRC_AST_CONSTANT_BOOLEAN_CONSTANT_HPP_
+#define SRC_AST_CONSTANT_BOOLEAN_CONSTANT_HPP_
 
-#include "../../ast/ASTConstant/ASTConstant.hpp"
+#include "constant.hpp"
 
 namespace by::ast {
 
@@ -40,4 +40,4 @@ inline std::ostream& operator<<(std::ostream& os, const ASTBooleanConstant& boo)
 
 } /* namespace by::ast */
 
-#endif /* SRC_AST_ASTCONSTANT_ASTBOOLEANCONSTANT_HPP_ */
+#endif /* SRC_AST_CONSTANT_BOOLEAN_CONSTANT_HPP_ */

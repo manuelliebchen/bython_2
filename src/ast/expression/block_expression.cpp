@@ -5,9 +5,9 @@
  *      Author: Manuel Liebchen
  */
 
-#include "ASTBlockExpression.hpp"
+#include "block_expression.hpp"
 
-#include "../ASTVariableDeclaration.hpp"
+#include "../variable_declaration.hpp"
 
 namespace by::ast {
 

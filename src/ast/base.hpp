@@ -5,8 +5,8 @@
  *      Author: Manuel Liebchen
  */
 
-#ifndef SRC_AST_ASTBASE_HPP_
-#define SRC_AST_ASTBASE_HPP_
+#ifndef SRC_AST_BASE_HPP_
+#define SRC_AST_BASE_HPP_
 
 #include <memory>
 #include <string>
@@ -69,4 +69,4 @@ inline std::ostream& operator<<(std::ostream& os, const ASTBase& base)
 
 } /* namespace by::ast */
 
-#endif /* SRC_AST_ASTBASE_HPP_ */
+#endif /* SRC_AST_BASE_HPP_ */

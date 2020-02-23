@@ -5,12 +5,12 @@
  *      Author: Manuel Liebchen
  */
 
-#include "ASTConstant.hpp"
+#include "constant.hpp"
 
-#include "ASTBooleanConstant.hpp"
-#include "ASTFloatConstant.hpp"
-#include "ASTIntegerConstant.hpp"
-#include "ASTStringConstant.hpp"
+#include "boolean_constant.hpp"
+#include "float_constant.hpp"
+#include "integer_constant.hpp"
+#include "string_constant.hpp"
 
 namespace by::ast {
 

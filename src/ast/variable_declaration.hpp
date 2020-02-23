@@ -5,14 +5,14 @@
  *      Author: jemand
  */
 
-#ifndef SRC_AST_ASTVARIABLEDECLARATION_HPP_
-#define SRC_AST_ASTVARIABLEDECLARATION_HPP_
+#ifndef SRC_AST_VARIABLE_DECLARATION_HPP_
+#define SRC_AST_VARIABLE_DECLARATION_HPP_
 
 #include <memory>
 
 #include "../type/TypeName.hpp"
-#include "ASTBase.hpp"
 #include "ASTExpression/ASTBlockExpression.hpp"
+#include "base.hpp"
 #include "peglib.h"
 
 namespace by::ast {
@@ -44,4 +44,4 @@ inline std::ostream& operator<<(std::ostream& os,
 
 } // namespace by::ast
 
-#endif /* SRC_AST_ASTVARIABLEDECLARATION_HPP_ */
+#endif /* SRC_AST_VARIABLE_DECLARATION_HPP_ */

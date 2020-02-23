@@ -5,9 +5,9 @@
  *      Author: jemand
  */
 
-#include "ASTArithmeticExpression.hpp"
+#include "../expression/arithmetic_expression.hpp"
 
-#include "ASTNoneArithmeticExpression.hpp"
+#include "none_arithmetic_expression.hpp"
 
 namespace by::ast {
 

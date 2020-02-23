@@ -15,11 +15,11 @@
 
 #include "../ast/ASTBase.hpp"
 #include "../ast/ASTExpression/ASTBlockExpression.hpp"
-#include "../ast/ASTVariableDeclaration.hpp"
 #include "../bc/BuildContext.hpp"
 #include "../type/FunctionType.hpp"
 #include "../type/TypeName.hpp"
 #include "peglib.h"
+#include "variable_declaration.hpp"
 
 namespace by::ast {
 

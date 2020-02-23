@@ -5,7 +5,7 @@
  *      Author: Manuel Liebchen
  */
 
-#include "ASTIntegerConstant.hpp"
+#include "integer_constant.hpp"
 
 namespace by::ast {
 

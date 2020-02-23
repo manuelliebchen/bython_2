@@ -5,7 +5,7 @@
  *      Author: Manuel Liebchen
  */
 
-#include "../ast/ASTFunction.hpp"
+#include "function.hpp"
 
 #include <llvm/IR/Function.h>
 

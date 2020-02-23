@@ -5,7 +5,7 @@
  *      Author: jemand
  */
 
-#include "ASTVariableDeclaration.hpp"
+#include "variable_declaration.hpp"
 
 #include "../utillib/utillib.hpp"
 namespace by::ast {

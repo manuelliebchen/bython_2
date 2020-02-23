@@ -12,7 +12,7 @@
 #include <string>
 
 #include "../../ast/ASTExpression/ASTExpression.hpp"
-#include "../../ast/ASTVariableDeclaration.hpp"
+#include "../variable_declaration.hpp"
 
 namespace by::ast {
 

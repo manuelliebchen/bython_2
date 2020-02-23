@@ -5,7 +5,7 @@
  *      Author: Manuel Liebchen
  */
 
-#include "ASTIfExpression.hpp"
+#include "if_expression.hpp"
 
 namespace by::ast {
 
