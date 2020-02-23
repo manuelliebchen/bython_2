@@ -13,38 +13,38 @@
 #include <utillib.hpp>
 #include <vector>
 
-#include "../ast/ASTBase.hpp"
-#include "../ast/ASTExpression/ASTBlockExpression.hpp"
-#include "../bc/BuildContext.hpp"
-#include "../type/FunctionType.hpp"
-#include "../type/TypeName.hpp"
+#include "../bc/build_context.hpp"
+#include "../type/function_type.hpp"
+#include "../type/type_name.hpp"
+#include "base.hpp"
+#include "expression/block_expression.hpp"
 #include "peglib.h"
 #include "variable_declaration.hpp"
 
 namespace by::ast {
 
 class ASTFunction : public ASTBase {
-  protected:
-	std::string name;
-	std::vector<std::shared_ptr<by::ast::ASTVariableDeclaration>> parameters;
-	std::shared_ptr<by::type::TypeName> returntype;
-	std::shared_ptr<by::ast::ASTBlockExpression> blockexpression;
+protected:
+  std::string name;
+  std::vector<std::shared_ptr<by::ast::ASTVariableDeclaration>> parameters;
+  std::shared_ptr<by::type::TypeName> returntype;
+  std::shared_ptr<by::ast::ASTBlockExpression> blockexpression;
 
-  public:
-	ASTFunction(const std::shared_ptr<peg::Ast>&, ASTBlockExpression*);
+public:
+  ASTFunction(const std::shared_ptr<peg::Ast> &, ASTBlockExpression *);
 
-	std::string get_name() const;
-	void get_dependencies(std::unordered_set<std::string>& functions,
-						  std::unordered_set<std::string>& types) const;
+  std::string get_name() const;
+  void get_dependencies(std::unordered_set<std::string> &functions,
+                        std::unordered_set<std::string> &types) const;
 
-	void build_ir(std::unique_ptr<by::bc::BuildContext>&) const;
+  void build_ir(std::unique_ptr<by::bc::BuildContext> &) const;
 
-	type::FunctionType get_function_type() const;
+  type::FunctionType get_function_type() const;
 
-	friend std::ostream& operator<<(std::ostream&, const ASTFunction&);
+  friend std::ostream &operator<<(std::ostream &, const ASTFunction &);
 };
 
-std::ostream& operator<<(std::ostream&, const ASTFunction&);
+std::ostream &operator<<(std::ostream &, const ASTFunction &);
 
 } // namespace by::ast
 

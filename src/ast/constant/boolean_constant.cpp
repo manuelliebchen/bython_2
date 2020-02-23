@@ -9,35 +9,31 @@
 
 namespace by::ast {
 
-ASTBooleanConstant::ASTBooleanConstant(const std::shared_ptr<peg::Ast>& ast,
-									   ASTBlockExpression* parent)
-	: ASTConstant(ast, parent)
-{
-	if (ast->original_name != "BooleanConstant") {
-		throw bad_ast_exeption(
-			ast,
-			(std::string("BooleanConstant but was ") + ast->original_name)
-				.c_str());
-	}
+ASTBooleanConstant::ASTBooleanConstant(const std::shared_ptr<peg::Ast> &ast,
+                                       ASTBlockExpression *parent)
+    : ASTConstant(ast, parent) {
+  if (ast->original_name != "BooleanConstant") {
+    throw bad_ast_exeption(
+        ast,
+        (std::string("BooleanConstant but was ") + ast->original_name).c_str());
+  }
 
-	value = false;
-	if (ast->token == "true") {
-		value = true;
-	}
+  value = false;
+  if (ast->token == "true") {
+    value = true;
+  }
 }
 
-auto ASTBooleanConstant::build_ir(std::unique_ptr<bc::BuildContext>& bc) const
-	-> llvm::Value*
-{
-	return value ? llvm::ConstantInt::getTrue(bc->context)
-				 : llvm::ConstantInt::getFalse(bc->context);
+auto ASTBooleanConstant::build_ir(std::unique_ptr<bc::BuildContext> &bc) const
+    -> llvm::Value * {
+  return value ? llvm::ConstantInt::getTrue(bc->context)
+               : llvm::ConstantInt::getFalse(bc->context);
 }
 
 void ASTBooleanConstant::get_dependencies(
-	std::unordered_set<std::string>& functions,
-	std::unordered_set<std::string>& types) const
-{
-	types.insert("Bool");
+    std::unordered_set<std::string> &functions,
+    std::unordered_set<std::string> &types) const {
+  types.insert("Bool");
 }
 
 } /* namespace by::ast */

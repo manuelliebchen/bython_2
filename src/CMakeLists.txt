@@ -17,7 +17,7 @@ target_include_directories(bython PRIVATE
     ${LLVM_INCLUDE_DIRS}
 )
 
-set(GRAMMAR_PATH ${CMAKE_SOURCE_DIR}/resources/bython.peg CACHE STRING "Path to the .peg gramma")
+set(GRAMMAR_PATH ${CMAKE_SOURCE_DIR}/grammar/bython.peg CACHE STRING "Path to the .peg gramma")
 target_compile_definitions(bython PRIVATE ${LLVM_DEFINITIONS} -DGRAMMAR_PATH="${GRAMMAR_PATH}")
 message(STATUS "Grammar set to ${GRAMMAR_PATH}")
 

@@ -10,35 +10,34 @@
 
 #include <memory>
 
-#include "../../ast/ASTExpression/ASTExpression.hpp"
+#include "../../ast/expression/expression.hpp"
 
 namespace by::ast {
 
 class ASTVariableExpression : public ASTExpression {
-  public:
-	ASTVariableExpression(const std::shared_ptr<peg::Ast>&,
-						  ASTBlockExpression*);
+public:
+  ASTVariableExpression(const std::shared_ptr<peg::Ast> &,
+                        ASTBlockExpression *);
 
-	llvm::Value* build_ir(std::unique_ptr<bc::BuildContext>&) const;
+  llvm::Value *build_ir(std::unique_ptr<bc::BuildContext> &) const;
 
-	void get_dependencies(std::unordered_set<std::string>& functions,
-						  std::unordered_set<std::string>& types) const;
+  void get_dependencies(std::unordered_set<std::string> &functions,
+                        std::unordered_set<std::string> &types) const;
 
-  private:
-	std::string name;
-	std::shared_ptr<ASTVariableExpression> next;
-	friend std::ostream& operator<<(std::ostream&,
-									const ASTVariableExpression&);
+private:
+  std::string name;
+  std::shared_ptr<ASTVariableExpression> next;
+  friend std::ostream &operator<<(std::ostream &,
+                                  const ASTVariableExpression &);
 };
 
-inline std::ostream& operator<<(std::ostream& os,
-								const ASTVariableExpression& var)
-{
-	os << var.name;
-	if (var.next) {
-		os << "." << *var.next;
-	}
-	return os;
+inline std::ostream &operator<<(std::ostream &os,
+                                const ASTVariableExpression &var) {
+  os << var.name;
+  if (var.next) {
+    os << "." << *var.next;
+  }
+  return os;
 }
 
 } /* namespace by::ast */

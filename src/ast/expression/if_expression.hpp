@@ -11,35 +11,35 @@
 #include <optional>
 #include <variant>
 
-#include "../../ast/ASTExpression/ASTBlockExpression.hpp"
-#include "../../ast/ASTExpression/ASTExpression.hpp"
+#include "../../ast/expression/block_expression.hpp"
+#include "../../ast/expression/expression.hpp"
 
 namespace by::ast {
 
 class ASTIfExpression : public ASTExpression {
-  public:
-	ASTIfExpression(const std::shared_ptr<peg::Ast>&, ASTBlockExpression*);
+public:
+  ASTIfExpression(const std::shared_ptr<peg::Ast> &, ASTBlockExpression *);
 
-	llvm::Value* build_ir(std::unique_ptr<bc::BuildContext>&) const;
+  llvm::Value *build_ir(std::unique_ptr<bc::BuildContext> &) const;
 
-	void get_dependencies(std::unordered_set<std::string>& functions,
-						  std::unordered_set<std::string>& types) const;
+  void get_dependencies(std::unordered_set<std::string> &functions,
+                        std::unordered_set<std::string> &types) const;
 
-  private:
-	std::shared_ptr<ASTExpression> condition;
-	std::shared_ptr<ASTBlockExpression> block;
-	std::shared_ptr<ASTExpression> alternativ;
+private:
+  std::shared_ptr<ASTExpression> condition;
+  std::shared_ptr<ASTBlockExpression> block;
+  std::shared_ptr<ASTExpression> alternativ;
 
-	friend std::ostream& operator<<(std::ostream&, const ASTIfExpression&);
+  friend std::ostream &operator<<(std::ostream &, const ASTIfExpression &);
 };
 
-inline std::ostream& operator<<(std::ostream& os, const ASTIfExpression& ifexp)
-{
-	os << "if " << *ifexp.condition << " " << *ifexp.block;
-	if (ifexp.alternativ != nullptr) {
-		os << *ifexp.alternativ;
-	}
-	return os;
+inline std::ostream &operator<<(std::ostream &os,
+                                const ASTIfExpression &ifexp) {
+  os << "if " << *ifexp.condition << " " << *ifexp.block;
+  if (ifexp.alternativ != nullptr) {
+    os << *ifexp.alternativ;
+  }
+  return os;
 }
 
 } /* namespace by::ast */

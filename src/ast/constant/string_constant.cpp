@@ -9,48 +9,42 @@
 
 namespace by::ast {
 
-ASTStringConstant::ASTStringConstant(const std::shared_ptr<peg::Ast>& ast,
-									 ASTBlockExpression* parent)
-	: ASTConstant(ast, parent)
-{
-	if (ast->original_name != "StringConstant") {
-		throw bad_ast_exeption(
-			ast,
-			(std::string("StringConstant but was ") + ast->original_name)
-				.c_str());
-	}
+ASTStringConstant::ASTStringConstant(const std::shared_ptr<peg::Ast> &ast,
+                                     ASTBlockExpression *parent)
+    : ASTConstant(ast, parent) {
+  if (ast->original_name != "StringConstant") {
+    throw bad_ast_exeption(
+        ast,
+        (std::string("StringConstant but was ") + ast->original_name).c_str());
+  }
 
-	value = ast->token;
+  value = ast->token;
 }
 
-auto ASTStringConstant::build_ir(std::unique_ptr<bc::BuildContext>& bc) const
-	-> llvm::Value*
-{
-	const auto gname = ".str" + value;
+auto ASTStringConstant::build_ir(std::unique_ptr<bc::BuildContext> &bc) const
+    -> llvm::Value * {
+  const auto gname = ".str" + value;
 
-	const auto gdata = llvm::ConstantDataArray::getString(bc->context,
-														  value,
-														  /*AddNull*/ true);
+  const auto gdata = llvm::ConstantDataArray::getString(bc->context, value,
+                                                        /*AddNull*/ true);
 
-	// Register the declaration statement in the module
-	// Note: Name string declaration after string content?
-	// Note: Would help avoid duplicates?
-	llvm::Constant* text =
-		bc->module.getOrInsertGlobal(gname, gdata->getType());
-	const auto gdata_loc = llvm::cast<llvm::GlobalVariable>(text);
+  // Register the declaration statement in the module
+  // Note: Name string declaration after string content?
+  // Note: Would help avoid duplicates?
+  llvm::Constant *text = bc->module.getOrInsertGlobal(gname, gdata->getType());
+  const auto gdata_loc = llvm::cast<llvm::GlobalVariable>(text);
 
-	gdata_loc->setInitializer(gdata);
+  gdata_loc->setInitializer(gdata);
 
-	// Cast to appropriate type and return
-	return llvm::ConstantExpr::getBitCast(
-		gdata_loc, llvm::Type::getInt8PtrTy(bc->context));
+  // Cast to appropriate type and return
+  return llvm::ConstantExpr::getBitCast(gdata_loc,
+                                        llvm::Type::getInt8PtrTy(bc->context));
 }
 
 void ASTStringConstant::get_dependencies(
-	std::unordered_set<std::string>& functions,
-	std::unordered_set<std::string>& types) const
-{
-	types.insert("String");
+    std::unordered_set<std::string> &functions,
+    std::unordered_set<std::string> &types) const {
+  types.insert("String");
 }
 
 } /* namespace by::ast */

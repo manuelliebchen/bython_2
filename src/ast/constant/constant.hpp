@@ -13,14 +13,14 @@
 namespace by::ast {
 
 class ASTConstant : public ASTExpression {
-  public:
-	ASTConstant(const std::shared_ptr<peg::Ast>&, ASTBlockExpression*);
+public:
+  ASTConstant(const std::shared_ptr<peg::Ast> &, ASTBlockExpression *);
 
-  private:
-	friend std::ostream& operator<<(std::ostream&, const ASTConstant&);
+private:
+  friend std::ostream &operator<<(std::ostream &, const ASTConstant &);
 };
 
-std::ostream& operator<<(std::ostream&, const ASTConstant&);
+std::ostream &operator<<(std::ostream &, const ASTConstant &);
 
 } /* namespace by::ast */
 

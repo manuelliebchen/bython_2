@@ -18,21 +18,21 @@
 namespace by::ast {
 
 class ASTRoot : public ASTBase {
-  public:
-	ASTRoot(const std::shared_ptr<peg::Ast>&, ASTBlockExpression*);
+public:
+  ASTRoot(const std::shared_ptr<peg::Ast> &, ASTBlockExpression *);
 
-	const std::vector<std::shared_ptr<by::ast::ASTFunction>>& get_functions();
+  const std::vector<std::shared_ptr<by::ast::ASTFunction>> &get_functions();
 
-	void get_dependencies(std::unordered_set<std::string>& functions,
-						  std::unordered_set<std::string>& types) const;
+  void get_dependencies(std::unordered_set<std::string> &functions,
+                        std::unordered_set<std::string> &types) const;
 
-  private:
-	std::vector<std::shared_ptr<by::ast::ASTFunction>> functions;
+private:
+  std::vector<std::shared_ptr<by::ast::ASTFunction>> functions;
 
-	friend std::ostream& operator<<(std::ostream&, const ASTRoot&);
+  friend std::ostream &operator<<(std::ostream &, const ASTRoot &);
 };
 
-std::ostream& operator<<(std::ostream&, const ASTRoot&);
+std::ostream &operator<<(std::ostream &, const ASTRoot &);
 
 } /* namespace by::ast */
 

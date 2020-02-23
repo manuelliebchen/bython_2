@@ -13,29 +13,28 @@
 namespace by::ast {
 
 class ASTBooleanConstant : public ASTConstant {
-  public:
-	ASTBooleanConstant(const std::shared_ptr<peg::Ast>&, ASTBlockExpression*);
+public:
+  ASTBooleanConstant(const std::shared_ptr<peg::Ast> &, ASTBlockExpression *);
 
-	llvm::Value* build_ir(std::unique_ptr<bc::BuildContext>&) const;
+  llvm::Value *build_ir(std::unique_ptr<bc::BuildContext> &) const;
 
-	void get_dependencies(std::unordered_set<std::string>& functions,
-						  std::unordered_set<std::string>& types) const;
+  void get_dependencies(std::unordered_set<std::string> &functions,
+                        std::unordered_set<std::string> &types) const;
 
-  private:
-	bool value;
+private:
+  bool value;
 
-	friend std::ostream& operator<<(std::ostream&, const ASTBooleanConstant&);
+  friend std::ostream &operator<<(std::ostream &, const ASTBooleanConstant &);
 };
 
-inline std::ostream& operator<<(std::ostream& os, const ASTBooleanConstant& boo)
-{
-	if (boo.value) {
-		os << "true";
-	}
-	else {
-		os << "false";
-	}
-	return os;
+inline std::ostream &operator<<(std::ostream &os,
+                                const ASTBooleanConstant &boo) {
+  if (boo.value) {
+    os << "true";
+  } else {
+    os << "false";
+  }
+  return os;
 }
 
 } /* namespace by::ast */

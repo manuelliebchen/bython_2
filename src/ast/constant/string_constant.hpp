@@ -10,29 +10,29 @@
 
 #include <string>
 
-#include "../../ast/ASTConstant/ASTConstant.hpp"
+#include "../../ast/constant/constant.hpp"
 
 namespace by::ast {
 
 class ASTStringConstant : public ASTConstant {
-  public:
-	ASTStringConstant(const std::shared_ptr<peg::Ast>&, ASTBlockExpression*);
+public:
+  ASTStringConstant(const std::shared_ptr<peg::Ast> &, ASTBlockExpression *);
 
-	llvm::Value* build_ir(std::unique_ptr<bc::BuildContext>&) const;
+  llvm::Value *build_ir(std::unique_ptr<bc::BuildContext> &) const;
 
-	void get_dependencies(std::unordered_set<std::string>& functions,
-						  std::unordered_set<std::string>& types) const;
+  void get_dependencies(std::unordered_set<std::string> &functions,
+                        std::unordered_set<std::string> &types) const;
 
-  private:
-	std::string value;
+private:
+  std::string value;
 
-	friend std::ostream& operator<<(std::ostream&, const ASTStringConstant&);
+  friend std::ostream &operator<<(std::ostream &, const ASTStringConstant &);
 };
 
-inline std::ostream& operator<<(std::ostream& os, const ASTStringConstant& str)
-{
-	os << "\"" << str.value << "\"";
-	return os;
+inline std::ostream &operator<<(std::ostream &os,
+                                const ASTStringConstant &str) {
+  os << "\"" << str.value << "\"";
+  return os;
 }
 
 } /* namespace by::ast */
