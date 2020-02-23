@@ -11,7 +11,9 @@
 
 namespace by::ast {
 
-ASTFunction::ASTFunction(const std::shared_ptr<peg::Ast>& ast) : ASTBase(ast)
+ASTFunction::ASTFunction(const std::shared_ptr<peg::Ast>& ast,
+						 ASTBlockExpression* parent)
+	: ASTBase(ast, parent)
 {
 	if (ast->original_name != "Function") {
 		throw bad_ast_exeption(
@@ -31,10 +33,11 @@ ASTFunction::ASTFunction(const std::shared_ptr<peg::Ast>& ast) : ASTBase(ast)
 		returntype = std::make_shared<type::TypeName>("Auto");
 	}
 	for (size_t i = 0; i < varscount; ++i) {
-		parameters.push_back(
-			std::make_shared<ASTVariableDeclaration>(ast->nodes[1 + i]));
+		parameters.push_back(std::make_shared<ASTVariableDeclaration>(
+			ast->nodes[1 + i], parent));
 	}
-	blockexpression = std::make_shared<ASTBlockExpression>(ast->nodes.back());
+	blockexpression = std::make_shared<ASTBlockExpression>(
+		parameters, ast->nodes.back(), parent);
 }
 
 void ASTFunction::get_dependencies(std::unordered_set<std::string>& functions,
@@ -49,7 +52,7 @@ void ASTFunction::get_dependencies(std::unordered_set<std::string>& functions,
 	blockexpression->get_dependencies(functions, types);
 }
 
-std::string ASTFunction::get_name() const
+auto ASTFunction::get_name() const -> std::string
 {
 	return name;
 }
@@ -58,7 +61,7 @@ void ASTFunction::build_ir(std::unique_ptr<by::bc::BuildContext>& bc) const
 {
 	std::cerr << "Building " << name << std::endl;
 
-	type::FunctionType type = get_type();
+	type::FunctionType type = get_function_type();
 
 	llvm::Function* function =
 		llvm::Function::Create(type.get_llvm_type(bc->context),
@@ -87,16 +90,16 @@ void ASTFunction::build_ir(std::unique_ptr<by::bc::BuildContext>& bc) const
 	bc->known_functions.emplace(name, type);
 }
 
-type::FunctionType ASTFunction::get_type() const
+auto ASTFunction::get_function_type() const -> type::FunctionType
 {
 	type::FunctionType sig(*returntype);
 	for (auto& para : parameters) {
-		sig.parameters.emplace_back(type::TypeName(*para->get_type()));
+		sig.parameters.emplace_back(type::TypeName(para->get_type()));
 	}
 	return sig;
 }
 
-std::ostream& operator<<(std::ostream& os, const ASTFunction& func)
+auto operator<<(std::ostream& os, const ASTFunction& func) -> std::ostream&
 {
 	os << "func " << func.name << " ";
 	if (func.parameters.empty()) {

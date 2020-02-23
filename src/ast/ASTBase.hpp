@@ -17,6 +17,8 @@
 
 namespace by::ast {
 
+class ASTBlockExpression;
+
 struct bad_ast_exeption : std::exception {
 	const std::shared_ptr<peg::Ast> ast;
 	const std::string name;
@@ -38,10 +40,14 @@ using identifier_set = std::unordered_set<std::string>;
 class ASTBase {
   protected:
 	const std::shared_ptr<peg::Ast> ast;
+
+	ASTBlockExpression* parent;
+
 	ASTBase() = delete;
 
   public:
-	ASTBase(const std::shared_ptr<peg::Ast>& ast) : ast(ast){};
+	ASTBase(const std::shared_ptr<peg::Ast>& ast, ASTBlockExpression* parent)
+		: ast(ast), parent(parent){};
 	virtual ~ASTBase(){};
 
 	virtual void get_dependencies(identifier_set& functions,

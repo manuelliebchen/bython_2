@@ -11,8 +11,8 @@
 namespace by::ast {
 
 ASTVariableDeclaration::ASTVariableDeclaration(
-	const std::shared_ptr<peg::Ast>& ast)
-	: ASTBase(ast)
+	const std::shared_ptr<peg::Ast>& ast, ASTBlockExpression* parent)
+	: ASTBase(ast, parent)
 {
 	if (ast->original_name != "VariableDeclaration") {
 		throw bad_ast_exeption(
@@ -21,23 +21,26 @@ ASTVariableDeclaration::ASTVariableDeclaration(
 				.c_str());
 	}
 	name = util::to_string(ast->nodes[0]);
-	type = std::make_shared<by::type::TypeName>(ast->nodes[1]);
+	type = by::type::TypeName(ast->nodes[1]);
+
+	if (parent != nullptr) {
+		parent->register_variable(name, type);
+	}
 }
 
 void ASTVariableDeclaration::get_dependencies(
 	std::unordered_set<std::string>& functions,
 	std::unordered_set<std::string>& types) const
 {
-	types.insert(type::to_string(*type));
+	types.insert(type::to_string(type));
 }
 
-const std::string& ASTVariableDeclaration::get_name() const
+auto ASTVariableDeclaration::get_name() const -> const std::string&
 {
 	return name;
 }
 
-const std::shared_ptr<by::type::TypeName>&
-ASTVariableDeclaration::get_type() const
+auto ASTVariableDeclaration::get_type() const -> by::type::TypeName
 {
 	return type;
 }

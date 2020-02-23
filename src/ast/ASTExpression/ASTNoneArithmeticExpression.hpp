@@ -14,7 +14,8 @@ namespace by::ast {
 
 class ASTNoneArithmeticExpression : public ASTExpression {
   public:
-	ASTNoneArithmeticExpression(const std::shared_ptr<peg::Ast>&);
+	ASTNoneArithmeticExpression(const std::shared_ptr<peg::Ast>&,
+								ASTBlockExpression*);
 
 	llvm::Value* build_ir(std::unique_ptr<bc::BuildContext>&) const;
 

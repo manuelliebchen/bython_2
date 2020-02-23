@@ -9,8 +9,9 @@
 
 namespace by::ast {
 
-ASTBooleanConstant::ASTBooleanConstant(const std::shared_ptr<peg::Ast>& ast)
-	: ASTConstant(ast)
+ASTBooleanConstant::ASTBooleanConstant(const std::shared_ptr<peg::Ast>& ast,
+									   ASTBlockExpression* parent)
+	: ASTConstant(ast, parent)
 {
 	if (ast->original_name != "BooleanConstant") {
 		throw bad_ast_exeption(
@@ -19,16 +20,14 @@ ASTBooleanConstant::ASTBooleanConstant(const std::shared_ptr<peg::Ast>& ast)
 				.c_str());
 	}
 
+	value = false;
 	if (ast->token == "true") {
 		value = true;
 	}
-	else {
-		value = false;
-	}
 }
 
-llvm::Value*
-ASTBooleanConstant::build_ir(std::unique_ptr<bc::BuildContext>& bc) const
+auto ASTBooleanConstant::build_ir(std::unique_ptr<bc::BuildContext>& bc) const
+	-> llvm::Value*
 {
 	return value ? llvm::ConstantInt::getTrue(bc->context)
 				 : llvm::ConstantInt::getFalse(bc->context);

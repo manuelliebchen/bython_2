@@ -185,3 +185,4 @@ docs/
 .settings
 
 .cproject
+llvm_doxygen*

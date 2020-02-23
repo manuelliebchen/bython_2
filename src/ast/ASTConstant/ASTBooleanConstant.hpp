@@ -14,7 +14,7 @@ namespace by::ast {
 
 class ASTBooleanConstant : public ASTConstant {
   public:
-	ASTBooleanConstant(const std::shared_ptr<peg::Ast>&);
+	ASTBooleanConstant(const std::shared_ptr<peg::Ast>&, ASTBlockExpression*);
 
 	llvm::Value* build_ir(std::unique_ptr<bc::BuildContext>&) const;
 

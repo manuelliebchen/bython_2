@@ -9,8 +9,9 @@
 
 namespace by::ast {
 
-ASTIntegerConstant::ASTIntegerConstant(const std::shared_ptr<peg::Ast>& ast)
-	: ASTConstant(ast)
+ASTIntegerConstant::ASTIntegerConstant(const std::shared_ptr<peg::Ast>& ast,
+									   ASTBlockExpression* parent)
+	: ASTConstant(ast, parent)
 {
 	if (ast->original_name != "IntegerConstant") {
 		throw bad_ast_exeption(
@@ -21,8 +22,8 @@ ASTIntegerConstant::ASTIntegerConstant(const std::shared_ptr<peg::Ast>& ast)
 	value = std::stoi(ast->token);
 }
 
-llvm::Value*
-ASTIntegerConstant::build_ir(std::unique_ptr<bc::BuildContext>& bc) const
+auto ASTIntegerConstant::build_ir(std::unique_ptr<bc::BuildContext>& bc) const
+	-> llvm::Value*
 {
 	auto llvm_int_type = llvm::IntegerType::get(
 		bc->context, std::numeric_limits<int>::digits + 1);

@@ -14,7 +14,7 @@ namespace by::ast {
 
 class ASTFloatConstant : public ASTConstant {
   public:
-	ASTFloatConstant(const std::shared_ptr<peg::Ast>&);
+	ASTFloatConstant(const std::shared_ptr<peg::Ast>&, ASTBlockExpression*);
 
 	llvm::Value* build_ir(std::unique_ptr<bc::BuildContext>&) const;
 

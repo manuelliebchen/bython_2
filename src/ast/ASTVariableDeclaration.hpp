@@ -10,25 +10,27 @@
 
 #include <memory>
 
-#include "../ast/ASTBase.hpp"
 #include "../type/TypeName.hpp"
+#include "ASTBase.hpp"
+#include "ASTExpression/ASTBlockExpression.hpp"
 #include "peglib.h"
 
 namespace by::ast {
 
 class ASTVariableDeclaration : public ASTBase {
+  protected:
+	std::string name;
+	by::type::TypeName type;
+
   public:
-	ASTVariableDeclaration(const std::shared_ptr<peg::Ast>&);
+	ASTVariableDeclaration(const std::shared_ptr<peg::Ast>&,
+						   ASTBlockExpression*);
 
 	void get_dependencies(std::unordered_set<std::string>& functions,
 						  std::unordered_set<std::string>& types) const;
 
 	const std::string& get_name() const;
-	const std::shared_ptr<by::type::TypeName>& get_type() const;
-
-  private:
-	std::string name;
-	std::shared_ptr<by::type::TypeName> type;
+	by::type::TypeName get_type() const;
 	friend std::ostream& operator<<(std::ostream&,
 									const ASTVariableDeclaration&);
 };
@@ -36,7 +38,7 @@ class ASTVariableDeclaration : public ASTBase {
 inline std::ostream& operator<<(std::ostream& os,
 								const ASTVariableDeclaration& var)
 {
-	os << var.name << " : " << *var.type;
+	os << var.name << " : " << var.type;
 	return os;
 }
 

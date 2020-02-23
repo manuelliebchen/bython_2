@@ -19,7 +19,7 @@ namespace by::ast {
 
 class ASTRoot : public ASTBase {
   public:
-	ASTRoot(const std::shared_ptr<peg::Ast>&);
+	ASTRoot(const std::shared_ptr<peg::Ast>&, ASTBlockExpression*);
 
 	const std::vector<std::shared_ptr<by::ast::ASTFunction>>& get_functions();
 

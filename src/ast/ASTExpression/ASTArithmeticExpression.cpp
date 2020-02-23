@@ -13,18 +13,20 @@ namespace by::ast {
 
 ASTArithmeticExpression::ASTArithmeticExpression(
 	const std::shared_ptr<peg::Ast>& ast,
+	ASTBlockExpression* parent,
 	std::shared_ptr<ASTExpression> lhs,
 	std::string BinaryOperator,
 	std::shared_ptr<ASTExpression> rhs)
-	: ASTExpression(ast)
+	: ASTExpression(ast, parent)
 	, lhs(std::move(lhs))
 	, BinaryOperator(std::move(BinaryOperator))
 	, rhs(std::move(rhs))
 {
+	type = this->lhs->get_type().deduct_type(this->rhs->get_type());
 }
 
-llvm::Value*
-ASTArithmeticExpression::build_ir(std::unique_ptr<bc::BuildContext>& bc) const
+auto ASTArithmeticExpression::build_ir(
+	std::unique_ptr<bc::BuildContext>& bc) const -> llvm::Value*
 {
 	llvm::Value* lhs_llvm = lhs->build_ir(bc);
 	llvm::Type* lhs_type = lhs_llvm->getType();

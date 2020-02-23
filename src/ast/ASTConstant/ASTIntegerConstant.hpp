@@ -14,7 +14,7 @@ namespace by::ast {
 
 class ASTIntegerConstant : public ASTConstant {
   public:
-	ASTIntegerConstant(const std::shared_ptr<peg::Ast>&);
+	ASTIntegerConstant(const std::shared_ptr<peg::Ast>&, ASTBlockExpression*);
 
 	llvm::Value* build_ir(std::unique_ptr<bc::BuildContext>&) const;
 

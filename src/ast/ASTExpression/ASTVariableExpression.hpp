@@ -16,7 +16,8 @@ namespace by::ast {
 
 class ASTVariableExpression : public ASTExpression {
   public:
-	ASTVariableExpression(const std::shared_ptr<peg::Ast>&);
+	ASTVariableExpression(const std::shared_ptr<peg::Ast>&,
+						  ASTBlockExpression*);
 
 	llvm::Value* build_ir(std::unique_ptr<bc::BuildContext>&) const;
 

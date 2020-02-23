@@ -17,10 +17,11 @@
 namespace by::type {
 
 struct FunctionType {
-	FunctionType(const TypeName&);
-	FunctionType(const TypeName&, std::vector<TypeName> const&);
 	TypeName returntype;
 	std::vector<TypeName> parameters;
+
+	FunctionType(const TypeName&);
+	FunctionType(const TypeName&, std::vector<TypeName> const&);
 
 	llvm::FunctionType* get_llvm_type(llvm::LLVMContext&) const;
 };

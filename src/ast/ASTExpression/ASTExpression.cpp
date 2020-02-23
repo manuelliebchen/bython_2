@@ -20,14 +20,21 @@
 #include "ASTVariableExpression.hpp"
 
 namespace by::ast {
-ASTExpression::ASTExpression(const std::shared_ptr<peg::Ast>& ast)
-	: ASTBase(ast)
+ASTExpression::ASTExpression(const std::shared_ptr<peg::Ast>& ast,
+							 ASTBlockExpression* parent)
+	: ASTBase(ast, parent)
 {
 	//	std::cerr << "Constructiing Expression " << ast->original_name <<
 	// std::endl;
 }
 
-std::ostream& operator<<(std::ostream& os, const by::ast::ASTExpression& exp)
+auto ASTExpression::get_type() const -> by::type::TypeName
+{
+	return type;
+}
+
+auto operator<<(std::ostream& os, const by::ast::ASTExpression& exp)
+	-> std::ostream&
 {
 	if (const auto* dyn =
 			dynamic_cast<const ASTNoneArithmeticExpression*>(&exp)) {
@@ -62,8 +69,9 @@ std::ostream& operator<<(std::ostream& os, const by::ast::ASTExpression& exp)
 	return os;
 };
 
-std::shared_ptr<by::ast::ASTExpression>
-create_expression(const std::shared_ptr<peg::Ast>& ast)
+auto create_expression(const std::shared_ptr<peg::Ast>& ast,
+					   ASTBlockExpression* parent)
+	-> std::shared_ptr<by::ast::ASTExpression>
 {
 	const std::unordered_set<std::string> first_class_operator = {"*", "/", "%",
 																  "&&"};
@@ -79,7 +87,7 @@ create_expression(const std::shared_ptr<peg::Ast>& ast)
 
 	if (ast->nodes.size() == 1) {
 		return std::make_shared<by::ast::ASTNoneArithmeticExpression>(
-			ast->nodes[0]);
+			ast->nodes[0], parent);
 	}
 
 	std::shared_ptr<peg::Ast> ast_ptr = ast;
@@ -89,7 +97,7 @@ create_expression(const std::shared_ptr<peg::Ast>& ast)
 	operators.emplace_back(ast_ptr->nodes[1]->token);
 	expressions.emplace_back(
 		std::make_shared<by::ast::ASTNoneArithmeticExpression>(
-			ast_ptr->nodes[0]));
+			ast_ptr->nodes[0], parent));
 	ast_ptr = ast_ptr->nodes[2];
 
 	while (ast_ptr->nodes.size() > 1) {
@@ -97,18 +105,16 @@ create_expression(const std::shared_ptr<peg::Ast>& ast)
 		if (first_class_operator.find(operators.back()) !=
 			first_class_operator.end()) {
 			expressions.back() = std::make_shared<ASTArithmeticExpression>(
-				ast,
-				expressions.back(),
-				operators.back(),
+				ast, parent, expressions.back(), operators.back(),
 				std::make_shared<by::ast::ASTNoneArithmeticExpression>(
-					ast_ptr->nodes[0]));
+					ast_ptr->nodes[0], parent));
 			operators.back() = bin_operator;
 		}
 		else {
 			operators.emplace_back(ast_ptr->nodes[1]->token);
 			expressions.emplace_back(
 				std::make_shared<by::ast::ASTNoneArithmeticExpression>(
-					ast_ptr->nodes[0]));
+					ast_ptr->nodes[0], parent));
 		}
 		ast_ptr = ast_ptr->nodes[2];
 	}
@@ -116,23 +122,21 @@ create_expression(const std::shared_ptr<peg::Ast>& ast)
 	if (first_class_operator.find(operators.back()) !=
 		first_class_operator.end()) {
 		expressions.back() = std::make_shared<ASTArithmeticExpression>(
-			ast,
-			expressions.back(),
-			operators.back(),
+			ast, parent, expressions.back(), operators.back(),
 			std::make_shared<by::ast::ASTNoneArithmeticExpression>(
-				ast_ptr->nodes[0]));
+				ast_ptr->nodes[0], parent));
 	}
 	else {
 		expressions.emplace_back(
 			std::make_shared<by::ast::ASTNoneArithmeticExpression>(
-				ast_ptr->nodes[0]));
+				ast_ptr->nodes[0], parent));
 	}
 
 	for (size_t i = 0; i < operators.size(); ++i) {
 		if (second_class_operator.find(operators[i]) !=
 			second_class_operator.end()) {
 			expressions[i] = std::make_shared<ASTArithmeticExpression>(
-				ast, expressions[i], operators[i], expressions[i + 1]);
+				ast, parent, expressions[i], operators[i], expressions[i + 1]);
 			operators.erase(operators.begin() + i);
 			expressions.erase(expressions.begin() + i + 1);
 			i--;
@@ -143,7 +147,7 @@ create_expression(const std::shared_ptr<peg::Ast>& ast)
 		if (third_class_operator.find(operators[i]) !=
 			third_class_operator.end()) {
 			expressions[i] = std::make_shared<ASTArithmeticExpression>(
-				ast, expressions[i], operators[i], expressions[i + 1]);
+				ast, parent, expressions[i], operators[i], expressions[i + 1]);
 			operators.erase(operators.begin() + i);
 			expressions.erase(expressions.begin() + i + 1);
 			i--;

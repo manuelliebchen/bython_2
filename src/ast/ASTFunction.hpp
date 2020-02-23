@@ -24,8 +24,14 @@
 namespace by::ast {
 
 class ASTFunction : public ASTBase {
+  protected:
+	std::string name;
+	std::vector<std::shared_ptr<by::ast::ASTVariableDeclaration>> parameters;
+	std::shared_ptr<by::type::TypeName> returntype;
+	std::shared_ptr<by::ast::ASTBlockExpression> blockexpression;
+
   public:
-	ASTFunction(const std::shared_ptr<peg::Ast>&);
+	ASTFunction(const std::shared_ptr<peg::Ast>&, ASTBlockExpression*);
 
 	std::string get_name() const;
 	void get_dependencies(std::unordered_set<std::string>& functions,
@@ -33,13 +39,7 @@ class ASTFunction : public ASTBase {
 
 	void build_ir(std::unique_ptr<by::bc::BuildContext>&) const;
 
-	type::FunctionType get_type() const;
-
-  private:
-	std::string name;
-	std::vector<std::shared_ptr<by::ast::ASTVariableDeclaration>> parameters;
-	std::shared_ptr<by::type::TypeName> returntype;
-	std::shared_ptr<by::ast::ASTBlockExpression> blockexpression;
+	type::FunctionType get_function_type() const;
 
 	friend std::ostream& operator<<(std::ostream&, const ASTFunction&);
 };

@@ -12,7 +12,7 @@
 
 namespace by::type {
 
-TypeName::TypeName() : name("Void"), subtypes()
+TypeName::TypeName() : name("None"), subtypes()
 {
 }
 
@@ -26,13 +26,12 @@ TypeName::TypeName(const std::shared_ptr<peg::Ast>& ast)
 	name = util::to_string(ast->nodes[0]);
 	if (ast->nodes.size() > 1) {
 		for (size_t i = 1; i < ast->nodes.size(); ++i) {
-			subtypes.push_back(std::make_shared<TypeName>(ast->nodes[i]));
+			subtypes.push_back(TypeName(ast->nodes[i]));
 		}
 	}
 }
 
-TypeName::TypeName(std::string name,
-				   std::vector<std::shared_ptr<TypeName>> subtypes)
+TypeName::TypeName(std::string name, std::vector<TypeName> subtypes)
 	: name(std::move(name)), subtypes(std::move(subtypes))
 {
 }
@@ -45,16 +44,22 @@ TypeName::TypeName(std::string name) : name(std::move(name)), subtypes()
 TypeName::TypeName(TypeName const& type) : name(type.name)
 {
 	for (const auto& subtype : type.subtypes) {
-		subtypes.push_back(std::make_shared<TypeName>(*subtype));
+		subtypes.push_back(TypeName(subtype));
 	}
 }
 
-const TypeName& TypeName::operator=(TypeName const& type)
+TypeName TypeName::operator=(TypeName type)
 {
 	name = type.name;
 	for (const auto& subtype : type.subtypes) {
-		subtypes.push_back(std::make_shared<TypeName>(*subtype));
+		subtypes.push_back(TypeName(subtype));
 	}
+	return *this;
+}
+
+/// TODO
+auto TypeName::deduct_type(TypeName) const -> TypeName
+{
 	return *this;
 }
 
@@ -103,13 +108,18 @@ bool TypeName::operator==(const TypeName& rhs) const
 	return equal;
 }
 
+TypeName::operator bool() const
+{
+	return name != "None";
+}
+
 std::ostream& operator<<(std::ostream& os, const TypeName& type)
 {
 	os << type.name;
 	if (!type.subtypes.empty()) {
 		os << "[";
 		for (auto& subtype : type.subtypes) {
-			os << *subtype << ", ";
+			os << subtype << ", ";
 		}
 		os << "]";
 	}
@@ -121,9 +131,9 @@ std::string to_string(TypeName const& val)
 	std::string str = val.name;
 	if (!val.subtypes.empty()) {
 		str += "[";
-		str += type::to_string(*val.subtypes.front());
+		str += type::to_string(val.subtypes.front());
 		for (size_t i = 1; i < val.subtypes.size(); ++i) {
-			str += "," + to_string(*val.subtypes[i]);
+			str += "," + to_string(val.subtypes[i]);
 		}
 		str += "]";
 	}

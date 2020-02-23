@@ -18,6 +18,7 @@ namespace by::ast {
 class ASTArithmeticExpression : public ASTExpression {
   public:
 	ASTArithmeticExpression(const std::shared_ptr<peg::Ast>&,
+							ASTBlockExpression*,
 							std::shared_ptr<ASTExpression>,
 							std::string,
 							std::shared_ptr<ASTExpression>);

@@ -2,7 +2,7 @@
  * ASTIfExpression.hpp
  *
  *  Created on: Aug 6, 2019
- *      Author: jemand
+ *      Author: Manuel Liebchen
  */
 
 #ifndef SRC_AST_ASTIFEXPRESSION_HPP_
@@ -18,7 +18,7 @@ namespace by::ast {
 
 class ASTIfExpression : public ASTExpression {
   public:
-	ASTIfExpression(const std::shared_ptr<peg::Ast>&);
+	ASTIfExpression(const std::shared_ptr<peg::Ast>&, ASTBlockExpression*);
 
 	llvm::Value* build_ir(std::unique_ptr<bc::BuildContext>&) const;
 
@@ -26,7 +26,7 @@ class ASTIfExpression : public ASTExpression {
 						  std::unordered_set<std::string>& types) const;
 
   private:
-	std::shared_ptr<ASTExpression> ruling;
+	std::shared_ptr<ASTExpression> condition;
 	std::shared_ptr<ASTBlockExpression> block;
 	std::shared_ptr<ASTExpression> alternativ;
 
@@ -35,7 +35,7 @@ class ASTIfExpression : public ASTExpression {
 
 inline std::ostream& operator<<(std::ostream& os, const ASTIfExpression& ifexp)
 {
-	os << "if " << *ifexp.ruling << " " << *ifexp.block;
+	os << "if " << *ifexp.condition << " " << *ifexp.block;
 	if (ifexp.alternativ != nullptr) {
 		os << *ifexp.alternativ;
 	}

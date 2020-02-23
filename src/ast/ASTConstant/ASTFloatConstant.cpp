@@ -9,8 +9,9 @@
 
 namespace by::ast {
 
-ASTFloatConstant::ASTFloatConstant(const std::shared_ptr<peg::Ast>& ast)
-	: ASTConstant(ast)
+ASTFloatConstant::ASTFloatConstant(const std::shared_ptr<peg::Ast>& ast,
+								   ASTBlockExpression* parent)
+	: ASTConstant(ast, parent)
 {
 	if (ast->original_name != "FloatConstant") {
 		throw bad_ast_exeption(
@@ -19,10 +20,11 @@ ASTFloatConstant::ASTFloatConstant(const std::shared_ptr<peg::Ast>& ast)
 				.c_str());
 	}
 	value = std::stof(ast->token);
+	type = by::type::TypeName("Float");
 }
 
-llvm::Value*
-ASTFloatConstant::build_ir(std::unique_ptr<bc::BuildContext>& bc) const
+auto ASTFloatConstant::build_ir(std::unique_ptr<bc::BuildContext>& bc) const
+	-> llvm::Value*
 {
 	return llvm::ConstantFP::get(bc->context, llvm::APFloat(value));
 }

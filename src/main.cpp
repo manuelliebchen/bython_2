@@ -41,14 +41,12 @@ int main(int argc, char* argv[])
 
 		std::cerr << "Constructing AST!\n";
 		std::shared_ptr<by::ast::ASTRoot> root =
-			std::make_shared<by::ast::ASTRoot>(basic);
+			std::make_shared<by::ast::ASTRoot>(basic, nullptr);
 		std::cerr << "Success!\n";
 
 		std::cerr << "Generate compiling Order: ";
 		std::vector<std::string> order = by::util::compiling_order(root);
 		std::cerr << "Success!\n";
-
-		by::type::variable_map types;
 
 		std::cerr << "Compiling:\n";
 		auto build_context = std::make_unique<by::bc::BuildContext>();

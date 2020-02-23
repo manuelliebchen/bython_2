@@ -7,10 +7,13 @@
 
 #include "ASTBlockExpression.hpp"
 
+#include "../ASTVariableDeclaration.hpp"
+
 namespace by::ast {
 
-ASTBlockExpression::ASTBlockExpression(const std::shared_ptr<peg::Ast>& ast)
-	: ASTExpression(ast)
+ASTBlockExpression::ASTBlockExpression(const std::shared_ptr<peg::Ast>& ast,
+									   ASTBlockExpression* parent)
+	: ASTExpression(ast, parent)
 {
 	if (ast->original_name != "BlockExpression") {
 		throw bad_ast_exeption(
@@ -19,8 +22,53 @@ ASTBlockExpression::ASTBlockExpression(const std::shared_ptr<peg::Ast>& ast)
 				.c_str());
 	}
 	for (const std::shared_ptr<peg::Ast>& n : ast->nodes) {
-		expressions.push_back(create_expression(n));
+		expressions.push_back(create_expression(n, this));
 	}
+}
+
+ASTBlockExpression::ASTBlockExpression(
+	const std::vector<std::shared_ptr<by::ast::ASTVariableDeclaration>>&
+		preregistered_variables,
+	const std::shared_ptr<peg::Ast>& ast,
+	ASTBlockExpression* parent)
+	: ASTExpression(ast, parent)
+{
+	if (ast->original_name != "BlockExpression") {
+		throw bad_ast_exeption(
+			ast,
+			(std::string("BlockExpression but was ") + ast->original_name)
+				.c_str());
+	}
+	for (const auto& variable : preregistered_variables) {
+		register_variable(variable->get_name(), variable->get_type());
+	}
+	for (const std::shared_ptr<peg::Ast>& n : ast->nodes) {
+		expressions.push_back(create_expression(n, this));
+	}
+}
+
+auto ASTBlockExpression::find_variable_type(const std::string& name) const
+	-> by::type::TypeName
+{
+	auto iterator = known_variables.find(name);
+	if (iterator != known_variables.end()) {
+		return iterator->second;
+	}
+	if (parent != nullptr) {
+		return parent->find_variable_type(name);
+	}
+	return by::type::TypeName();
+}
+
+auto ASTBlockExpression::register_variable(const std::string& name,
+										   const by::type::TypeName& type)
+	-> bool
+{
+	if (!find_variable_type(name)) {
+		known_variables.emplace(name, type);
+		return true;
+	}
+	return false;
 }
 
 void ASTBlockExpression::get_dependencies(identifier_set& functions,
@@ -31,8 +79,8 @@ void ASTBlockExpression::get_dependencies(identifier_set& functions,
 	}
 }
 
-llvm::Value*
-ASTBlockExpression::build_ir(std::unique_ptr<bc::BuildContext>& bc) const
+auto ASTBlockExpression::build_ir(std::unique_ptr<bc::BuildContext>& bc) const
+	-> llvm::Value*
 {
 	bc->variables.emplace_back(std::unordered_map<std::string, llvm::Value*>());
 

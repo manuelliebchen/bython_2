@@ -11,8 +11,9 @@
 
 namespace by::ast {
 
-ASTLetStatement::ASTLetStatement(const std::shared_ptr<peg::Ast>& ast)
-	: ASTExpression(ast)
+ASTLetStatement::ASTLetStatement(const std::shared_ptr<peg::Ast>& ast,
+								 ASTBlockExpression* parent)
+	: ASTExpression(ast, parent)
 {
 	if (ast->original_name != "LetStatement") {
 		throw bad_ast_exeption(
@@ -21,11 +22,11 @@ ASTLetStatement::ASTLetStatement(const std::shared_ptr<peg::Ast>& ast)
 				.c_str());
 	}
 	var = util::to_string(ast->nodes[0]);
-	value = create_expression(ast->nodes[1]);
+	value = create_expression(ast->nodes[1], parent);
 }
 
-llvm::Value*
-ASTLetStatement::build_ir(std::unique_ptr<bc::BuildContext>& bc) const
+auto ASTLetStatement::build_ir(std::unique_ptr<bc::BuildContext>& bc) const
+	-> llvm::Value*
 {
 	llvm::Value* rhs_llvm = value->build_ir(bc);
 	llvm::Type* rhs_type = rhs_llvm->getType();

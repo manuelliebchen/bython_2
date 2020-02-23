@@ -14,12 +14,13 @@
 
 namespace by::ast {
 
-ASTConstant::ASTConstant(const std::shared_ptr<peg::Ast>& ast)
-	: ASTExpression(ast)
+ASTConstant::ASTConstant(const std::shared_ptr<peg::Ast>& ast,
+						 ASTBlockExpression* parent)
+	: ASTExpression(ast, parent)
 {
 }
 
-std::ostream& operator<<(std::ostream& os, const ASTConstant& constant)
+auto operator<<(std::ostream& os, const ASTConstant& constant) -> std::ostream&
 {
 	if (const auto* dyn = dynamic_cast<const ASTIntegerConstant*>(&constant)) {
 		os << *dyn;

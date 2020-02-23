@@ -19,11 +19,18 @@
 
 namespace by::ast {
 
+class ASTBlockExpression;
+
 class ASTExpression : public ASTBase {
+  protected:
+	by::type::TypeName type;
+
   public:
-	ASTExpression(const std::shared_ptr<peg::Ast>&);
+	ASTExpression(const std::shared_ptr<peg::Ast>&, ASTBlockExpression*);
 
 	virtual llvm::Value* build_ir(std::unique_ptr<bc::BuildContext>&) const = 0;
+
+	virtual by::type::TypeName get_type() const;
 
 	friend std::ostream& operator<<(std::ostream&,
 									const by::ast::ASTExpression&);
@@ -32,7 +39,7 @@ class ASTExpression : public ASTBase {
 std::ostream& operator<<(std::ostream&, const by::ast::ASTExpression&);
 
 std::shared_ptr<by::ast::ASTExpression>
-create_expression(const std::shared_ptr<peg::Ast>&);
+create_expression(const std::shared_ptr<peg::Ast>&, ASTBlockExpression*);
 } // namespace by::ast
 
 #endif /* SRC_AST_ASTEXPRESSION_HPP_ */

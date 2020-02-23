@@ -9,10 +9,12 @@
 
 namespace by::ast {
 
-ASTRoot::ASTRoot(const std::shared_ptr<peg::Ast>& ast) : ASTBase(ast)
+ASTRoot::ASTRoot(const std::shared_ptr<peg::Ast>& ast,
+				 ASTBlockExpression* parent)
+	: ASTBase(ast, parent)
 {
 	for (const auto& node : ast->nodes) {
-		functions.push_back(std::make_shared<ASTFunction>(node));
+		functions.push_back(std::make_shared<ASTFunction>(node, parent));
 	}
 }
 
@@ -24,13 +26,13 @@ void ASTRoot::get_dependencies(std::unordered_set<std::string>& functions,
 	}
 }
 
-const std::vector<std::shared_ptr<by::ast::ASTFunction>>&
-ASTRoot::get_functions()
+auto ASTRoot::get_functions()
+	-> const std::vector<std::shared_ptr<by::ast::ASTFunction>>&
 {
 	return functions;
 }
 
-std::ostream& operator<<(std::ostream& os, const ASTRoot& root)
+auto operator<<(std::ostream& os, const ASTRoot& root) -> std::ostream&
 {
 	for (auto& function : root.functions) {
 		os << *function << std::endl;

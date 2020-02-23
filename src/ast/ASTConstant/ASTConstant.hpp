@@ -14,7 +14,7 @@ namespace by::ast {
 
 class ASTConstant : public ASTExpression {
   public:
-	ASTConstant(const std::shared_ptr<peg::Ast>&);
+	ASTConstant(const std::shared_ptr<peg::Ast>&, ASTBlockExpression*);
 
   private:
 	friend std::ostream& operator<<(std::ostream&, const ASTConstant&);

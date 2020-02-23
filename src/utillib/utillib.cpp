@@ -18,7 +18,7 @@
 
 namespace by::util {
 
-type::function_map get_buildin_functions()
+auto get_buildin_functions() -> type::function_map
 {
 	type::function_map buildins;
 	buildins.insert({{"println_int"}, {{"Void"}, {{"Int"}}}});
@@ -45,8 +45,8 @@ type::function_map get_buildin_functions()
 	return buildins;
 };
 
-std::vector<std::string>
-compiling_order(const std::shared_ptr<by::ast::ASTRoot>& root)
+auto compiling_order(const std::shared_ptr<by::ast::ASTRoot>& root)
+	-> std::vector<std::string>
 {
 	std::vector<std::string> order;
 	std::unordered_map<std::string, std::unordered_set<std::string>> functions;
@@ -96,7 +96,7 @@ compiling_order(const std::shared_ptr<by::ast::ASTRoot>& root)
 	return order;
 };
 
-std::string to_string(const std::shared_ptr<peg::Ast>& ast)
+auto to_string(const std::shared_ptr<peg::Ast>& ast) -> std::string
 {
 	if (ast->original_name == "Identifier" && ast->is_token) {
 		return ast->token;
@@ -104,7 +104,7 @@ std::string to_string(const std::shared_ptr<peg::Ast>& ast)
 	throw by::ast::bad_ast_exeption(ast, "Identifier");
 };
 
-std::string read_file(const std::string& filepath)
+auto read_file(const std::string& filepath) -> std::string
 {
 	std::ifstream ifs;
 	std::cerr << "\nOpening ifstream: " << filepath << " ";

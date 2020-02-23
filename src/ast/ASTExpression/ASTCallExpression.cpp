@@ -15,8 +15,9 @@
 
 namespace by::ast {
 
-ASTCallExpression::ASTCallExpression(const std::shared_ptr<peg::Ast>& ast)
-	: ASTExpression(ast)
+ASTCallExpression::ASTCallExpression(const std::shared_ptr<peg::Ast>& ast,
+									 ASTBlockExpression* parent)
+	: ASTExpression(ast, parent)
 {
 	if (ast->original_name != "CallExpression") {
 		throw bad_ast_exeption(
@@ -26,16 +27,16 @@ ASTCallExpression::ASTCallExpression(const std::shared_ptr<peg::Ast>& ast)
 	}
 	name = util::to_string(ast->nodes[0]);
 	for (size_t i = 1; i < ast->nodes.size(); ++i) {
-		arguments.push_back(create_expression(ast->nodes[i]));
+		arguments.push_back(create_expression(ast->nodes[i], parent));
 	}
 }
 
-llvm::Value*
-ASTCallExpression::build_ir(std::unique_ptr<bc::BuildContext>& bc) const
+auto ASTCallExpression::build_ir(std::unique_ptr<bc::BuildContext>& bc) const
+	-> llvm::Value*
 {
 	llvm::FunctionType* type =
 		bc->known_functions.at(name).get_llvm_type(bc->context);
-	llvm::Constant* function_callee =
+	llvm::FunctionCallee function_callee =
 		bc->module.getOrInsertFunction(name, type);
 
 	std::vector<llvm::Value*> llvm_args;
@@ -43,7 +44,7 @@ ASTCallExpression::build_ir(std::unique_ptr<bc::BuildContext>& bc) const
 		llvm_args.emplace_back(arg->build_ir(bc));
 	}
 
-	return bc->builder.CreateCall(type, function_callee, llvm_args);
+	return bc->builder.CreateCall(function_callee, llvm_args);
 }
 
 void ASTCallExpression::get_dependencies(

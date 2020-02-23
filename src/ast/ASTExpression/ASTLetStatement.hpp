@@ -18,7 +18,7 @@ namespace by::ast {
 
 class ASTLetStatement : public ASTExpression {
   public:
-	ASTLetStatement(const std::shared_ptr<peg::Ast>&);
+	ASTLetStatement(const std::shared_ptr<peg::Ast>&, ASTBlockExpression*);
 
 	llvm::Value* build_ir(std::unique_ptr<bc::BuildContext>&) const;
 

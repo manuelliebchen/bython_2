@@ -9,8 +9,9 @@
 
 namespace by::ast {
 
-ASTStringConstant::ASTStringConstant(const std::shared_ptr<peg::Ast>& ast)
-	: ASTConstant(ast)
+ASTStringConstant::ASTStringConstant(const std::shared_ptr<peg::Ast>& ast,
+									 ASTBlockExpression* parent)
+	: ASTConstant(ast, parent)
 {
 	if (ast->original_name != "StringConstant") {
 		throw bad_ast_exeption(
@@ -22,8 +23,8 @@ ASTStringConstant::ASTStringConstant(const std::shared_ptr<peg::Ast>& ast)
 	value = ast->token;
 }
 
-llvm::Value*
-ASTStringConstant::build_ir(std::unique_ptr<bc::BuildContext>& bc) const
+auto ASTStringConstant::build_ir(std::unique_ptr<bc::BuildContext>& bc) const
+	-> llvm::Value*
 {
 	const auto gname = ".str" + value;
 
