@@ -64,8 +64,13 @@ ASTNoneArithmeticExpression::ASTNoneArithmeticExpression(
               expression->original_name)
                  .c_str());
   }
+}
 
-  type = rhs->get_type();
+auto ASTNoneArithmeticExpression::determine_type(
+    const type::function_map &known_functions) -> by::type::TypeName {
+
+  type = rhs->determine_type(known_functions);
+  return type;
 }
 
 auto ASTNoneArithmeticExpression::build_ir(

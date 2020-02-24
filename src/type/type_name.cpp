@@ -48,7 +48,9 @@ TypeName TypeName::operator=(TypeName type) {
 }
 
 /// TODO
-auto TypeName::deduct_type(TypeName) const -> TypeName { return *this; }
+auto TypeName::deduct_type(TypeName) const -> TypeName {
+  return TypeName(name);
+}
 
 llvm::Type *TypeName::get_llvm_type(llvm::LLVMContext &context) const {
   if (name == "Int") {

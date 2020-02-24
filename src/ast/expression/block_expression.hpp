@@ -30,6 +30,8 @@ public:
       const std::vector<std::shared_ptr<by::ast::ASTVariableDeclaration>> &,
       const std::shared_ptr<peg::Ast> &ast, ASTBlockExpression *);
 
+  by::type::TypeName determine_type(const type::function_map &);
+
   llvm::Value *build_ir(std::unique_ptr<bc::BuildContext> &) const;
 
   void get_dependencies(std::unordered_set<std::string> &functions,

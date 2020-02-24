@@ -23,6 +23,13 @@ ASTLetStatement::ASTLetStatement(const std::shared_ptr<peg::Ast> &ast,
   value = create_expression(ast->nodes[1], parent);
 }
 
+auto ASTLetStatement::determine_type(const type::function_map &known_functions)
+    -> by::type::TypeName {
+
+  type = value->determine_type(known_functions);
+  return type;
+}
+
 auto ASTLetStatement::build_ir(std::unique_ptr<bc::BuildContext> &bc) const
     -> llvm::Value * {
   llvm::Value *rhs_llvm = value->build_ir(bc);

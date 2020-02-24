@@ -24,8 +24,12 @@ ASTVariableExpression::ASTVariableExpression(
   if (ast->nodes.size() > 1) {
     next = std::make_shared<ASTVariableExpression>(ast->nodes[1], parent);
   }
+}
 
+auto ASTVariableExpression::determine_type(
+    const type::function_map &known_functions) -> by::type::TypeName {
   type = parent->find_variable_type(name);
+  return type;
 }
 
 auto ASTVariableExpression::build_ir(

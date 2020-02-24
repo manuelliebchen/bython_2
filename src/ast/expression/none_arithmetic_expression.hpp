@@ -17,6 +17,8 @@ public:
   ASTNoneArithmeticExpression(const std::shared_ptr<peg::Ast> &,
                               ASTBlockExpression *);
 
+  by::type::TypeName determine_type(const type::function_map &);
+
   llvm::Value *build_ir(std::unique_ptr<bc::BuildContext> &) const;
 
   void get_dependencies(std::unordered_set<std::string> &functions,

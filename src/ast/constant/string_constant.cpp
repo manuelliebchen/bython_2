@@ -21,6 +21,12 @@ ASTStringConstant::ASTStringConstant(const std::shared_ptr<peg::Ast> &ast,
   value = ast->token;
 }
 
+auto ASTStringConstant::determine_type(
+    const type::function_map &known_functions) -> by::type::TypeName {
+  type = type::TypeName("String");
+  return type;
+}
+
 auto ASTStringConstant::build_ir(std::unique_ptr<bc::BuildContext> &bc) const
     -> llvm::Value * {
   const auto gname = ".str" + value;

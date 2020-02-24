@@ -28,6 +28,8 @@ protected:
 public:
   ASTExpression(const std::shared_ptr<peg::Ast> &, ASTBlockExpression *);
 
+  virtual by::type::TypeName determine_type(const type::function_map &) = 0;
+
   virtual llvm::Value *build_ir(std::unique_ptr<bc::BuildContext> &) const = 0;
 
   virtual by::type::TypeName get_type() const;

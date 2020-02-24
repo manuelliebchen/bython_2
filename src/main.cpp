@@ -4,11 +4,11 @@
 #include <llvm/Support/raw_os_ostream.h>
 #include <memory>
 
-#include "ast/root.hpp"
 #include "bc/build_context.hpp"
 #include "cxxopts.hpp"
 #include "peglib.h"
 #include "utillib.hpp"
+#include <ast/root.hpp>
 
 int main(int argc, char *argv[]) {
   try {
@@ -45,19 +45,27 @@ int main(int argc, char *argv[]) {
 
     std::cerr << "Generate compiling Order: ";
     std::vector<std::string> order = by::util::compiling_order(root);
+    root->reorder_functions(order);
+    std::cerr << "Success!\n";
+
+    std::cerr << "Determiining return types: ";
+    auto build_context = std::make_unique<by::bc::BuildContext>();
+    build_context->known_functions = by::util::get_buildin_functions();
+
+    for (const auto &func : root->get_functions()) {
+      build_context->known_functions.emplace(func->get_name(),
+                                             func->get_function_type());
+    }
+
+    const auto &functions = root->get_functions();
+    for (const auto &func : functions) {
+      func->determine_type(build_context->known_functions);
+    }
     std::cerr << "Success!\n";
 
     std::cerr << "Compiling:\n";
-    auto build_context = std::make_unique<by::bc::BuildContext>();
-    build_context->known_functions = by::util::get_buildin_functions();
-    const auto &functions = root->get_functions();
-    for (const std::string &func_name : order) {
-      auto func =
-          std::find_if(functions.begin(), functions.end(),
-                       [&](std::shared_ptr<by::ast::ASTFunction> const &f) {
-                         return f->get_name() == func_name;
-                       });
-      (*func)->build_ir(build_context);
+    for (const auto &func : functions) {
+      func->build_ir(build_context);
     }
     std::cerr << "Success!\n";
 

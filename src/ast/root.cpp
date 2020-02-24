@@ -24,6 +24,20 @@ void ASTRoot::get_dependencies(std::unordered_set<std::string> &functions,
   }
 }
 
+void ASTRoot::reorder_functions(const std::vector<std::string> &order) {
+
+  std::vector<std::shared_ptr<by::ast::ASTFunction>> new_functions;
+  for (const std::string &func_name : order) {
+    auto func =
+        std::find_if(functions.begin(), functions.end(),
+                     [&](std::shared_ptr<by::ast::ASTFunction> const &f) {
+                       return f->get_name() == func_name;
+                     });
+    new_functions.push_back((*func));
+  }
+  functions = new_functions;
+}
+
 auto ASTRoot::get_functions()
     -> const std::vector<std::shared_ptr<by::ast::ASTFunction>> & {
   return functions;

@@ -62,4 +62,10 @@ inline std::ostream &operator<<(std::ostream &os, const ASTBase &base) {
 
 } /* namespace by::ast */
 
+#define CHECK                                                                  \
+  {                                                                            \
+    std::cerr << "Success: " << __FILE__ << ", line "                          \
+              << std::to_string(__LINE__) << std::endl;                        \
+  }
+
 #endif /* SRC_AST_BASE_HPP_ */

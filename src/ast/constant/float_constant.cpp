@@ -18,7 +18,12 @@ ASTFloatConstant::ASTFloatConstant(const std::shared_ptr<peg::Ast> &ast,
         (std::string("FloatConstant but was ") + ast->original_name).c_str());
   }
   value = std::stof(ast->token);
+}
+
+auto ASTFloatConstant::determine_type(const type::function_map &known_functions)
+    -> by::type::TypeName {
   type = by::type::TypeName("Float");
+  return type;
 }
 
 auto ASTFloatConstant::build_ir(std::unique_ptr<bc::BuildContext> &bc) const

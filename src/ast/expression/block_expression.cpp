@@ -42,6 +42,13 @@ ASTBlockExpression::ASTBlockExpression(
   }
 }
 
+auto ASTBlockExpression::determine_type(
+    const type::function_map &known_functions) -> by::type::TypeName {
+
+  type = expressions.back()->determine_type(known_functions);
+  return type;
+}
+
 auto ASTBlockExpression::find_variable_type(const std::string &name) const
     -> by::type::TypeName {
   auto iterator = known_variables.find(name);

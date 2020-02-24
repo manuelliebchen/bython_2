@@ -20,6 +20,12 @@ ASTIntegerConstant::ASTIntegerConstant(const std::shared_ptr<peg::Ast> &ast,
   value = std::stoi(ast->token);
 }
 
+auto ASTIntegerConstant::determine_type(
+    const type::function_map &known_functions) -> by::type::TypeName {
+  type = type::TypeName("Int");
+  return type;
+}
+
 auto ASTIntegerConstant::build_ir(std::unique_ptr<bc::BuildContext> &bc) const
     -> llvm::Value * {
   auto llvm_int_type =

@@ -20,9 +20,9 @@ func isprime_ = n:Int, k:Int -> Int {
 
 func main = args:Int -> Int {
     if isprime(4001) ==0 {
-    println_int(0)
+        println_int(0)
     }
     else {
-    println_int(1)
+        println_int(1)
     };
 }

@@ -21,6 +21,8 @@ class ASTRoot : public ASTBase {
 public:
   ASTRoot(const std::shared_ptr<peg::Ast> &, ASTBlockExpression *);
 
+  void reorder_functions(const std::vector<std::string> &order);
+
   const std::vector<std::shared_ptr<by::ast::ASTFunction>> &get_functions();
 
   void get_dependencies(std::unordered_set<std::string> &functions,

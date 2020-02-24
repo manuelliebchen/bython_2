@@ -16,8 +16,13 @@ ASTArithmeticExpression::ASTArithmeticExpression(
     std::shared_ptr<ASTExpression> lhs, std::string BinaryOperator,
     std::shared_ptr<ASTExpression> rhs)
     : ASTExpression(ast, parent), lhs(std::move(lhs)),
-      BinaryOperator(std::move(BinaryOperator)), rhs(std::move(rhs)) {
-  type = this->lhs->get_type().deduct_type(this->rhs->get_type());
+      BinaryOperator(std::move(BinaryOperator)), rhs(std::move(rhs)) {}
+
+auto ASTArithmeticExpression::determine_type(
+    const type::function_map &known_functions) -> by::type::TypeName {
+  type = this->lhs->determine_type(known_functions)
+             .deduct_type(this->rhs->determine_type(known_functions));
+  return type;
 }
 
 auto ASTArithmeticExpression::build_ir(

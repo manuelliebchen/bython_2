@@ -29,12 +29,19 @@ ASTCallExpression::ASTCallExpression(const std::shared_ptr<peg::Ast> &ast,
   }
 }
 
+auto ASTCallExpression::determine_type(
+    const type::function_map &known_functions) -> by::type::TypeName {
+  type = known_functions.at(name).returntype;
+  return type;
+}
+
 auto ASTCallExpression::build_ir(std::unique_ptr<bc::BuildContext> &bc) const
     -> llvm::Value * {
-  llvm::FunctionType *type =
-      bc->known_functions.at(name).get_llvm_type(bc->context);
+
+  type::FunctionType functiontype = bc->known_functions.at(name);
+  llvm::FunctionType *llvm_functype = functiontype.get_llvm_type(bc->context);
   llvm::FunctionCallee function_callee =
-      bc->module.getOrInsertFunction(name, type);
+      bc->module.getOrInsertFunction(name, llvm_functype);
 
   std::vector<llvm::Value *> llvm_args;
   for (const auto &arg : arguments) {

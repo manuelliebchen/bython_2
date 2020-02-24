@@ -26,7 +26,7 @@ ASTFunction::ASTFunction(const std::shared_ptr<peg::Ast> &ast,
     returntype = std::make_shared<type::TypeName>(astreturntype);
     --varscount;
   } else {
-    returntype = std::make_shared<type::TypeName>("Auto");
+    returntype = std::make_shared<type::TypeName>();
   }
   for (size_t i = 0; i < varscount; ++i) {
     parameters.push_back(
@@ -34,6 +34,10 @@ ASTFunction::ASTFunction(const std::shared_ptr<peg::Ast> &ast,
   }
   blockexpression = std::make_shared<ASTBlockExpression>(
       parameters, ast->nodes.back(), parent);
+}
+
+void ASTFunction::determine_type(const type::function_map &known_functions) {
+  blockexpression->determine_type(known_functions);
 }
 
 void ASTFunction::get_dependencies(
@@ -66,9 +70,10 @@ void ASTFunction::build_ir(std::unique_ptr<by::bc::BuildContext> &bc) const {
   bc->variables.emplace_back(std::unordered_map<std::string, llvm::Value *>());
   unsigned idx = 0;
   for (auto &arg : function->args()) {
-    arg.setName(parameters[++idx]->get_name());
-    bc->variables.back().emplace(std::make_pair<std::string, llvm::Value *>(
-        std::string(parameters[++idx]->get_name()), &arg));
+    std::string name = parameters[idx++]->get_name();
+    arg.setName(name);
+    bc->variables.back().emplace(
+        std::make_pair<std::string, llvm::Value *>(std::string(name), &arg));
   }
 
   if (llvm::Value *return_value = blockexpression->build_ir(bc);

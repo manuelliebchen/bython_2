@@ -33,19 +33,37 @@ ASTIfExpression::ASTIfExpression(const std::shared_ptr<peg::Ast> &ast,
   }
 }
 
+auto ASTIfExpression::determine_type(const type::function_map &known_functions)
+    -> by::type::TypeName {
+
+  type = block->determine_type(known_functions);
+  if (alternativ) {
+    type = type.deduct_type(alternativ->determine_type(known_functions));
+  }
+  return type;
+}
+
 auto ASTIfExpression::build_ir(std::unique_ptr<bc::BuildContext> &bc) const
     -> llvm::Value * {
+
   llvm::Value *condition_llvm = condition->build_ir(bc);
+
+  // TODO WTF?
   if (alternativ == nullptr) {
     return nullptr;
   }
+
   llvm::Function *the_function = bc->builder.GetInsertBlock()->getParent();
 
   llvm::BasicBlock *then_block = llvm::BasicBlock::Create(bc->context);
   llvm::BasicBlock *else_block = llvm::BasicBlock::Create(bc->context);
   llvm::BasicBlock *merge_block = llvm::BasicBlock::Create(bc->context);
 
+  // conditional brack
   bc->builder.CreateCondBr(condition_llvm, then_block, else_block);
+
+  // Then Block
+  the_function->getBasicBlockList().push_back(then_block);
   bc->builder.SetInsertPoint(then_block);
 
   llvm::Value *block_ir = block->build_ir(bc);
@@ -54,6 +72,7 @@ auto ASTIfExpression::build_ir(std::unique_ptr<bc::BuildContext> &bc) const
 
   then_block = bc->builder.GetInsertBlock();
 
+  // Else Block
   the_function->getBasicBlockList().push_back(else_block);
   bc->builder.SetInsertPoint(else_block);
 
@@ -66,9 +85,8 @@ auto ASTIfExpression::build_ir(std::unique_ptr<bc::BuildContext> &bc) const
   the_function->getBasicBlockList().push_back(merge_block);
   bc->builder.SetInsertPoint(merge_block);
 
-  // TODO: get type !
   llvm::PHINode *phi_node =
-      bc->builder.CreatePHI(block->get_type().get_llvm_type(bc->context), 2);
+      bc->builder.CreatePHI(type.get_llvm_type(bc->context), 2);
 
   phi_node->addIncoming(block_ir, then_block);
   phi_node->addIncoming(alternativ_ir, else_block);
