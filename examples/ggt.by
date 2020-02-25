@@ -7,5 +7,6 @@ func ggt = n: Int, k: Int -> Int {
 }
 
 func main = argc: Int -> Int {
-    ggt(42, 77)
+    println_int(ggt(42, 77));
+    0
 }

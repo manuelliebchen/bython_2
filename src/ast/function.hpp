@@ -33,7 +33,7 @@ protected:
 public:
   ASTFunction(const std::shared_ptr<peg::Ast> &, ASTBlockExpression *);
 
-  void determine_type(const type::function_map &);
+  void determine_type(type::function_map);
 
   std::string get_name() const;
   void get_dependencies(std::unordered_set<std::string> &functions,

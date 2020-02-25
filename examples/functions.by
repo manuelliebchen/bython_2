@@ -15,5 +15,6 @@ func timesFour = x: Int -> Int {
 }
 
 func main = argc: Int -> Int {
-    timesFour(5)
+    println_int(timesFour(5));
+    0
 }
