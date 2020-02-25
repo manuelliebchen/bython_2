@@ -37,6 +37,7 @@ ASTFunction::ASTFunction(const std::shared_ptr<peg::Ast> &ast,
 }
 
 void ASTFunction::determine_type(type::function_map known_functions) {
+  std::cerr << std::to_string(get_function_type()) << std::endl;
   known_functions.emplace(name, get_function_type());
   blockexpression->determine_type(known_functions);
 }

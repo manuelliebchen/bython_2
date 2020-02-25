@@ -25,8 +25,11 @@ FunctionType::get_llvm_type(llvm::LLVMContext &context) const {
   llvm::Type *llvm_returntype = returntype.get_llvm_type(context);
   return llvm::FunctionType::get(llvm_returntype, llvm_parameters, false);
 }
+} // namespace by::type
 
-std::string to_string(FunctionType const &func) {
+namespace std {
+
+std::string to_string(by::type::FunctionType const &func) {
   std::string str = to_string(func.returntype) + "(";
   if (!func.parameters.empty()) {
     str += to_string(func.parameters[0]);
@@ -37,4 +40,4 @@ std::string to_string(FunctionType const &func) {
   str += ")";
   return str;
 }
-} // namespace by::type
+} // namespace std

@@ -27,8 +27,9 @@ struct FunctionType {
 };
 
 using function_map = std::unordered_map<std::string, FunctionType>;
-
-std::string to_string(by::type::FunctionType const &);
 } // namespace by::type
+namespace std {
+std::string to_string(by::type::FunctionType const &);
+} // namespace std
 
 #endif /* SRC_AST_FUNCTIONTYPE_HPP_ */

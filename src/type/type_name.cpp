@@ -7,6 +7,7 @@
 #include "type_name.hpp"
 
 #include <llvm/IR/Constants.h>
+#include <string>
 
 #include "../utillib/utillib.hpp"
 
@@ -67,24 +68,28 @@ llvm::Type *TypeName::get_llvm_type(llvm::LLVMContext &context) const {
     return llvm::Type::getInt8PtrTy(context);
   } else if (name == "String") {
     return llvm::Type::getInt8PtrTy(context);
-  } else if (name == "*") {
+  } else if (name.back() == '*') {
     return llvm::Type::getInt8PtrTy(context);
+  } else if (name == "None") {
+    throw std::runtime_error("Could not determin type!");
   } else {
     throw std::runtime_error("Trying to convert invalid type: " + name);
   }
 }
 
 bool TypeName::operator==(const TypeName &rhs) const {
-  bool equal = true;
-  equal &= name == rhs.name;
-  equal &= subtypes.size() == rhs.subtypes.size();
-  if (!equal) {
+  if (name != rhs.name) {
+    return false;
+  }
+  if (subtypes.size() != rhs.subtypes.size()) {
     return false;
   }
   for (size_t i = 0; i < subtypes.size(); ++i) {
-    equal &= subtypes[i] == rhs.subtypes[i];
+    if (subtypes[i] != rhs.subtypes[i]) {
+      return false;
+    }
   }
-  return equal;
+  return true;
 }
 
 TypeName::operator bool() const { return name != "None"; }
