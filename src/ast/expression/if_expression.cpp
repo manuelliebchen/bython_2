@@ -70,9 +70,9 @@ auto ASTIfExpression::build_ir(std::unique_ptr<bc::BuildContext> &bc) const
   bc->builder.SetInsertPoint(then_block);
   llvm::Value *block_ir = block->build_ir(bc);
   bc->builder.CreateBr(merge_block);
-  then_block = bc->builder.GetInsertBlock();
+  llvm::BasicBlock *then_exit = bc->builder.GetInsertBlock();
 
-  // Generationg PHI
+  // Generationg PHI for conditional return value
   bc->builder.SetInsertPoint(merge_block);
   llvm::PHINode *phi_node = nullptr;
 
@@ -80,7 +80,7 @@ auto ASTIfExpression::build_ir(std::unique_ptr<bc::BuildContext> &bc) const
   if (*type) {
     phi_node = bc->builder.CreatePHI(type->get_llvm_type(bc->context), 2);
     if (block_ir != nullptr) {
-      phi_node->addIncoming(block_ir, then_block);
+      phi_node->addIncoming(block_ir, then_exit);
     }
   }
 
@@ -92,13 +92,13 @@ auto ASTIfExpression::build_ir(std::unique_ptr<bc::BuildContext> &bc) const
     bc->builder.SetInsertPoint(else_block);
     llvm::Value *alternativ_ir = alternativ->build_ir(bc);
     bc->builder.CreateBr(merge_block);
-    else_block = bc->builder.GetInsertBlock();
+    llvm::BasicBlock *else_exit = bc->builder.GetInsertBlock();
 
     bc->builder.SetInsertPoint(entry_block);
     bc->builder.CreateCondBr(condition_llvm, then_block, else_block);
 
     if (phi_node != nullptr && alternativ_ir != nullptr) {
-      phi_node->addIncoming(alternativ_ir, else_block);
+      phi_node->addIncoming(alternativ_ir, else_exit);
     }
   } else {
     bc->builder.SetInsertPoint(entry_block);

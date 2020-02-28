@@ -1,7 +1,0 @@
-func main = argc: Int -> Int {
-    if 1 == 2 {
-    1
-    } else {
-       2
-    }
-}

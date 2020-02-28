@@ -6,7 +6,7 @@ func ggt = n: Int, k: Int -> Int {
     }
 }
 
-func main = argc: Int -> Int {
-    println_int(ggt(42, 77));
+func main = argc: Int, argv: List[String] -> Int {
+    println_int(ggt(list_get(argv,0), list_get(argv,1)));
     0
 }

@@ -1,4 +1,4 @@
-func main = argv: Int -> Int {
+func main = argc: Int, argv: List[String] -> Int {
     println_str("Hello World!");
     0
 }

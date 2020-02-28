@@ -39,7 +39,7 @@ auto ASTVariableExpression::build_ir(
     if (const auto &vall = bc->variables[i].find(name);
         vall != bc->variables[i].end()) {
       bc->ast_stack.pop();
-      return vall->second;
+      return bc->builder.CreateLoad(vall->second);
     }
   }
   throw bc::compiling_error_exeption(ast, "Variable not found!");

@@ -18,6 +18,7 @@ namespace by::type {
 struct TypeName {
 
   std::string name;
+  bool generic = false;
   std::vector<TypeName> subtypes;
 
   TypeName();

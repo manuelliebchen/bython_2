@@ -1,29 +1,30 @@
-func isprime = n : Int -> Int {
+func isprime = n : Int -> Bool {
     if n > 1 {
         isprime_(n,2)
     } else {
-        0
+        false
     }
 }
 
-func isprime_ = n:Int, k:Int -> Int {
+func isprime_ = n:Int, k:Int -> Bool {
     if n != k {
         if n % k != 0 {
             isprime_(n,k+1)
         } else {
-            0
+            false
         }
     } else {
-        1
+        true
     }
 }
 
-func main = args:Int -> Int {
-    if isprime(4001) == 0 {
-        println_int(0);
+func main -> Int {
+	let a = 4001;
+    if isprime(a) {
+        println_str("The given number is a prime number.");
     }
     else {
-        println_int(1);
+        println_str("The given number is not a prime number.");
     };
     0
 }

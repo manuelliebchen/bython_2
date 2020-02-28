@@ -26,6 +26,10 @@ TypeName::TypeName(const std::shared_ptr<peg::Ast> &ast) {
         ast, (std::string("TypeName but was ") + ast->original_name).c_str());
   }
   name = util::to_string(ast->nodes[0]);
+  if (name.back() == '*') {
+    generic = true;
+    name = name.substr(0, name.length() - 1);
+  }
   if (ast->nodes.size() > 1) {
     for (size_t i = 1; i < ast->nodes.size(); ++i) {
       subtypes.push_back(TypeName(ast->nodes[i]));
@@ -34,11 +38,25 @@ TypeName::TypeName(const std::shared_ptr<peg::Ast> &ast) {
 }
 
 TypeName::TypeName(std::string name, std::vector<TypeName> subtypes)
-    : name(std::move(name)), subtypes(std::move(subtypes)) {}
+    : name(std::move(name)), subtypes(std::move(subtypes)) {
+  if (this->name.back() == '*') {
+    generic = true;
+    this->name = this->name.substr(0, name.length() - 1);
+  }
+}
 
-TypeName::TypeName(std::string name) : name(std::move(name)), subtypes() {}
+TypeName::TypeName(std::string name) : name(std::move(name)), subtypes() {
+  if (this->name == "") {
+    this->name = "None";
+  }
+  if (this->name.back() == '*') {
+    generic = true;
+    this->name = this->name.substr(0, this->name.length() - 1);
+  }
+}
 
-TypeName::TypeName(TypeName const &type) : name(type.name) {
+TypeName::TypeName(TypeName const &type)
+    : name(type.name), generic(type.generic) {
   for (const auto &subtype : type.subtypes) {
     subtypes.push_back(TypeName(subtype));
   }
@@ -46,6 +64,7 @@ TypeName::TypeName(TypeName const &type) : name(type.name) {
 
 TypeName TypeName::operator=(TypeName type) {
   name = type.name;
+  generic = type.generic;
   for (const auto &subtype : type.subtypes) {
     subtypes.push_back(TypeName(subtype));
   }
@@ -55,7 +74,7 @@ TypeName TypeName::operator=(TypeName type) {
 /// TODO
 auto TypeName::deduct_type(TypeName rhs_name) const -> TypeName {
   if (*this == rhs_name) {
-    return TypeName(name);
+    return TypeName(*this);
   }
   if ((name == "Int" || name == "Float") &&
       (rhs_name.name == "Int" || rhs_name.name == "Float")) {
@@ -67,20 +86,20 @@ auto TypeName::deduct_type(TypeName rhs_name) const -> TypeName {
 }
 
 llvm::Type *TypeName::get_llvm_type(llvm::LLVMContext &context) const {
-  if (name == "Int") {
+  if (generic) {
+    return llvm::Type::getInt32PtrTy(context);
+  } else if (name == "Int") {
     return llvm::Type::getInt32Ty(context);
   } else if (name == "Void") {
     return llvm::Type::getVoidTy(context);
   } else if (name == "Bool") {
-    return llvm::ConstantInt::getTrue(context)->getType();
+    return llvm::Type::getInt1Ty(context);
   } else if (name == "Float") {
     return llvm::Type::getFloatTy(context);
   } else if (name == "List") {
-    return llvm::Type::getInt8PtrTy(context);
+    return llvm::Type::getInt32PtrTy(context);
   } else if (name == "String") {
-    return llvm::Type::getInt8PtrTy(context);
-  } else if (name.back() == '*') {
-    return llvm::Type::getInt8PtrTy(context);
+    return llvm::Type::getInt32PtrTy(context);
   } else if (name == "None") {
     throw std::runtime_error("Could not determin type!");
   } else {
@@ -93,12 +112,14 @@ bool TypeName::operator==(const TypeName &rhs) const {
   if (name != rhs.name) {
     return false;
   }
-  if (subtypes.size() != rhs.subtypes.size()) {
-    return false;
-  }
-  for (size_t i = 0; i < subtypes.size(); ++i) {
-    if (subtypes[i] != rhs.subtypes[i]) {
+  if (!(generic || rhs.generic)) {
+    if (subtypes.size() != rhs.subtypes.size()) {
       return false;
+    }
+    for (size_t i = 0; i < subtypes.size(); ++i) {
+      if (subtypes[i] != rhs.subtypes[i]) {
+        return false;
+      }
     }
   }
   return true;
@@ -111,6 +132,9 @@ TypeName::operator bool() const { return !(*this == *None || *this == *Void); }
 
 std::ostream &operator<<(std::ostream &os, const TypeName &type) {
   os << type.name;
+  if (type.generic) {
+    os << " *";
+  }
   if (!type.subtypes.empty()) {
     os << "[";
     for (auto &subtype : type.subtypes) {
