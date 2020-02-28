@@ -1,6 +1,7 @@
 # Bython 2
 
 Bython is a small functional programming language implementet with the help of peglib and llvm.
+This is based on [bython](https://gitlab.com/compilerbau-ovgu/bython).
 
 ## Installation
 
