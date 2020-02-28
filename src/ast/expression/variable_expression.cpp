@@ -26,17 +26,19 @@ ASTVariableExpression::ASTVariableExpression(
   }
 }
 
-auto ASTVariableExpression::determine_type(
-    const type::function_map &known_functions) -> by::type::TypeName {
+auto ASTVariableExpression::determine_type(type::variable_map &known_functions)
+    -> by::type::TypeName_ptr {
   type = parent->find_variable_type(name);
   return type;
 }
 
 auto ASTVariableExpression::build_ir(
     std::unique_ptr<bc::BuildContext> &bc) const -> llvm::Value * {
+  bc->ast_stack.push(this);
   for (size_t i = bc->variables.size() - 1; i >= 0; --i) {
     if (const auto &vall = bc->variables[i].find(name);
         vall != bc->variables[i].end()) {
+      bc->ast_stack.pop();
       return vall->second;
     }
   }

@@ -15,7 +15,6 @@
 #include "../../type/type_name.hpp"
 #include "../base.hpp"
 #include "peglib.h"
-#include "utillib.hpp"
 
 namespace by::ast {
 
@@ -23,16 +22,16 @@ class ASTBlockExpression;
 
 class ASTExpression : public ASTBase {
 protected:
-  by::type::TypeName type;
+  by::type::TypeName_ptr type;
 
 public:
   ASTExpression(const std::shared_ptr<peg::Ast> &, ASTBlockExpression *);
 
-  virtual by::type::TypeName determine_type(const type::function_map &) = 0;
+  virtual by::type::TypeName_ptr determine_type(type::variable_map &) = 0;
 
   virtual llvm::Value *build_ir(std::unique_ptr<bc::BuildContext> &) const = 0;
 
-  virtual by::type::TypeName get_type() const;
+  virtual by::type::TypeName_ptr get_type() const;
 
   friend std::ostream &operator<<(std::ostream &,
                                   const by::ast::ASTExpression &);

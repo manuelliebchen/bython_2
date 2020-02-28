@@ -13,10 +13,18 @@
 namespace by::ast {
 
 class ASTConstant : public ASTExpression {
-public:
-  ASTConstant(const std::shared_ptr<peg::Ast> &, ASTBlockExpression *);
-
 private:
+  std::string const_string;
+
+public:
+  ASTConstant(const std::shared_ptr<peg::Ast> &, ASTBlockExpression *,
+              std::string);
+
+  by::type::TypeName_ptr determine_type(type::variable_map &);
+
+  void get_dependencies(std::unordered_set<std::string> &functions,
+                        std::unordered_set<std::string> &types) const;
+
   friend std::ostream &operator<<(std::ostream &, const ASTConstant &);
 };
 

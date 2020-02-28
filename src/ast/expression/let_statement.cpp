@@ -23,21 +23,24 @@ ASTLetStatement::ASTLetStatement(const std::shared_ptr<peg::Ast> &ast,
   value = create_expression(ast->nodes[1], parent);
 }
 
-auto ASTLetStatement::determine_type(const type::function_map &known_functions)
-    -> by::type::TypeName {
-
-  type = value->determine_type(known_functions);
+auto ASTLetStatement::determine_type(type::variable_map &symbols)
+    -> by::type::TypeName_ptr {
+  type = value->determine_type(symbols);
+  symbols.emplace(var, type);
+  parent->register_variable(var, type);
   return type;
 }
 
 auto ASTLetStatement::build_ir(std::unique_ptr<bc::BuildContext> &bc) const
     -> llvm::Value * {
+  bc->ast_stack.push(this);
   llvm::Value *rhs_llvm = value->build_ir(bc);
   llvm::Type *rhs_type = rhs_llvm->getType();
 
   llvm::AllocaInst *variable_value = bc->builder.CreateAlloca(rhs_type);
   llvm::StoreInst *store = bc->builder.CreateStore(rhs_llvm, variable_value);
   bc->variables.back().emplace(var, bc->builder.CreateLoad(variable_value));
+  bc->ast_stack.pop();
   return store;
 }
 

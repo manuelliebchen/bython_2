@@ -21,7 +21,7 @@ public:
                           ASTBlockExpression *, std::shared_ptr<ASTExpression>,
                           std::string, std::shared_ptr<ASTExpression>);
 
-  by::type::TypeName determine_type(const type::function_map &);
+  by::type::TypeName_ptr determine_type(type::variable_map &);
 
   llvm::Value *build_ir(std::unique_ptr<bc::BuildContext> &) const;
 

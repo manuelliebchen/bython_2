@@ -33,34 +33,29 @@ ASTIfExpression::ASTIfExpression(const std::shared_ptr<peg::Ast> &ast,
   }
 }
 
-auto ASTIfExpression::determine_type(const type::function_map &known_functions)
-    -> by::type::TypeName {
+auto ASTIfExpression::determine_type(type::variable_map &symbols)
+    -> by::type::TypeName_ptr {
 
-  type = block->determine_type(known_functions);
+  type = block->determine_type(symbols);
   if (alternativ) {
-    type = type.deduct_type(alternativ->determine_type(known_functions));
+    type = std::make_shared<const by::type::TypeName>(
+        type->deduct_type(*alternativ->determine_type(symbols)));
   }
   return type;
 }
 
 auto ASTIfExpression::build_ir(std::unique_ptr<bc::BuildContext> &bc) const
     -> llvm::Value * {
+  bc->ast_stack.push(this);
 
   llvm::Value *condition_llvm = condition->build_ir(bc);
 
-  // TODO WTF?
-  if (alternativ == nullptr) {
-    return nullptr;
-  }
-
   llvm::Function *the_function = bc->builder.GetInsertBlock()->getParent();
 
-  llvm::BasicBlock *then_block = llvm::BasicBlock::Create(bc->context);
-  llvm::BasicBlock *else_block = llvm::BasicBlock::Create(bc->context);
-  llvm::BasicBlock *merge_block = llvm::BasicBlock::Create(bc->context);
+  llvm::BasicBlock *entry_block = bc->builder.GetInsertBlock();
 
-  // conditional brack
-  bc->builder.CreateCondBr(condition_llvm, then_block, else_block);
+  llvm::BasicBlock *then_block = llvm::BasicBlock::Create(bc->context);
+  llvm::BasicBlock *merge_block = llvm::BasicBlock::Create(bc->context);
 
   // Then Block
   the_function->getBasicBlockList().push_back(then_block);
@@ -70,28 +65,49 @@ auto ASTIfExpression::build_ir(std::unique_ptr<bc::BuildContext> &bc) const
 
   bc->builder.CreateBr(merge_block);
 
-  then_block = bc->builder.GetInsertBlock();
+  //  then_block = bc->builder.GetInsertBlock();
 
-  // Else Block
-  the_function->getBasicBlockList().push_back(else_block);
-  bc->builder.SetInsertPoint(else_block);
-
-  llvm::Value *alternativ_ir = alternativ->build_ir(bc);
-
-  bc->builder.CreateBr(merge_block);
-
-  else_block = bc->builder.GetInsertBlock();
-
-  the_function->getBasicBlockList().push_back(merge_block);
   bc->builder.SetInsertPoint(merge_block);
 
+  // Phi Node
   llvm::PHINode *phi_node =
-      bc->builder.CreatePHI(type.get_llvm_type(bc->context), 2);
+      bc->builder.CreatePHI(type->get_llvm_type(bc->context), 2);
 
-  phi_node->addIncoming(block_ir, then_block);
-  phi_node->addIncoming(alternativ_ir, else_block);
+  if (block_ir != nullptr) {
+    phi_node->addIncoming(block_ir, then_block);
+  }
+
+  if (alternativ != nullptr) {
+    bc->builder.SetInsertPoint(entry_block);
+    llvm::BasicBlock *else_block = llvm::BasicBlock::Create(bc->context);
+    bc->builder.CreateCondBr(condition_llvm, then_block, else_block);
+
+    // Else Block
+    the_function->getBasicBlockList().push_back(else_block);
+    bc->builder.SetInsertPoint(else_block);
+
+    llvm::Value *alternativ_ir = alternativ->build_ir(bc);
+
+    bc->builder.CreateBr(merge_block);
+
+    //    else_block = bc->builder.GetInsertBlock();
+    if (alternativ_ir != nullptr) {
+      phi_node->addIncoming(alternativ_ir, else_block);
+    }
+  } else {
+    bc->builder.SetInsertPoint(entry_block);
+    bc->builder.CreateCondBr(condition_llvm, then_block, merge_block);
+  }
+
+  if (phi_node->getNumIncomingValues() != 0) {
+    the_function->getBasicBlockList().push_back(merge_block);
+  }
+
+  bc->builder.SetInsertPoint(merge_block);
+
+  bc->ast_stack.pop();
   return phi_node;
-}
+} // namespace by::ast
 
 void ASTIfExpression::get_dependencies(
     std::unordered_set<std::string> &functions,

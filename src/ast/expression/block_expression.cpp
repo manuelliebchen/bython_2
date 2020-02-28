@@ -42,29 +42,34 @@ ASTBlockExpression::ASTBlockExpression(
   }
 }
 
-auto ASTBlockExpression::determine_type(
-    const type::function_map &known_functions) -> by::type::TypeName {
-
-  type = expressions.back()->determine_type(known_functions);
+auto ASTBlockExpression::determine_type(type::variable_map &symbols)
+    -> by::type::TypeName_ptr {
+  for (auto &exp : expressions) {
+    exp->determine_type(symbols);
+  }
+  type = expressions.back()->get_type();
   return type;
 }
 
 auto ASTBlockExpression::find_variable_type(const std::string &name) const
-    -> by::type::TypeName {
+    -> by::type::TypeName_ptr {
   auto iterator = known_variables.find(name);
   if (iterator != known_variables.end()) {
-    return iterator->second;
-  }
-  if (parent != nullptr) {
+    by::type::TypeName_ptr variable_type = iterator->second;
+    if (*variable_type) {
+      return variable_type;
+    }
+  } else if (parent != nullptr) {
     return parent->find_variable_type(name);
   }
-  return by::type::TypeName();
+  throw std::runtime_error("Could not determen type of variable: " + name);
 }
 
 auto ASTBlockExpression::register_variable(const std::string &name,
-                                           const by::type::TypeName &type)
+                                           const by::type::TypeName_ptr &type)
     -> bool {
-  if (!find_variable_type(name)) {
+  auto iterator = known_variables.find(name);
+  if (iterator == known_variables.end()) {
     known_variables.emplace(name, type);
     return true;
   }
@@ -80,6 +85,7 @@ void ASTBlockExpression::get_dependencies(identifier_set &functions,
 
 auto ASTBlockExpression::build_ir(std::unique_ptr<bc::BuildContext> &bc) const
     -> llvm::Value * {
+  bc->ast_stack.push(this);
   bc->variables.emplace_back(std::unordered_map<std::string, llvm::Value *>());
 
   llvm::Value *ret = nullptr;
@@ -91,6 +97,7 @@ auto ASTBlockExpression::build_ir(std::unique_ptr<bc::BuildContext> &bc) const
   }
 
   bc->variables.pop_back();
+  bc->ast_stack.pop();
   return ret;
 }
 

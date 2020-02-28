@@ -15,8 +15,20 @@
 namespace by::ast {
 
 ASTConstant::ASTConstant(const std::shared_ptr<peg::Ast> &ast,
-                         ASTBlockExpression *parent)
-    : ASTExpression(ast, parent) {}
+                         ASTBlockExpression *parent, std::string const_string)
+    : ASTExpression(ast, parent), const_string(std::move(const_string)) {}
+
+auto ASTConstant::determine_type(type::variable_map &symbols)
+    -> by::type::TypeName_ptr {
+  type = std::make_shared<const type::TypeName>(type::TypeName(const_string));
+  return type;
+}
+
+void ASTConstant::get_dependencies(
+    std::unordered_set<std::string> &functions,
+    std::unordered_set<std::string> &types) const {
+  types.insert(const_string);
+}
 
 auto operator<<(std::ostream &os, const ASTConstant &constant)
     -> std::ostream & {

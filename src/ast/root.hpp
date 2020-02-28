@@ -17,9 +17,11 @@
 
 namespace by::ast {
 
+class ASTFunction;
+
 class ASTRoot : public ASTBase {
 public:
-  ASTRoot(const std::shared_ptr<peg::Ast> &, ASTBlockExpression *);
+  ASTRoot(const std::shared_ptr<peg::Ast> &);
 
   void reorder_functions(const std::vector<std::string> &order);
 

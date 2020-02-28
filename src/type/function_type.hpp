@@ -16,17 +16,17 @@
 
 namespace by::type {
 
-struct FunctionType {
-  TypeName returntype;
+struct FunctionType : public TypeName {
   std::vector<TypeName> parameters;
 
   FunctionType(const TypeName &);
   FunctionType(const TypeName &, std::vector<TypeName> const &);
 
-  llvm::FunctionType *get_llvm_type(llvm::LLVMContext &) const;
+  llvm::FunctionType *get_llvm_function_type(llvm::LLVMContext &) const;
 };
 
-using function_map = std::unordered_map<std::string, FunctionType>;
+using FunctionType_ptr = std::shared_ptr<const FunctionType>;
+using function_map = std::unordered_map<std::string, FunctionType_ptr>;
 } // namespace by::type
 namespace std {
 std::string to_string(by::type::FunctionType const &);

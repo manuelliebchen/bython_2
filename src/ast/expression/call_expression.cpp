@@ -29,17 +29,25 @@ ASTCallExpression::ASTCallExpression(const std::shared_ptr<peg::Ast> &ast,
   }
 }
 
-auto ASTCallExpression::determine_type(
-    const type::function_map &known_functions) -> by::type::TypeName {
-  type = known_functions.at(name).returntype;
+auto ASTCallExpression::determine_type(type::variable_map &symbols)
+    -> by::type::TypeName_ptr {
+  for (auto &arg : arguments) {
+    arg->determine_type(symbols);
+  }
+  type = symbols.at(name);
   return type;
 }
 
 auto ASTCallExpression::build_ir(std::unique_ptr<bc::BuildContext> &bc) const
     -> llvm::Value * {
+  bc->ast_stack.push(this);
 
-  type::FunctionType functiontype = bc->known_functions.at(name);
-  llvm::FunctionType *llvm_functype = functiontype.get_llvm_type(bc->context);
+  type::FunctionType_ptr functiontype =
+      std::static_pointer_cast<const by::type::FunctionType>(
+          bc->symbols.at(name));
+
+  llvm::FunctionType *llvm_functype =
+      functiontype->get_llvm_function_type(bc->context);
   llvm::FunctionCallee function_callee =
       bc->module.getOrInsertFunction(name, llvm_functype);
 
@@ -48,6 +56,7 @@ auto ASTCallExpression::build_ir(std::unique_ptr<bc::BuildContext> &bc) const
     llvm_args.emplace_back(arg->build_ir(bc));
   }
 
+  bc->ast_stack.pop();
   return bc->builder.CreateCall(function_callee, llvm_args);
 }
 

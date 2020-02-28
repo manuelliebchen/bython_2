@@ -11,7 +11,7 @@ namespace by::ast {
 
 ASTStringConstant::ASTStringConstant(const std::shared_ptr<peg::Ast> &ast,
                                      ASTBlockExpression *parent)
-    : ASTConstant(ast, parent) {
+    : ASTConstant(ast, parent, "String") {
   if (ast->original_name != "StringConstant") {
     throw bad_ast_exeption(
         ast,
@@ -19,12 +19,6 @@ ASTStringConstant::ASTStringConstant(const std::shared_ptr<peg::Ast> &ast,
   }
 
   value = ast->token;
-}
-
-auto ASTStringConstant::determine_type(
-    const type::function_map &known_functions) -> by::type::TypeName {
-  type = type::TypeName("String");
-  return type;
 }
 
 auto ASTStringConstant::build_ir(std::unique_ptr<bc::BuildContext> &bc) const
@@ -46,11 +40,4 @@ auto ASTStringConstant::build_ir(std::unique_ptr<bc::BuildContext> &bc) const
   return llvm::ConstantExpr::getBitCast(gdata_loc,
                                         llvm::Type::getInt8PtrTy(bc->context));
 }
-
-void ASTStringConstant::get_dependencies(
-    std::unordered_set<std::string> &functions,
-    std::unordered_set<std::string> &types) const {
-  types.insert("String");
-}
-
 } /* namespace by::ast */

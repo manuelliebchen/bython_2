@@ -20,7 +20,7 @@ namespace by::ast {
 class ASTVariableDeclaration : public ASTBase {
 protected:
   std::string name;
-  by::type::TypeName type;
+  by::type::TypeName_ptr type;
 
 public:
   ASTVariableDeclaration(const std::shared_ptr<peg::Ast> &,
@@ -30,7 +30,7 @@ public:
                         std::unordered_set<std::string> &types) const;
 
   const std::string &get_name() const;
-  by::type::TypeName get_type() const;
+  by::type::TypeName_ptr get_type() const;
   friend std::ostream &operator<<(std::ostream &,
                                   const ASTVariableDeclaration &);
 };

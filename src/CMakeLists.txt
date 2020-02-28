@@ -24,11 +24,10 @@ message(STATUS "Grammar set to ${GRAMMAR_PATH}")
 llvm_map_components_to_libnames(llvm_libs support core irreader)
 
 set( CMAKE_CXX_FLAGS "-O2 -Wall -pthread")
-target_link_libraries(bython PRIVATE ${llvm_libs} bython-ast bython-util bython-type)
+target_link_libraries(bython PRIVATE bython-ast bython-util bython-type ${llvm_libs})
 
 if (CLANG_TIDY)
     set_target_properties(
-            bython-ast PROPERTIES
+            bython PROPERTIES
             CXX_CLANG_TIDY "${CLANG_TIDY_COMMAND}")
-    message(STATUS "Enabled clang-tidy for bython-main")
 endif()

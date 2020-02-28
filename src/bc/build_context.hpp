@@ -27,14 +27,13 @@ namespace bc {
 
 struct compiling_error_exeption : std::exception {
   const std::shared_ptr<peg::Ast> ast;
-  const std::string name;
+  const std::string what_str;
   compiling_error_exeption(const std::shared_ptr<peg::Ast> ast,
                            const char *name)
-      : ast(ast), name(std::string(name)) {}
+      : ast(ast), what_str(ast->path + ":" + std::to_string(ast->line) + ":" +
+                           std::to_string(ast->column) + ":" + name) {}
   [[nodiscard]] const char *what() const noexcept override {
-    return (ast->path + ":" + std::to_string(ast->line) + ":" +
-            std::to_string(ast->column) + ":" + name.c_str())
-        .c_str();
+    return what_str.c_str();
   }
 };
 
@@ -44,8 +43,9 @@ struct BuildContext {
   llvm::Module module{"Bython Module", context};
 
   std::vector<std::unordered_map<std::string, llvm::Value *>> variables;
+  std::stack<const by::ast::ASTBase *> ast_stack;
 
-  type::function_map known_functions;
+  type::variable_map symbols;
   std::unordered_set<type::TypeName> known_types;
 };
 

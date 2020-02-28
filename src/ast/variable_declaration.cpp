@@ -19,7 +19,7 @@ ASTVariableDeclaration::ASTVariableDeclaration(
                  .c_str());
   }
   name = util::to_string(ast->nodes[0]);
-  type = by::type::TypeName(ast->nodes[1]);
+  type = std::make_shared<const type::TypeName>(ast->nodes[1]);
 
   if (parent != nullptr) {
     parent->register_variable(name, type);
@@ -29,14 +29,14 @@ ASTVariableDeclaration::ASTVariableDeclaration(
 void ASTVariableDeclaration::get_dependencies(
     std::unordered_set<std::string> &functions,
     std::unordered_set<std::string> &types) const {
-  types.insert(type::to_string(type));
+  types.insert(std::to_string(*type));
 }
 
 auto ASTVariableDeclaration::get_name() const -> const std::string & {
   return name;
 }
 
-auto ASTVariableDeclaration::get_type() const -> by::type::TypeName {
+auto ASTVariableDeclaration::get_type() const -> by::type::TypeName_ptr {
   return type;
 }
 

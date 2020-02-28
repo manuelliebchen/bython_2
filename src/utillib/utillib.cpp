@@ -11,15 +11,10 @@
 #include <unordered_map>
 #include <unordered_set>
 
-#include "../ast/base.hpp"
-#include "../ast/root.hpp"
-#include "../type/function_type.hpp"
-#include "../type/type_name.hpp"
-
 namespace by::util {
 
-auto get_buildin_functions() -> type::function_map {
-  type::function_map buildins;
+auto get_buildin_functions() -> type::variable_map {
+  std::unordered_map<std::string, type::FunctionType> buildins;
   buildins.insert({{"println_int"}, {{"Void"}, {{"Int"}}}});
   buildins.insert({{"print_int"}, {{"Void"}, {{"Int"}}}});
   buildins.insert({{"println_float"}, {{"Void"}, {{"Float"}}}});
@@ -34,13 +29,19 @@ auto get_buildin_functions() -> type::function_map {
   buildins.insert({{"list_pop_front"}, {{"List*"}, {{"List*"}}}});
   buildins.insert({{"list_print"}, {{"Void"}, {{"List*"}}}});
   buildins.insert({{"list_size"}, {{"Int"}, {{"List*"}}}});
-  buildins.insert({{"list_push_back"}, {{"List*"}, {{"List*"}, {"void*"}}}});
-  buildins.insert({{"list_get"}, {{"void*"}, {{"List*"}, {"Int"}}}});
+  buildins.insert({{"list_push_back"}, {{"List*"}, {{"List*"}, {"Void*"}}}});
+  buildins.insert({{"list_get"}, {{"Void*"}, {{"List*"}, {"Int"}}}});
   buildins.insert({{"list_get_int"}, {{"Int"}, {{"List*"}, {"Int"}}}});
-  buildins.insert({{"list_set"}, {{"List*"}, {{"List*"}, {"Int"}, {"void*"}}}});
+  buildins.insert({{"list_set"}, {{"List*"}, {{"List*"}, {"Int"}, {"Void*"}}}});
 
   buildins.insert({{"iabs"}, {{"Int"}, {{"Int"}}}});
-  return buildins;
+  type::variable_map symbols;
+  for (const auto &func : buildins) {
+    symbols.emplace(func.first,
+                    std::make_shared<const type::FunctionType>(func.second));
+  }
+
+  return symbols;
 };
 
 auto compiling_order(const std::shared_ptr<by::ast::ASTRoot> &root)

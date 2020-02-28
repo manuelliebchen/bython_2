@@ -32,7 +32,6 @@ TypeName::TypeName(std::string name, std::vector<TypeName> subtypes)
     : name(std::move(name)), subtypes(std::move(subtypes)) {}
 
 TypeName::TypeName(std::string name) : name(std::move(name)), subtypes() {}
-// TypeName::TypeName(const char* name) : name(std::string(name)){};
 
 TypeName::TypeName(TypeName const &type) : name(type.name) {
   for (const auto &subtype : type.subtypes) {
@@ -49,8 +48,17 @@ TypeName TypeName::operator=(TypeName type) {
 }
 
 /// TODO
-auto TypeName::deduct_type(TypeName) const -> TypeName {
-  return TypeName(name);
+auto TypeName::deduct_type(TypeName rhs_name) const -> TypeName {
+  if (*this == rhs_name) {
+    return TypeName(name);
+  }
+  if ((name == "Int" || name == "Float") &&
+      (rhs_name.name == "Int" || rhs_name.name == "Float")) {
+    return TypeName("Float");
+  }
+  throw std::runtime_error(
+      "Type deduction failed with types: " + std::to_string(*this) + " and " +
+      std::to_string(rhs_name));
 }
 
 llvm::Type *TypeName::get_llvm_type(llvm::LLVMContext &context) const {
@@ -64,8 +72,6 @@ llvm::Type *TypeName::get_llvm_type(llvm::LLVMContext &context) const {
     return llvm::Type::getFloatTy(context);
   } else if (name == "List") {
     return llvm::Type::getInt8PtrTy(context);
-  } else if (name == "List*") {
-    return llvm::Type::getInt8PtrTy(context);
   } else if (name == "String") {
     return llvm::Type::getInt8PtrTy(context);
   } else if (name.back() == '*') {
@@ -73,7 +79,8 @@ llvm::Type *TypeName::get_llvm_type(llvm::LLVMContext &context) const {
   } else if (name == "None") {
     throw std::runtime_error("Could not determin type!");
   } else {
-    throw std::runtime_error("Trying to convert invalid type: " + name);
+    throw std::runtime_error("Trying to convert invalid type: " +
+                             std::to_string(*this));
   }
 }
 
@@ -92,7 +99,9 @@ bool TypeName::operator==(const TypeName &rhs) const {
   return true;
 }
 
-TypeName::operator bool() const { return name != "None"; }
+bool TypeName::operator!=(const TypeName &rhs) const { return !(*this == rhs); }
+
+TypeName::operator bool() const { return !(name == "None" || name == "Void"); }
 
 std::ostream &operator<<(std::ostream &os, const TypeName &type) {
   os << type.name;
@@ -106,25 +115,34 @@ std::ostream &operator<<(std::ostream &os, const TypeName &type) {
   return os;
 }
 
-std::string to_string(TypeName const &val) {
+type_deduction_exeption::type_deduction_exeption(
+    const std::shared_ptr<peg::Ast> ast, TypeName_ptr expected,
+    TypeName_ptr got)
+    : ast(ast), expected(expected), got(got),
+      what_str((ast->path + ":" + std::to_string(ast->line) + ":" +
+                std::to_string(ast->column) +
+                ": error: type missmatch of types: " +
+                std::to_string(*expected) + " and " + std::to_string(*got))) {}
+
+} // namespace by::type
+
+namespace std {
+
+std::string to_string(by::type::TypeName const &val) {
   std::string str = val.name;
   if (!val.subtypes.empty()) {
     str += "[";
-    str += type::to_string(val.subtypes.front());
+    str += std::to_string(val.subtypes.front());
     for (size_t i = 1; i < val.subtypes.size(); ++i) {
-      str += "," + to_string(val.subtypes[i]);
+      str += "," + std::to_string(val.subtypes[i]);
     }
     str += "]";
   }
   return str;
 }
 
-} // namespace by::type
-
-namespace std {
-
 auto std::hash<by::type::TypeName>::operator()(argument_type const &s) const
     noexcept -> result_type {
-  return std::hash<std::string>{}(by::type::to_string(s));
+  return std::hash<std::string>{}(std::to_string(s));
 }
 } // namespace std

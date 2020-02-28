@@ -9,11 +9,11 @@
 #define SRC_AST_BASE_HPP_
 
 #include <memory>
+#include <stdexcept>
 #include <string>
 #include <unordered_set>
 
 #include "peglib.h"
-#include "utillib.hpp"
 
 namespace by::ast {
 

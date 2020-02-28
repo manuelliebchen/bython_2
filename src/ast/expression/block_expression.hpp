@@ -30,19 +30,19 @@ public:
       const std::vector<std::shared_ptr<by::ast::ASTVariableDeclaration>> &,
       const std::shared_ptr<peg::Ast> &ast, ASTBlockExpression *);
 
-  by::type::TypeName determine_type(const type::function_map &);
+  by::type::TypeName_ptr determine_type(type::variable_map &);
 
   llvm::Value *build_ir(std::unique_ptr<bc::BuildContext> &) const;
 
   void get_dependencies(std::unordered_set<std::string> &functions,
                         std::unordered_set<std::string> &types) const;
 
-  by::type::TypeName find_variable_type(const std::string &) const;
+  by::type::TypeName_ptr find_variable_type(const std::string &) const;
 
   /**
    * @return false if variable already exists.
    */
-  bool register_variable(const std::string &, const by::type::TypeName &);
+  bool register_variable(const std::string &, const by::type::TypeName_ptr &);
 
   friend std::ostream &operator<<(std::ostream &, const ASTBlockExpression &);
 };

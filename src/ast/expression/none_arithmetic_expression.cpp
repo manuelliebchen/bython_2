@@ -66,16 +66,17 @@ ASTNoneArithmeticExpression::ASTNoneArithmeticExpression(
   }
 }
 
-auto ASTNoneArithmeticExpression::determine_type(
-    const type::function_map &known_functions) -> by::type::TypeName {
-
-  type = rhs->determine_type(known_functions);
+auto ASTNoneArithmeticExpression::determine_type(type::variable_map &symbols)
+    -> by::type::TypeName_ptr {
+  type = rhs->determine_type(symbols);
   return type;
 }
 
 auto ASTNoneArithmeticExpression::build_ir(
     std::unique_ptr<bc::BuildContext> &bc) const -> llvm::Value * {
+  bc->ast_stack.push(this);
   llvm::Value *rhs_llvm = rhs->build_ir(bc);
+  bc->ast_stack.pop();
   if (UnaryOperator == "-") {
     if (rhs_llvm->getType()->isFloatTy()) {
       return bc->builder.CreateFNeg(rhs_llvm);

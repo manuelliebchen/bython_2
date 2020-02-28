@@ -9,9 +9,7 @@
 
 namespace by::ast {
 
-ASTRoot::ASTRoot(const std::shared_ptr<peg::Ast> &ast,
-                 ASTBlockExpression *parent)
-    : ASTBase(ast, parent) {
+ASTRoot::ASTRoot(const std::shared_ptr<peg::Ast> &ast) : ASTBase(ast, nullptr) {
   for (const auto &node : ast->nodes) {
     functions.push_back(std::make_shared<ASTFunction>(node, parent));
   }

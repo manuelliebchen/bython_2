@@ -16,12 +16,7 @@ class ASTFloatConstant : public ASTConstant {
 public:
   ASTFloatConstant(const std::shared_ptr<peg::Ast> &, ASTBlockExpression *);
 
-  by::type::TypeName determine_type(const type::function_map &);
-
   llvm::Value *build_ir(std::unique_ptr<bc::BuildContext> &) const;
-
-  void get_dependencies(std::unordered_set<std::string> &functions,
-                        std::unordered_set<std::string> &types) const;
 
 private:
   float value;

@@ -1,4 +1,4 @@
-func float_compare = x: Float, y:Float -> Bool {
+func float_compare = x:Float, y:Float -> Bool {
     if x != y {
         false
     } else {

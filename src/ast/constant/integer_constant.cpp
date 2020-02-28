@@ -11,7 +11,7 @@ namespace by::ast {
 
 ASTIntegerConstant::ASTIntegerConstant(const std::shared_ptr<peg::Ast> &ast,
                                        ASTBlockExpression *parent)
-    : ASTConstant(ast, parent) {
+    : ASTConstant(ast, parent, "Int") {
   if (ast->original_name != "IntegerConstant") {
     throw bad_ast_exeption(
         ast,
@@ -20,24 +20,12 @@ ASTIntegerConstant::ASTIntegerConstant(const std::shared_ptr<peg::Ast> &ast,
   value = std::stoi(ast->token);
 }
 
-auto ASTIntegerConstant::determine_type(
-    const type::function_map &known_functions) -> by::type::TypeName {
-  type = type::TypeName("Int");
-  return type;
-}
-
 auto ASTIntegerConstant::build_ir(std::unique_ptr<bc::BuildContext> &bc) const
     -> llvm::Value * {
   auto llvm_int_type =
       llvm::IntegerType::get(bc->context, std::numeric_limits<int>::digits + 1);
 
   return llvm::ConstantInt::getSigned(llvm_int_type, value);
-}
-
-void ASTIntegerConstant::get_dependencies(
-    std::unordered_set<std::string> &functions,
-    std::unordered_set<std::string> &types) const {
-  types.insert("Int");
 }
 
 } /* namespace by::ast */

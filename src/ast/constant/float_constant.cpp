@@ -11,7 +11,7 @@ namespace by::ast {
 
 ASTFloatConstant::ASTFloatConstant(const std::shared_ptr<peg::Ast> &ast,
                                    ASTBlockExpression *parent)
-    : ASTConstant(ast, parent) {
+    : ASTConstant(ast, parent, "Float") {
   if (ast->original_name != "FloatConstant") {
     throw bad_ast_exeption(
         ast,
@@ -20,21 +20,9 @@ ASTFloatConstant::ASTFloatConstant(const std::shared_ptr<peg::Ast> &ast,
   value = std::stof(ast->token);
 }
 
-auto ASTFloatConstant::determine_type(const type::function_map &known_functions)
-    -> by::type::TypeName {
-  type = by::type::TypeName("Float");
-  return type;
-}
-
 auto ASTFloatConstant::build_ir(std::unique_ptr<bc::BuildContext> &bc) const
     -> llvm::Value * {
   return llvm::ConstantFP::get(bc->context, llvm::APFloat(value));
-}
-
-void ASTFloatConstant::get_dependencies(
-    std::unordered_set<std::string> &functions,
-    std::unordered_set<std::string> &types) const {
-  types.insert("Float");
 }
 
 } /* namespace by::ast */

@@ -11,7 +11,7 @@
 
 #include "../base.hpp"
 #include "../constant/constant.hpp"
-#include "../expression/arithmetic_expression.hpp"
+#include "arithmetic_expression.hpp"
 #include "block_expression.hpp"
 #include "call_expression.hpp"
 #include "if_expression.hpp"
@@ -22,15 +22,13 @@
 namespace by::ast {
 ASTExpression::ASTExpression(const std::shared_ptr<peg::Ast> &ast,
                              ASTBlockExpression *parent)
-    : ASTBase(ast, parent) {
-  //	std::cerr << "Constructiing Expression " << ast->original_name <<
-  // std::endl;
-}
+    : ASTBase(ast, parent) {}
 
-auto ASTExpression::get_type() const -> by::type::TypeName { return type; }
+auto ASTExpression::get_type() const -> by::type::TypeName_ptr { return type; }
 
 auto operator<<(std::ostream &os, const by::ast::ASTExpression &exp)
     -> std::ostream & {
+
   if (const auto *dyn =
           dynamic_cast<const ASTNoneArithmeticExpression *>(&exp)) {
     os << *dyn;

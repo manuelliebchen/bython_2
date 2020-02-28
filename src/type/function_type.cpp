@@ -9,20 +9,19 @@
 
 namespace by::type {
 
-FunctionType::FunctionType(const TypeName &returntype)
-    : returntype(returntype) {}
+FunctionType::FunctionType(const TypeName &returntype) : TypeName(returntype) {}
 
 FunctionType::FunctionType(const TypeName &returntype,
                            std::vector<TypeName> const &parameters)
-    : returntype(returntype), parameters(parameters) {}
+    : TypeName(returntype), parameters(parameters) {}
 
 llvm::FunctionType *
-FunctionType::get_llvm_type(llvm::LLVMContext &context) const {
+FunctionType::get_llvm_function_type(llvm::LLVMContext &context) const {
   std::vector<llvm::Type *> llvm_parameters;
   for (auto &para : parameters) {
     llvm_parameters.emplace_back(para.get_llvm_type(context));
   }
-  llvm::Type *llvm_returntype = returntype.get_llvm_type(context);
+  llvm::Type *llvm_returntype = TypeName::get_llvm_type(context);
   return llvm::FunctionType::get(llvm_returntype, llvm_parameters, false);
 }
 } // namespace by::type
@@ -30,11 +29,11 @@ FunctionType::get_llvm_type(llvm::LLVMContext &context) const {
 namespace std {
 
 std::string to_string(by::type::FunctionType const &func) {
-  std::string str = to_string(func.returntype) + "(";
+  std::string str = std::to_string(static_cast<by::type::TypeName>(func)) + "(";
   if (!func.parameters.empty()) {
-    str += to_string(func.parameters[0]);
+    str += std::to_string(func.parameters[0]);
     for (size_t i = 1; i < func.parameters.size(); ++i) {
-      str += "," + to_string(func.parameters[i]);
+      str += "," + std::to_string(func.parameters[i]);
     }
   }
   str += ")";
