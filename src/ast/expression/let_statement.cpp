@@ -40,6 +40,7 @@ auto ASTLetStatement::build_ir(std::unique_ptr<bc::BuildContext> &bc) const
   llvm::AllocaInst *variable_value = bc->builder.CreateAlloca(rhs_type);
   llvm::StoreInst *store = bc->builder.CreateStore(rhs_llvm, variable_value);
   bc->variables.back().emplace(var, bc->builder.CreateLoad(variable_value));
+
   bc->ast_stack.pop();
   return store;
 }

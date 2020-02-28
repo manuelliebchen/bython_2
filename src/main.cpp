@@ -18,6 +18,7 @@ auto main(int argc, char *argv[]) -> int {
     options.allow_unrecognised_options().add_options()(
         "h,help", "Print this Message")("i,input", "bython file",
                                         cxxopts::value<std::string>());
+
     options.parse_positional({"input"});
     auto result = options.parse(argc, argv);
     if (result.count("help") != 0U) {

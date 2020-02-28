@@ -32,9 +32,14 @@ struct TypeName {
 
   bool operator==(const TypeName &) const;
   bool operator!=(const TypeName &) const;
+
   operator bool() const;
+  bool is_void() const;
 
   llvm::Type *get_llvm_type(llvm::LLVMContext &) const;
+
+  static const std::shared_ptr<const TypeName> Void;
+  static const std::shared_ptr<const TypeName> None;
 
   friend std::ostream &operator<<(std::ostream &, const TypeName &);
   friend std::string to_string(by::type::TypeName const &);

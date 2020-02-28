@@ -8,6 +8,7 @@
 #ifndef SRC_AST_ASTARITHMETICEXPRESSION_HPP_
 #define SRC_AST_ASTARITHMETICEXPRESSION_HPP_
 
+#include <map>
 #include <memory>
 
 #include "expression.hpp"
@@ -16,6 +17,13 @@
 namespace by::ast {
 
 class ASTArithmeticExpression : public ASTExpression {
+private:
+  std::shared_ptr<ASTExpression> lhs;
+  std::string BinaryOperator;
+  std::shared_ptr<ASTExpression> rhs;
+
+  type::TypeName_ptr operation_type;
+
 public:
   ASTArithmeticExpression(const std::shared_ptr<peg::Ast> &,
                           ASTBlockExpression *, std::shared_ptr<ASTExpression>,
@@ -28,10 +36,7 @@ public:
   void get_dependencies(std::unordered_set<std::string> &functions,
                         std::unordered_set<std::string> &types) const;
 
-private:
-  std::shared_ptr<ASTExpression> lhs;
-  std::string BinaryOperator;
-  std::shared_ptr<ASTExpression> rhs;
+  static const std::multimap<std::string, type::BinaryOperator> operators;
 
   friend std::ostream &operator<<(std::ostream &,
                                   const ASTArithmeticExpression &);

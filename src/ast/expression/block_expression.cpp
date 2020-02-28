@@ -44,11 +44,14 @@ ASTBlockExpression::ASTBlockExpression(
 
 auto ASTBlockExpression::determine_type(type::variable_map &symbols)
     -> by::type::TypeName_ptr {
-  for (auto &exp : expressions) {
-    exp->determine_type(symbols);
+  if (!expressions.empty()) {
+    for (auto &exp : expressions) {
+      exp->determine_type(symbols);
+    }
+    type = expressions.back()->get_type();
+    return type;
   }
-  type = expressions.back()->get_type();
-  return type;
+  return type::TypeName::Void;
 }
 
 auto ASTBlockExpression::find_variable_type(const std::string &name) const

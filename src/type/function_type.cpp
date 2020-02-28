@@ -24,6 +24,18 @@ FunctionType::get_llvm_function_type(llvm::LLVMContext &context) const {
   llvm::Type *llvm_returntype = TypeName::get_llvm_type(context);
   return llvm::FunctionType::get(llvm_returntype, llvm_parameters, false);
 }
+
+BinaryOperator::BinaryOperator(const TypeName &type, const TypeName &lhs,
+                               const TypeName &rhs)
+    : TypeName(type), lhs(lhs), rhs(rhs) {}
+
+auto BinaryOperator::get_llvm_function_type(llvm::LLVMContext &context) const
+    -> llvm::FunctionType * {
+  std::vector<llvm::Type *> llvm_parameters{lhs.get_llvm_type(context),
+                                            rhs.get_llvm_type(context)};
+  llvm::Type *llvm_returntype = TypeName::get_llvm_type(context);
+  return llvm::FunctionType::get(llvm_returntype, llvm_parameters, false);
+}
 } // namespace by::type
 
 namespace std {
@@ -37,6 +49,12 @@ std::string to_string(by::type::FunctionType const &func) {
     }
   }
   str += ")";
+  return str;
+}
+
+std::string to_string(by::type::BinaryOperator const &func) {
+  std::string str = std::to_string(static_cast<by::type::TypeName>(func)) + "(";
+  str += std::to_string(func.lhs) + "," + std::to_string(func.rhs) + ")";
   return str;
 }
 } // namespace std

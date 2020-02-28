@@ -10,6 +10,40 @@
 #include "none_arithmetic_expression.hpp"
 
 namespace by::ast {
+const std::multimap<std::string, type::BinaryOperator>
+    ASTArithmeticExpression::operators = {
+        {"==", {{"Bool"}, {"Int"}, {"Int"}}},
+        {"==", {{"Bool"}, {"Float"}, {"Float"}}},
+        {"==", {{"Bool"}, {"Bool"}, {"Bool"}}},
+        {"!=", {{"Bool"}, {"Int"}, {"Int"}}},
+        {"!=", {{"Bool"}, {"Float"}, {"Float"}}},
+        {"!=", {{"Bool"}, {"Bool"}, {"Bool"}}},
+
+        {">", {{"Bool"}, {"Int"}, {"Int"}}},
+        {">", {{"Bool"}, {"Float"}, {"Float"}}},
+        {">=", {{"Bool"}, {"Int"}, {"Int"}}},
+        {">=", {{"Bool"}, {"Float"}, {"Float"}}},
+
+        {"<", {{"Bool"}, {"Int"}, {"Int"}}},
+        {"<", {{"Bool"}, {"Float"}, {"Float"}}},
+        {"<=", {{"Bool"}, {"Int"}, {"Int"}}},
+        {"<=", {{"Bool"}, {"Float"}, {"Float"}}},
+
+        {"+", {{"Int"}, {"Int"}, {"Int"}}},
+        {"+", {{"Float"}, {"Float"}, {"Float"}}},
+        {"-", {{"Int"}, {"Int"}, {"Int"}}},
+        {"-", {{"Float"}, {"Float"}, {"Float"}}},
+
+        {"*", {{"Int"}, {"Int"}, {"Int"}}},
+        {"*", {{"Float"}, {"Float"}, {"Float"}}},
+        {"/", {{"Int"}, {"Int"}, {"Int"}}},
+        {"/", {{"Float"}, {"Float"}, {"Float"}}},
+        {"%", {{"Int"}, {"Int"}, {"Int"}}},
+        {"%", {{"Float"}, {"Float"}, {"Float"}}},
+
+        {"&&", {{"Bool"}, {"Bool"}, {"Bool"}}},
+        {"||", {{"Bool"}, {"Bool"}, {"Bool"}}},
+};
 
 ASTArithmeticExpression::ASTArithmeticExpression(
     const std::shared_ptr<peg::Ast> &ast, ASTBlockExpression *parent,
@@ -18,17 +52,29 @@ ASTArithmeticExpression::ASTArithmeticExpression(
     : ASTExpression(ast, parent), lhs(std::move(lhs)),
       BinaryOperator(std::move(BinaryOperator)), rhs(std::move(rhs)) {}
 
-auto ASTArithmeticExpression::determine_type(
-    type::variable_map &known_functions) -> by::type::TypeName_ptr {
-  type = std::make_shared<const type::TypeName>(
-      this->lhs->determine_type(known_functions)
-          ->deduct_type(*(this->rhs->determine_type(known_functions))));
-  return type;
+auto ASTArithmeticExpression::determine_type(type::variable_map &symbols)
+    -> by::type::TypeName_ptr {
+
+  operation_type = std::make_shared<const type::TypeName>(
+      this->lhs->determine_type(symbols)->deduct_type(
+          *(this->rhs->determine_type(symbols))));
+
+  auto bin = operators.equal_range(BinaryOperator);
+  for (auto it = bin.first; it != bin.second; ++it) {
+    type::BinaryOperator binop = it->second;
+    if (binop.lhs == *operation_type) {
+      type = std::make_shared<const type::FunctionType>(binop);
+      return type;
+    }
+  }
+  throw type::type_deduction_exeption(ast, operation_type,
+                                      type::TypeName::None);
 }
 
 auto ASTArithmeticExpression::build_ir(
     std::unique_ptr<bc::BuildContext> &bc) const -> llvm::Value * {
   bc->ast_stack.push(this);
+
   llvm::Value *lhs_llvm = lhs->build_ir(bc);
   llvm::Type *lhs_type = lhs_llvm->getType();
   llvm::Value *rhs_llvm = rhs->build_ir(bc);
@@ -46,7 +92,7 @@ auto ASTArithmeticExpression::build_ir(
   }
 
   bc->ast_stack.pop();
-  llvm::Type *llvm_type = type->get_llvm_type(bc->context);
+  llvm::Type *llvm_type = operation_type->get_llvm_type(bc->context);
 
   if (BinaryOperator == "+") {
     if (llvm_type->isFloatTy()) {

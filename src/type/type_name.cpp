@@ -13,6 +13,11 @@
 
 namespace by::type {
 
+const std::shared_ptr<const TypeName> TypeName::Void =
+    std::make_shared<const TypeName>("Void");
+const std::shared_ptr<const TypeName> TypeName::None =
+    std::make_shared<const TypeName>("None");
+
 TypeName::TypeName() : name("None"), subtypes() {}
 
 TypeName::TypeName(const std::shared_ptr<peg::Ast> &ast) {
@@ -79,7 +84,7 @@ llvm::Type *TypeName::get_llvm_type(llvm::LLVMContext &context) const {
   } else if (name == "None") {
     throw std::runtime_error("Could not determin type!");
   } else {
-    throw std::runtime_error("Trying to convert invalid type: " +
+    throw std::runtime_error("Trying to get invalid llvm type: " +
                              std::to_string(*this));
   }
 }
@@ -101,7 +106,8 @@ bool TypeName::operator==(const TypeName &rhs) const {
 
 bool TypeName::operator!=(const TypeName &rhs) const { return !(*this == rhs); }
 
-TypeName::operator bool() const { return !(name == "None" || name == "Void"); }
+auto TypeName::is_void() const -> bool { return *this == *Void; }
+TypeName::operator bool() const { return !(*this == *None || *this == *Void); }
 
 std::ostream &operator<<(std::ostream &os, const TypeName &type) {
   os << type.name;

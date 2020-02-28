@@ -106,8 +106,10 @@ auto ASTFunction::build_ir(std::unique_ptr<by::bc::BuildContext> &bc) const
   //  if (llvm::Value *return_value = blockexpression->build_ir(bc);
   //      return_value != nullptr) {
   llvm::Value *return_value = blockexpression->build_ir(bc);
-  if (blockexpression->get_type()) {
+  if (*type) {
     bc->builder.CreateRet(return_value);
+  } else {
+    bc->builder.CreateRetVoid();
   }
 
   bc->variables.pop_back();

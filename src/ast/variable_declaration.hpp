@@ -37,7 +37,7 @@ public:
 
 inline std::ostream &operator<<(std::ostream &os,
                                 const ASTVariableDeclaration &var) {
-  os << var.name << " : " << var.type;
+  os << var.name << " : " << *var.type;
   return os;
 }
 
