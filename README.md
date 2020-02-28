@@ -1,5 +1,7 @@
 # Bython 2
 
+Bython is a small functional programming language implementet with the help of peglib and llvm.
+
 ## Installation
 
 Dependencies: ``clang llvm doxygen``
