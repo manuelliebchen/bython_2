@@ -87,7 +87,7 @@ auto TypeName::deduct_type(TypeName rhs_name) const -> TypeName {
 
 llvm::Type *TypeName::get_llvm_type(llvm::LLVMContext &context) const {
   if (generic) {
-    return llvm::Type::getInt32PtrTy(context);
+    return llvm::Type::getInt8PtrTy(context);
   } else if (name == "Int") {
     return llvm::Type::getInt32Ty(context);
   } else if (name == "Void") {
@@ -97,9 +97,9 @@ llvm::Type *TypeName::get_llvm_type(llvm::LLVMContext &context) const {
   } else if (name == "Float") {
     return llvm::Type::getFloatTy(context);
   } else if (name == "List") {
-    return llvm::Type::getInt32PtrTy(context);
+    return llvm::Type::getInt8PtrTy(context);
   } else if (name == "String") {
-    return llvm::Type::getInt32PtrTy(context);
+    return llvm::Type::getInt8PtrTy(context);
   } else if (name == "None") {
     throw std::runtime_error("Could not determin type!");
   } else {
