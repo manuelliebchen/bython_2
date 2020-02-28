@@ -8,6 +8,3 @@
 [submodule "dep/cxxopts"]
 	path = dep/cxxopts
 	url = https://github.com/jarro2783/cxxopts
-[submodule "dep/gtest"]
-	path = dep/gtest
-	url = https://github.com/jarro2783/cxxopts
