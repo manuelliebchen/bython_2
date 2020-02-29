@@ -10,7 +10,7 @@
 
 #include <string>
 
-#include "../../ast/constant/constant.hpp"
+#include "constant.hpp"
 
 namespace by::ast {
 

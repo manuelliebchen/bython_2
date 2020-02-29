@@ -8,7 +8,7 @@
 #ifndef SRC_AST_ASTNONEARITHMETICEXPRESSION_HPP_
 #define SRC_AST_ASTNONEARITHMETICEXPRESSION_HPP_
 
-#include "../../ast/expression/expression.hpp"
+#include "expression.hpp"
 
 namespace by::ast {
 

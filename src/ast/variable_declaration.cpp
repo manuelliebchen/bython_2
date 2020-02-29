@@ -7,7 +7,8 @@
 
 #include "variable_declaration.hpp"
 
-#include "../utillib/utillib.hpp"
+#include <util/util.hpp>
+
 namespace by::ast {
 
 ASTVariableDeclaration::ASTVariableDeclaration(

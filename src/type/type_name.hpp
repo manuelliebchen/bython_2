@@ -12,7 +12,7 @@
 #include <llvm/IR/Type.h>
 #include <unordered_map>
 
-#include "../ast/base.hpp"
+#include <ast/base.hpp>
 
 namespace by::type {
 struct TypeName {

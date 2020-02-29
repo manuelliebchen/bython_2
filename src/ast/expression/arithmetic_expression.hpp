@@ -11,8 +11,9 @@
 #include <map>
 #include <memory>
 
+#include <peglib.h>
+
 #include "expression.hpp"
-#include "peglib.h"
 
 namespace by::ast {
 

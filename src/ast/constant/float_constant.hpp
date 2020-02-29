@@ -8,7 +8,7 @@
 #ifndef SRC_AST_ASTFLOATCONSTANT_HPP_
 #define SRC_AST_ASTFLOATCONSTANT_HPP_
 
-#include "../../ast/constant/constant.hpp"
+#include "constant.hpp"
 
 namespace by::ast {
 

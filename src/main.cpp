@@ -1,15 +1,17 @@
 
 #include <exception>
 #include <iostream>
-#include <llvm/IR/Module.h>
-#include <llvm/Support/raw_os_ostream.h>
 #include <memory>
 
-#include "bc/build_context.hpp"
-#include "cxxopts.hpp"
-#include "peglib.h"
-#include "utillib.hpp"
+#include <llvm/IR/Module.h>
+#include <llvm/Support/raw_os_ostream.h>
+
+#include <cxxopts.hpp>
+#include <peglib.h>
+
 #include <ast/root.hpp>
+#include <bc/build_context.hpp>
+#include <util/util.hpp>
 
 auto main(int argc, char *argv[]) -> int {
   try {

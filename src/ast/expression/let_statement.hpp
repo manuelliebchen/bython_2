@@ -11,8 +11,8 @@
 #include <memory>
 #include <string>
 
-#include "../../ast/expression/expression.hpp"
 #include "../variable_declaration.hpp"
+#include "expression.hpp"
 
 namespace by::ast {
 

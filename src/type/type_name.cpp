@@ -9,7 +9,7 @@
 #include <llvm/IR/Constants.h>
 #include <string>
 
-#include "../utillib/utillib.hpp"
+#include <util/util.hpp>
 
 namespace by::type {
 

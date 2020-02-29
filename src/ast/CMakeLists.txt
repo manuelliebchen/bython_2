@@ -4,12 +4,7 @@ FILE(GLOB_RECURSE BYTHON_AST_SOURCE_FILES ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp)
 
 add_library(bython-ast SHARED ${BYTHON_AST_SOURCE_FILES})
 target_include_directories(bython-ast PRIVATE
-    ${CMAKE_CURRENT_SOURCE_DIR}/
-    ${CMAKE_CURRENT_SOURCE_DIR}/expression/
-    ${CMAKE_CURRENT_SOURCE_DIR}/constant/
-    ${CMAKE_CURRENT_SOURCE_DIR}/../type/
-    ${CMAKE_CURRENT_SOURCE_DIR}/../bc/
-    ${CMAKE_CURRENT_SOURCE_DIR}/../utillib/
+    ${CMAKE_CURRENT_SOURCE_DIR}/../
 
     ${EXTERNAL_INSTALL_LOCATION}/cpp-peglib
     ${LLVM_INCLUDE_DIRS}

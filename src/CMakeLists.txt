@@ -1,16 +1,12 @@
 add_subdirectory(ast)
 add_subdirectory(type)
-add_subdirectory(utillib)
+add_subdirectory(util)
 
 find_package(LLVM REQUIRED CONFIG)
 
 add_executable(bython main.cpp)
 target_include_directories(bython PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/
-    ${CMAKE_CURRENT_SOURCE_DIR}/ast
-    ${CMAKE_CURRENT_SOURCE_DIR}/type
-    ${CMAKE_CURRENT_SOURCE_DIR}/bc
-    ${CMAKE_CURRENT_SOURCE_DIR}/utillib
 
     ${EXTERNAL_INSTALL_LOCATION}/cpp-peglib
     ${EXTERNAL_INSTALL_LOCATION}/cxxopts/include

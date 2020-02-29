@@ -15,8 +15,8 @@
 
 #include <stack>
 
-#include "../type/function_type.hpp"
-#include "../type/type_name.hpp"
+#include <type/function_type.hpp>
+#include <type/type_name.hpp>
 
 namespace by {
 namespace ast {

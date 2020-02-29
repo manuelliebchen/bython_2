@@ -5,7 +5,7 @@
  *      Author: jemand
  */
 
-#include "../expression/arithmetic_expression.hpp"
+#include "arithmetic_expression.hpp"
 
 #include "none_arithmetic_expression.hpp"
 

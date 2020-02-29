@@ -10,7 +10,7 @@
 
 #include <memory>
 
-#include "../../ast/expression/expression.hpp"
+#include "expression.hpp"
 
 namespace by::ast {
 

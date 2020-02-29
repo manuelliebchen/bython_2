@@ -39,14 +39,6 @@ else()
   message(STATUS "Could not find clang-format")
 endif()
 
-#find_program(CPPCLEAN "cppclean")
-#if(CPPCLEAN) 
-#	add_custom_target(
-#		cppclean ALL COMMAND
-#		${CPPCLEAN}
-#		${ALL_BYTHON_SOURCE_FILES})
-#endif()
-
 OPTION(BUILD_DOXYGEN "Build the documentation" ON)
 if(BUILD_DOXYGEN)
     find_package(Doxygen)

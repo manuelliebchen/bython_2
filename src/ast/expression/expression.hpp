@@ -11,10 +11,12 @@
 #include <llvm/IR/Value.h>
 #include <memory>
 
-#include "../../bc/build_context.hpp"
-#include "../../type/type_name.hpp"
+#include <peglib.h>
+
+#include <bc/build_context.hpp>
+#include <type/type_name.hpp>
+
 #include "../base.hpp"
-#include "peglib.h"
 
 namespace by::ast {
 

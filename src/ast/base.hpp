@@ -13,7 +13,7 @@
 #include <string>
 #include <unordered_set>
 
-#include "peglib.h"
+#include <peglib.h>
 
 namespace by::ast {
 

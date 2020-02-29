@@ -10,10 +10,12 @@
 
 #include <memory>
 
-#include "../type/type_name.hpp"
+#include <peglib.h>
+
+#include <type/type_name.hpp>
+
 #include "base.hpp"
 #include "expression/block_expression.hpp"
-#include "peglib.h"
 
 namespace by::ast {
 

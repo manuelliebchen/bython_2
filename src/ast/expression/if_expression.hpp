@@ -11,8 +11,8 @@
 #include <optional>
 #include <variant>
 
-#include "../../ast/expression/block_expression.hpp"
-#include "../../ast/expression/expression.hpp"
+#include "block_expression.hpp"
+#include "expression.hpp"
 
 namespace by::ast {
 
