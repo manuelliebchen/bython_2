@@ -11,7 +11,11 @@ namespace by::ast {
 
 ASTRoot::ASTRoot(const std::shared_ptr<peg::Ast> &ast) : ASTBase(ast, nullptr) {
   for (const auto &node : ast->nodes) {
-    functions.push_back(std::make_shared<ASTFunction>(node, parent));
+    if (node->original_name == "Function") {
+      functions.push_back(std::make_shared<ASTFunction>(node));
+    } else if (node->original_name == "Extern") {
+      externs.push_back(std::make_shared<ASTExtern>(node));
+    }
   }
 }
 
@@ -19,6 +23,16 @@ void ASTRoot::get_dependencies(std::unordered_set<std::string> &functions,
                                std::unordered_set<std::string> &types) const {
   for (const auto &func : this->functions) {
     func->get_dependencies(functions, types);
+  }
+}
+
+void ASTRoot::determine_type(type::variable_map &symbols) {
+
+  for (const auto &func : externs) {
+    func->determine_type(symbols);
+  }
+  for (const auto &func : functions) {
+    func->determine_type(symbols);
   }
 }
 

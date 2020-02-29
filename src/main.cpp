@@ -65,9 +65,7 @@ auto main(int argc, char *argv[]) -> int {
     build_context->symbols = by::util::get_buildin_functions();
 
     try {
-      for (const auto &func : root->get_functions()) {
-        func->determine_type(build_context->symbols);
-      }
+      root->determine_type(build_context->symbols);
     } catch (const by::type::type_deduction_exeption &tde) {
       std::cerr << tde.what() << std::endl;
       return 1;

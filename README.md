@@ -30,6 +30,5 @@ export LD_LIBRARY_PATH=lib
 ```
 
 ## Todo
-- extern func ...
 - list functions
 - records

@@ -11,9 +11,8 @@
 
 namespace by::ast {
 
-ASTFunction::ASTFunction(const std::shared_ptr<peg::Ast> &ast,
-                         ASTBlockExpression *parent)
-    : ASTExpression(ast, parent) {
+ASTFunction::ASTFunction(const std::shared_ptr<peg::Ast> &ast)
+    : ASTExpression(ast, nullptr) {
   if (ast->original_name != "Function") {
     throw bad_ast_exeption(
         ast, (std::string("Function but was ") + ast->original_name).c_str());

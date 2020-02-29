@@ -1,7 +1,7 @@
-Program <- %ows Function*
+Program <- %ows (Extern / Function)*
 
 # Extern Function
-#Extern <- 'extern' %ows 'func' %ows Identifier FunctionType
+Extern <- 'extern' %ows 'func' %ows Identifier FunctionType
 
 # Functions
 Function <- 'func' %ows Identifier ('=' %ows CommaSeparatedList(VariableDeclaration))? '->' %ows TypeName BlockExpression

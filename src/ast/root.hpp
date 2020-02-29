@@ -13,17 +13,21 @@
 #include <vector>
 
 #include "base.hpp"
+#include "extern.hpp"
 #include "function.hpp"
 
 namespace by::ast {
 
 class ASTFunction;
+class ASTExtern;
 
 class ASTRoot : public ASTBase {
 public:
   ASTRoot(const std::shared_ptr<peg::Ast> &);
 
   void reorder_functions(const std::vector<std::string> &order);
+
+  void determine_type(type::variable_map &);
 
   const std::vector<std::shared_ptr<by::ast::ASTFunction>> &get_functions();
 
@@ -32,6 +36,7 @@ public:
 
 private:
   std::vector<std::shared_ptr<by::ast::ASTFunction>> functions;
+  std::vector<std::shared_ptr<by::ast::ASTExtern>> externs;
 
   friend std::ostream &operator<<(std::ostream &, const ASTRoot &);
 };

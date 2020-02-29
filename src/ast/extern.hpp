@@ -5,8 +5,8 @@
  *      Author: Manuel Liebchen
  */
 
-#ifndef SRC_ASTFUNCTION_HPP_
-#define SRC_ASTFUNCTION_HPP_
+#ifndef SRC_ASTEXTERN_HPP_
+#define SRC_ASTEXTERN_HPP_
 
 #include <memory>
 #include <string>
@@ -23,14 +23,12 @@
 
 namespace by::ast {
 
-class ASTFunction : public ASTExpression {
+class ASTExtern : public ASTExpression {
 protected:
   std::string name;
-  std::vector<std::shared_ptr<by::ast::ASTVariableDeclaration>> parameters;
-  std::shared_ptr<by::ast::ASTBlockExpression> blockexpression;
 
 public:
-  ASTFunction(const std::shared_ptr<peg::Ast> &);
+  ASTExtern(const std::shared_ptr<peg::Ast> &);
 
   type::TypeName_ptr determine_type(type::variable_map &);
 
@@ -40,11 +38,11 @@ public:
 
   llvm::Value *build_ir(std::unique_ptr<by::bc::BuildContext> &) const;
 
-  friend std::ostream &operator<<(std::ostream &, const ASTFunction &);
+  friend std::ostream &operator<<(std::ostream &, const ASTExtern &);
 };
 
-std::ostream &operator<<(std::ostream &, const ASTFunction &);
+std::ostream &operator<<(std::ostream &, const ASTExtern &);
 
 } // namespace by::ast
 
-#endif /* SRC_ASTFUNCTION_HPP_ */
+#endif /* SRC_ASTEXTERN_HPP_ */
