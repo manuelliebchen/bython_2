@@ -1,4 +1,6 @@
 func main = argc: Int, argv: List[String] -> Int {
-    println_str("Hello World!");
+    printf("Hello World!");
     0
 }
+
+extern func printf = String -> Void

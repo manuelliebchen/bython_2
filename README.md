@@ -24,7 +24,7 @@ When in build directory.
 
 ```
 bin/bython ../examples/hello_world.by 1> hello_world.ll
-clang -o hello_world hello_world.ll lib/libbython-stdlib.so
+clang -o hello_world hello_world.ll -Llibc.so
 export LD_LIBRARY_PATH=lib
 ./hello_world
 ```

@@ -95,7 +95,6 @@ auto compiling_order(const std::shared_ptr<by::ast::ASTRoot> &root)
       }
     }
   }
-  CHECK
   std::reverse(order.begin(), order.end());
   return order;
 };
