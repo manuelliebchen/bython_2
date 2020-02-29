@@ -4,7 +4,7 @@ Program <- %ows Function*
 #Extern <- 'extern' %ows 'func' %ows Identifier ('=' %ows (( 'Void'  %ows ) / CommaSeparatedList(VariableDeclaration)))? ('->' %ows TypeName)?
 
 # Functions
-Function <- 'func' %ows Identifier ('=' %ows (( 'Void'  %ows ) / CommaSeparatedList(VariableDeclaration)))? ('->' %ows TypeName)? BlockExpression
+Function <- 'func' %ows Identifier ('=' %ows CommaSeparatedList(VariableDeclaration))? ('->' %ows TypeName)? BlockExpression
 VariableDeclaration <- Identifier ':' %ows TypeName
 
 # Function insides
