@@ -7,6 +7,8 @@ func ggt = n: Int, k: Int -> Int {
 }
 
 func main = argc: Int, argv: List[String] -> Int {
-    println_int(ggt(42,77));
+    printf("%d", ggt(42,77));
     0
 }
+
+extern func printf = String, Int -> Void

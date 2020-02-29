@@ -21,10 +21,12 @@ func isprime_ = n:Int, k:Int -> Bool {
 func main -> Int {
 	let a = 4001;
     if isprime(a) {
-        println_str("The given number is a prime number.");
+        printf("The given number is a prime number.");
     }
     else {
-        println_str("The given number is not a prime number.");
+        printf("The given number is not a prime number.");
     };
     0
 }
+
+extern func printf = String -> Void
