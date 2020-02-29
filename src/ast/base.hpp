@@ -19,17 +19,10 @@ namespace by::ast {
 
 class ASTBlockExpression;
 
-struct bad_ast_exeption : std::exception {
-  const std::shared_ptr<peg::Ast> ast;
-  const std::string name;
-  bad_ast_exeption(const std::shared_ptr<peg::Ast> ast, const char *name)
-      : ast(ast), name(std::string(name)) {}
-  [[nodiscard]] const char *what() const noexcept override {
-    return (ast->path + std::string(":") + std::to_string(ast->line) +
-            std::string(":") + std::to_string(ast->column) + std::string(":") +
-            name)
-        .c_str();
-  }
+struct ast_error : std::runtime_error {
+  ast_error(const std::shared_ptr<peg::Ast> ast, std::string what_str)
+      : runtime_error(ast->path + ":" + std::to_string(ast->line) + ":" +
+                      std::to_string(ast->column) + ": " + what_str) {}
 };
 
 using identifier_set = std::unordered_set<std::string>;

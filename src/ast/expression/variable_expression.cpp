@@ -15,11 +15,6 @@ namespace by::ast {
 ASTVariableExpression::ASTVariableExpression(
     const std::shared_ptr<peg::Ast> &ast, ASTBlockExpression *parent)
     : ASTExpression(ast, parent) {
-  if (ast->original_name != "VariableExpression") {
-    throw bad_ast_exeption(
-        ast, (std::string("VariableExpression but was ") + ast->original_name)
-                 .c_str());
-  }
   name = util::to_string(ast->nodes[0]);
   if (ast->nodes.size() > 1) {
     next = std::make_shared<ASTVariableExpression>(ast->nodes[1], parent);

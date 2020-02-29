@@ -12,12 +12,6 @@ namespace by::ast {
 ASTStringConstant::ASTStringConstant(const std::shared_ptr<peg::Ast> &ast,
                                      ASTBlockExpression *parent)
     : ASTConstant(ast, parent, "String") {
-  if (ast->original_name != "StringConstant") {
-    throw bad_ast_exeption(
-        ast,
-        (std::string("StringConstant but was ") + ast->original_name).c_str());
-  }
-
   value = ast->token;
 }
 

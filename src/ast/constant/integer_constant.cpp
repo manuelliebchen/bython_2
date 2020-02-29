@@ -12,11 +12,6 @@ namespace by::ast {
 ASTIntegerConstant::ASTIntegerConstant(const std::shared_ptr<peg::Ast> &ast,
                                        ASTBlockExpression *parent)
     : ASTConstant(ast, parent, "Int") {
-  if (ast->original_name != "IntegerConstant") {
-    throw bad_ast_exeption(
-        ast,
-        (std::string("IntegerConstant but was ") + ast->original_name).c_str());
-  }
   value = std::stoi(ast->token);
 }
 

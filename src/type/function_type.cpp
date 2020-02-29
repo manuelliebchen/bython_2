@@ -11,11 +11,6 @@ namespace by::type {
 
 FunctionType::FunctionType(const std::shared_ptr<peg::Ast> &ast)
     : TypeName(ast->nodes.back()) {
-  if (ast->original_name != "FunctionType") {
-    throw ast::bad_ast_exeption(
-        ast,
-        (std::string("FunctionType but was ") + ast->original_name).c_str());
-  }
   for (size_t i = 0; i < ast->nodes.size() - 1; ++i) {
     parameters.emplace_back(ast->nodes[i]);
   }

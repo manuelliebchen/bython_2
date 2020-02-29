@@ -14,11 +14,6 @@ namespace by::ast {
 ASTLetStatement::ASTLetStatement(const std::shared_ptr<peg::Ast> &ast,
                                  ASTBlockExpression *parent)
     : ASTExpression(ast, parent) {
-  if (ast->original_name != "LetStatement") {
-    throw bad_ast_exeption(
-        ast,
-        (std::string("LetStatement but was ") + ast->original_name).c_str());
-  }
   var = util::to_string(ast->nodes[0]);
   value = create_expression(ast->nodes[1], parent);
 }

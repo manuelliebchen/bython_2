@@ -22,12 +22,6 @@ namespace by::ast {
 ASTNoneArithmeticExpression::ASTNoneArithmeticExpression(
     const std::shared_ptr<peg::Ast> &ast, ASTBlockExpression *parent)
     : ASTExpression(ast, parent) {
-  if (ast->original_name != "NoneArithmeticExpression") {
-    throw bad_ast_exeption(
-        ast,
-        (std::string("NoneArithmeticExpression but was ") + ast->original_name)
-            .c_str());
-  }
 
   size_t expression_node = 0;
   if (ast->nodes[0]->original_name == "UnaryOperator") {
@@ -59,10 +53,8 @@ ASTNoneArithmeticExpression::ASTNoneArithmeticExpression(
   } else if (expression->original_name == "StringConstant") {
     rhs = std::make_shared<ASTStringConstant>(expression, parent);
   } else {
-    throw bad_ast_exeption(
-        ast, (std::string("NoneArithmeticExpression subtype was ") +
-              expression->original_name)
-                 .c_str());
+    throw ast_error(ast, std::string("Expected Expression but was ") +
+                             expression->original_name);
   }
 }
 

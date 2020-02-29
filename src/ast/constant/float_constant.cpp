@@ -12,11 +12,6 @@ namespace by::ast {
 ASTFloatConstant::ASTFloatConstant(const std::shared_ptr<peg::Ast> &ast,
                                    ASTBlockExpression *parent)
     : ASTConstant(ast, parent, "Float") {
-  if (ast->original_name != "FloatConstant") {
-    throw bad_ast_exeption(
-        ast,
-        (std::string("FloatConstant but was ") + ast->original_name).c_str());
-  }
   value = std::stof(ast->token);
 }
 

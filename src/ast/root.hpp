@@ -30,6 +30,7 @@ public:
   void determine_type(type::variable_map &);
 
   const std::vector<std::shared_ptr<by::ast::ASTFunction>> &get_functions();
+  const std::vector<std::shared_ptr<by::ast::ASTExtern>> &get_externs();
 
   void get_dependencies(std::unordered_set<std::string> &functions,
                         std::unordered_set<std::string> &types) const;

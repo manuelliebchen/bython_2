@@ -13,11 +13,6 @@ namespace by::ast {
 ASTVariableDeclaration::ASTVariableDeclaration(
     const std::shared_ptr<peg::Ast> &ast, ASTBlockExpression *parent)
     : ASTBase(ast, parent) {
-  if (ast->original_name != "VariableDeclaration") {
-    throw bad_ast_exeption(
-        ast, (std::string("VariableDeclaration but was ") + ast->original_name)
-                 .c_str());
-  }
   name = util::to_string(ast->nodes[0]);
   type = std::make_shared<const type::TypeName>(ast->nodes[1]);
 

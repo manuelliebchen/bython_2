@@ -13,10 +13,6 @@ namespace by::ast {
 
 ASTExtern::ASTExtern(const std::shared_ptr<peg::Ast> &ast)
     : ASTExpression(ast, nullptr) {
-  if (ast->original_name != "Extern") {
-    throw bad_ast_exeption(
-        ast, (std::string("Extern but was ") + ast->original_name).c_str());
-  }
   name = util::to_string(ast->nodes[0]);
   type = std::make_shared<const type::FunctionType>(ast->nodes[1]);
 }

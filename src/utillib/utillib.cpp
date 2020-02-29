@@ -8,6 +8,7 @@
 #include "utillib.hpp"
 
 #include <fstream>
+#include <stdexcept>
 #include <unordered_map>
 #include <unordered_set>
 
@@ -15,31 +16,33 @@ namespace by::util {
 
 auto get_buildin_functions() -> type::variable_map {
   std::unordered_map<std::string, type::FunctionType> buildins;
-  buildins.insert({{"println_int"}, {{"Void"}, {{"Int"}}}});
-  buildins.insert({{"print_int"}, {{"Void"}, {{"Int"}}}});
-  buildins.insert({{"println_float"}, {{"Void"}, {{"Float"}}}});
-  buildins.insert({{"print_float"}, {{"Void"}, {{"Float"}}}});
-  buildins.insert({{"println_str"}, {{"Void"}, {{"String"}}}});
-  buildins.insert({{"print_str"}, {{"Void"}, {{"String"}}}});
-
-  buildins.insert({{"list_int_init"}, {{"List*"}, {}}});
-  buildins.insert({{"list_float_init"}, {{"List*"}, {}}});
-  buildins.insert({{"list_string_init"}, {{"List*"}, {}}});
-  buildins.insert({{"list_merge"}, {{"List*"}, {{"List*"}, {"List*"}}}});
-  buildins.insert({{"list_pop_front"}, {{"List*"}, {{"List*"}}}});
-  buildins.insert({{"list_print"}, {{"Void"}, {{"List*"}}}});
-  buildins.insert({{"list_size"}, {{"Int"}, {{"List*"}}}});
-  buildins.insert({{"list_push_back"}, {{"List*"}, {{"List*"}, {"Void*"}}}});
-  buildins.insert({{"list_get"}, {{"Void*"}, {{"List*"}, {"Int"}}}});
-  buildins.insert({{"list_get_int"}, {{"Int"}, {{"List*"}, {"Int"}}}});
-  buildins.insert({{"list_set"}, {{"List*"}, {{"List*"}, {"Int"}, {"Void*"}}}});
-
-  buildins.insert({{"iabs"}, {{"Int"}, {{"Int"}}}});
+  //  buildins.insert({{"println_int"}, {{"Void"}, {{"Int"}}}});
+  //  buildins.insert({{"print_int"}, {{"Void"}, {{"Int"}}}});
+  //  buildins.insert({{"println_float"}, {{"Void"}, {{"Float"}}}});
+  //  buildins.insert({{"print_float"}, {{"Void"}, {{"Float"}}}});
+  //  buildins.insert({{"println_str"}, {{"Void"}, {{"String"}}}});
+  //  buildins.insert({{"print_str"}, {{"Void"}, {{"String"}}}});
+  //
+  //  buildins.insert({{"list_int_init"}, {{"List*"}, {}}});
+  //  buildins.insert({{"list_float_init"}, {{"List*"}, {}}});
+  //  buildins.insert({{"list_string_init"}, {{"List*"}, {}}});
+  //  buildins.insert({{"list_merge"}, {{"List*"}, {{"List*"}, {"List*"}}}});
+  //  buildins.insert({{"list_pop_front"}, {{"List*"}, {{"List*"}}}});
+  //  buildins.insert({{"list_print"}, {{"Void"}, {{"List*"}}}});
+  //  buildins.insert({{"list_size"}, {{"Int"}, {{"List*"}}}});
+  //  buildins.insert({{"list_push_back"}, {{"List*"}, {{"List*"},
+  //  {"Void*"}}}}); buildins.insert({{"list_get"}, {{"Void*"}, {{"List*"},
+  //  {"Int"}}}}); buildins.insert({{"list_get_int"}, {{"Int"}, {{"List*"},
+  //  {"Int"}}}}); buildins.insert({{"list_set"}, {{"List*"}, {{"List*"},
+  //  {"Int"}, {"Void*"}}}});
+  //
+  //  buildins.insert({{"iabs"}, {{"Int"}, {{"Int"}}}});
   type::variable_map symbols;
-  for (const auto &func : buildins) {
-    symbols.emplace(func.first,
-                    std::make_shared<const type::FunctionType>(func.second));
-  }
+  //  for (const auto &func : buildins) {
+  //    symbols.emplace(func.first,
+  //                    std::make_shared<const
+  //                    type::FunctionType>(func.second));
+  //  }
 
   return symbols;
 };
@@ -48,11 +51,14 @@ auto compiling_order(const std::shared_ptr<by::ast::ASTRoot> &root)
     -> std::vector<std::string> {
   std::vector<std::string> order;
   std::unordered_map<std::string, std::unordered_set<std::string>> functions;
+  for (const auto &ext : root->get_externs()) {
+    functions.emplace(ext->get_name(), std::unordered_set<std::string>());
+  }
   for (const auto &func : root->get_functions()) {
     std::unordered_set<std::string> all_dep;
     std::unordered_set<std::string> type_dep;
     func->get_dependencies(all_dep, type_dep);
-    functions.insert(std::make_pair(func->get_name(), all_dep));
+    functions.emplace(func->get_name(), all_dep);
   }
 
   std::unordered_map<std::string, std::unordered_set<std::string>> list;
@@ -63,7 +69,7 @@ auto compiling_order(const std::shared_ptr<by::ast::ASTRoot> &root)
     }
   }
   if (list.empty()) {
-    throw by::ast::bad_ast_exeption(root->get_ast(), "No main function found!");
+    throw std::runtime_error("No main function found!");
   }
 
   while (!list.empty()) {
@@ -89,6 +95,7 @@ auto compiling_order(const std::shared_ptr<by::ast::ASTRoot> &root)
       }
     }
   }
+  CHECK
   std::reverse(order.begin(), order.end());
   return order;
 };
@@ -97,7 +104,7 @@ auto to_string(const std::shared_ptr<peg::Ast> &ast) -> std::string {
   if (ast->original_name == "Identifier" && ast->is_token) {
     return ast->token;
   }
-  throw by::ast::bad_ast_exeption(ast, "Identifier");
+  throw by::ast::ast_error(ast, "Expected Identifier");
 };
 
 auto read_file(const std::string &filepath) -> std::string {

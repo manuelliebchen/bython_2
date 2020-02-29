@@ -21,10 +21,6 @@ const std::shared_ptr<const TypeName> TypeName::None =
 TypeName::TypeName() : name("None"), subtypes() {}
 
 TypeName::TypeName(const std::shared_ptr<peg::Ast> &ast) {
-  if (ast->original_name != "TypeName") {
-    throw ast::bad_ast_exeption(
-        ast, (std::string("TypeName but was ") + ast->original_name).c_str());
-  }
   name = util::to_string(ast->nodes[0]);
   if (name.back() == '*') {
     generic = true;

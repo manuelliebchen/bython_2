@@ -13,11 +13,6 @@ namespace by::ast {
 
 ASTFunction::ASTFunction(const std::shared_ptr<peg::Ast> &ast)
     : ASTExpression(ast, nullptr) {
-  if (ast->original_name != "Function") {
-    throw bad_ast_exeption(
-        ast, (std::string("Function but was ") + ast->original_name).c_str());
-  }
-
   size_t varscount = ast->nodes.size() - 2;
   name = util::to_string(ast->nodes[0]);
   type::TypeName_ptr returntype;

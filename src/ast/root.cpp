@@ -13,7 +13,7 @@ ASTRoot::ASTRoot(const std::shared_ptr<peg::Ast> &ast) : ASTBase(ast, nullptr) {
   for (const auto &node : ast->nodes) {
     if (node->original_name == "Function") {
       functions.push_back(std::make_shared<ASTFunction>(node));
-    } else if (node->original_name == "Extern") {
+    } else {
       externs.push_back(std::make_shared<ASTExtern>(node));
     }
   }
@@ -21,6 +21,10 @@ ASTRoot::ASTRoot(const std::shared_ptr<peg::Ast> &ast) : ASTBase(ast, nullptr) {
 
 void ASTRoot::get_dependencies(std::unordered_set<std::string> &functions,
                                std::unordered_set<std::string> &types) const {
+
+  //  for (const auto &func : this->externs) {
+  //    func->get_dependencies(functions, types);
+  //  }
   for (const auto &func : this->functions) {
     func->get_dependencies(functions, types);
   }
@@ -45,7 +49,9 @@ void ASTRoot::reorder_functions(const std::vector<std::string> &order) {
                      [&](std::shared_ptr<by::ast::ASTFunction> const &f) {
                        return f->get_name() == func_name;
                      });
-    new_functions.push_back((*func));
+    if (func != functions.end()) {
+      new_functions.push_back((*func));
+    }
   }
   functions = new_functions;
 }
@@ -53,6 +59,11 @@ void ASTRoot::reorder_functions(const std::vector<std::string> &order) {
 auto ASTRoot::get_functions()
     -> const std::vector<std::shared_ptr<by::ast::ASTFunction>> & {
   return functions;
+}
+
+auto ASTRoot::get_externs()
+    -> const std::vector<std::shared_ptr<by::ast::ASTExtern>> & {
+  return externs;
 }
 
 auto operator<<(std::ostream &os, const ASTRoot &root) -> std::ostream & {

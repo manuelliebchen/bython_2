@@ -12,11 +12,6 @@ namespace by::ast {
 ASTIfExpression::ASTIfExpression(const std::shared_ptr<peg::Ast> &ast,
                                  ASTBlockExpression *parent)
     : ASTExpression(ast, parent) {
-  if (ast->original_name != "IfExpression") {
-    throw bad_ast_exeption(
-        ast,
-        (std::string("IfExpression but was ") + ast->original_name).c_str());
-  }
 
   condition = create_expression(ast->nodes[0], parent);
   block = std::make_shared<ASTBlockExpression>(ast->nodes[1], parent);
@@ -25,10 +20,6 @@ ASTIfExpression::ASTIfExpression(const std::shared_ptr<peg::Ast> &ast,
       alternativ = std::make_shared<ASTIfExpression>(ast->nodes[2], parent);
     } else if (ast->nodes[2]->original_name == "BlockExpression") {
       alternativ = std::make_shared<ASTBlockExpression>(ast->nodes[2], parent);
-    } else {
-      throw bad_ast_exeption(ast, (std::string("IfExpression but was ") +
-                                   ast->nodes[2]->original_name)
-                                      .c_str());
     }
   }
 }

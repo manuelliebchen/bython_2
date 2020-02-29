@@ -14,11 +14,6 @@ namespace by::ast {
 ASTBlockExpression::ASTBlockExpression(const std::shared_ptr<peg::Ast> &ast,
                                        ASTBlockExpression *parent)
     : ASTExpression(ast, parent) {
-  if (ast->original_name != "BlockExpression") {
-    throw bad_ast_exeption(
-        ast,
-        (std::string("BlockExpression but was ") + ast->original_name).c_str());
-  }
   for (const std::shared_ptr<peg::Ast> &n : ast->nodes) {
     expressions.push_back(create_expression(n, this));
   }
@@ -29,11 +24,6 @@ ASTBlockExpression::ASTBlockExpression(
         &preregistered_variables,
     const std::shared_ptr<peg::Ast> &ast, ASTBlockExpression *parent)
     : ASTExpression(ast, parent) {
-  if (ast->original_name != "BlockExpression") {
-    throw bad_ast_exeption(
-        ast,
-        (std::string("BlockExpression but was ") + ast->original_name).c_str());
-  }
   for (const auto &variable : preregistered_variables) {
     register_variable(variable->get_name(), variable->get_type());
   }

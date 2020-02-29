@@ -12,11 +12,6 @@ namespace by::ast {
 ASTBooleanConstant::ASTBooleanConstant(const std::shared_ptr<peg::Ast> &ast,
                                        ASTBlockExpression *parent)
     : ASTConstant(ast, parent, "Bool") {
-  if (ast->original_name != "BooleanConstant") {
-    throw bad_ast_exeption(
-        ast,
-        (std::string("BooleanConstant but was ") + ast->original_name).c_str());
-  }
 
   value = false;
   if (ast->token == "true") {

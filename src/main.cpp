@@ -45,14 +45,9 @@ auto main(int argc, char *argv[]) -> int {
 
     // Building internal AST
     std::shared_ptr<by::ast::ASTRoot> root;
-    try {
-      std::cerr << "Constructing AST!\n";
-      root = std::make_shared<by::ast::ASTRoot>(basic);
-      std::cerr << "Success!\n";
-    } catch (const by::ast::bad_ast_exeption &bae) {
-      std::cerr << bae.what() << std::endl;
-      return 1;
-    }
+    std::cerr << "Constructing AST!\n";
+    root = std::make_shared<by::ast::ASTRoot>(basic);
+    std::cerr << "Success!\n";
 
     // Calculating compiling order
     std::cerr << "Generate compiling Order: ";
@@ -64,12 +59,8 @@ auto main(int argc, char *argv[]) -> int {
     auto build_context = std::make_unique<by::bc::BuildContext>();
     build_context->symbols = by::util::get_buildin_functions();
 
-    try {
-      root->determine_type(build_context->symbols);
-    } catch (const by::type::type_deduction_exeption &tde) {
-      std::cerr << tde.what() << std::endl;
-      return 1;
-    }
+    root->determine_type(build_context->symbols);
+
     std::cerr << "Success!\n";
 
     std::cerr << "Compiling:\n";
@@ -83,7 +74,7 @@ auto main(int argc, char *argv[]) -> int {
     build_context->module.print(rso, nullptr);
     std::cerr << "Success!\n";
   } catch (const std::exception &e) {
-    std::cerr << "Build failed:\n";
+    std::cerr << "\nBuild failed:\n";
     std::cerr << e.what() << std::endl;
     exit(1);
   }
