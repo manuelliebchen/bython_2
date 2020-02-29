@@ -19,6 +19,8 @@ namespace by::type {
 struct FunctionType : public TypeName {
   std::vector<TypeName> parameters;
 
+  FunctionType(const std::shared_ptr<peg::Ast> &ast);
+
   FunctionType(const TypeName &);
   FunctionType(const TypeName &, std::vector<TypeName> const &);
 

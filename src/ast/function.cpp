@@ -98,10 +98,11 @@ auto ASTFunction::build_ir(std::unique_ptr<by::bc::BuildContext> &bc) const
   unsigned idx = 0;
   for (auto &arg : function->args()) {
     std::string name = parameters[idx++]->get_name();
-
-    llvm::AllocaInst *variable_value = bc->builder.CreateAlloca(arg.getType());
-    bc->builder.CreateStore(&arg, variable_value);
     arg.setName(name);
+
+    llvm::Type *arg_type = arg.getType();
+    llvm::AllocaInst *variable_value = bc->builder.CreateAlloca(arg_type);
+    bc->builder.CreateStore(&arg, variable_value);
     bc->variables.back().emplace(name, variable_value);
   }
 
