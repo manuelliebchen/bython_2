@@ -16,7 +16,7 @@
 #include <string>
 #include <unordered_set>
 
-#include "../expression.hpp"
+#include "expression.hpp"
 #include "type/type_name.hpp"
 
 namespace by {

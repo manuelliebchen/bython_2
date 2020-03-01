@@ -5,6 +5,8 @@
  *      Author: Manuel Liebchen
  */
 
+#include "call_expression.hpp"
+
 #include <algorithm>
 #include <llvm/IR/DerivedTypes.h>
 #include <llvm/IR/IRBuilder.h>
@@ -14,9 +16,7 @@
 #include <stddef.h>
 
 #include "bc/build_context.hpp"
-#include "call_expression.hpp"
-
-#include "../expression.hpp"
+#include "expression.hpp"
 #include "type/function_type.hpp"
 
 namespace by {

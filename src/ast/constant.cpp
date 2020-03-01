@@ -6,13 +6,14 @@
  */
 
 #include "constant.hpp"
+
+#include <utility> // for move
+
 #include "boolean_constant.hpp" // for operator<<, ASTBooleanConstant
+#include "expression.hpp"       // for operator<<, ASTExpression
 #include "float_constant.hpp"   // for operator<<, ASTFloatConstant
 #include "integer_constant.hpp" // for operator<<, ASTIntegerConstant
 #include "string_constant.hpp"  // for operator<<, ASTStringConstant
-#include <utility>              // for move
-
-#include "../expression.hpp" // for operator<<, ASTExpression
 namespace by::ast {
 class ASTBlockExpression;
 }

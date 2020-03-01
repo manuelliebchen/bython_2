@@ -8,7 +8,7 @@
 #include <vector>
 
 #include "ast/expression.hpp"
-#include "ast/expression/block_expression.hpp"
+#include "block_expression.hpp"
 #include "peglib.h"
 #include "type/type_name.hpp"
 #include "variable_declaration.hpp"

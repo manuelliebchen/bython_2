@@ -5,6 +5,8 @@
  *      Author: Manuel Liebchen
  */
 
+#include "none_arithmetic_expression.hpp"
+
 #include <algorithm>
 #include <ext/alloc_traits.h>
 #include <llvm/IR/IRBuilder.h>
@@ -14,18 +16,17 @@
 #include <stddef.h>
 #include <vector>
 
-#include "../constant/boolean_constant.hpp"
-#include "../constant/float_constant.hpp"
-#include "../constant/integer_constant.hpp"
-#include "../constant/string_constant.hpp"
-#include "../expression.hpp"
 #include "ast/ast_error.hpp"
 #include "bc/build_context.hpp"
 #include "block_expression.hpp"
+#include "boolean_constant.hpp"
 #include "call_expression.hpp"
+#include "expression.hpp"
+#include "float_constant.hpp"
 #include "if_expression.hpp"
+#include "integer_constant.hpp"
 #include "let_statement.hpp"
-#include "none_arithmetic_expression.hpp"
+#include "string_constant.hpp"
 #include "variable_expression.hpp"
 
 namespace by::ast {

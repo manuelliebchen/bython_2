@@ -5,8 +5,8 @@
  *      Author: Manuel Liebchen
  */
 
-#ifndef SRC_AST_CONSTANT_STRING_CONSTANT_HPP_
-#define SRC_AST_CONSTANT_STRING_CONSTANT_HPP_
+#ifndef SRC_AST_STRING_CONSTANT_HPP_
+#define SRC_AST_STRING_CONSTANT_HPP_
 
 #include <llvm/IR/Value.h>
 #include <memory>
@@ -50,4 +50,4 @@ inline std::ostream &operator<<(std::ostream &os,
 
 } /* namespace by::ast */
 
-#endif /* SRC_AST_CONSTANT_STRING_CONSTANT_HPP_ */
+#endif /* SRC_AST_STRING_CONSTANT_HPP_ */

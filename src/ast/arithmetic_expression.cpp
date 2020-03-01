@@ -5,6 +5,8 @@
  *      Author: jemand
  */
 
+#include "arithmetic_expression.hpp"
+
 #include <algorithm>
 #include <llvm/IR/IRBuilder.h>
 #include <llvm/IR/Type.h>
@@ -12,10 +14,8 @@
 #include <stack>
 #include <utility>
 
-#include "arithmetic_expression.hpp"
-
-#include "../expression.hpp"
 #include "bc/build_context.hpp"
+#include "expression.hpp"
 #include "peglib.h"
 #include "type/function_type.hpp"
 

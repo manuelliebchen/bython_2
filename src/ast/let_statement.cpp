@@ -5,6 +5,8 @@
  *      Author: Manuel Liebchen
  */
 
+#include "let_statement.hpp"
+
 #include <algorithm>
 #include <llvm/IR/IRBuilder.h>
 #include <llvm/IR/Instructions.h>
@@ -12,10 +14,9 @@
 #include <stack>
 #include <vector>
 
-#include "../expression.hpp"
-#include "ast/expression/block_expression.hpp"
 #include "bc/build_context.hpp"
-#include "let_statement.hpp"
+#include "block_expression.hpp"
+#include "expression.hpp"
 
 namespace llvm {
 class Type;

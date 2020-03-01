@@ -5,6 +5,8 @@
  *      Author: Manuel Liebchen
  */
 
+#include "if_expression.hpp"
+
 #include <algorithm>
 #include <ext/alloc_traits.h>
 #include <llvm/IR/BasicBlock.h>
@@ -14,10 +16,9 @@
 #include <stack>
 #include <vector>
 
-#include "../expression.hpp"
-#include "ast/expression/block_expression.hpp"
 #include "bc/build_context.hpp"
-#include "if_expression.hpp"
+#include "block_expression.hpp"
+#include "expression.hpp"
 
 namespace by::ast {
 

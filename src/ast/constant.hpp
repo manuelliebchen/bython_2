@@ -14,7 +14,7 @@
 #include <string>             // for string
 #include <unordered_set>      // for unordered_set
 
-#include "../expression.hpp" // for ASTExpression
+#include "expression.hpp" // for ASTExpression
 namespace by::ast {
 class ASTBlockExpression;
 }

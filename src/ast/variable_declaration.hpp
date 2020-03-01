@@ -16,8 +16,8 @@
 #include <type/type_name.hpp>
 #include <unordered_set>
 
+#include "block_expression.hpp"
 #include "expression.hpp"
-#include "expression/block_expression.hpp"
 
 namespace by {
 namespace bc {

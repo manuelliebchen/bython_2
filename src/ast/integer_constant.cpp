@@ -5,13 +5,14 @@
  *      Author: Manuel Liebchen
  */
 
+#include "integer_constant.hpp"
+
 #include <limits>                 // for numeric_limits, numeric_limits<...
 #include <llvm/IR/Constants.h>    // for ConstantInt
 #include <llvm/IR/DerivedTypes.h> // for IntegerType
 
-#include "ast/constant/constant.hpp" // for ASTConstant
-#include "bc/build_context.hpp"      // for BuildContext
-#include "integer_constant.hpp"
+#include "bc/build_context.hpp" // for BuildContext
+#include "constant.hpp"         // for ASTConstant
 
 namespace by::ast {
 class ASTBlockExpression;

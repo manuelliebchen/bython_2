@@ -5,12 +5,13 @@
  *      Author: Manuel Liebchen
  */
 
+#include "float_constant.hpp"
+
 #include <llvm/ADT/APFloat.h>  // for APFloat
 #include <llvm/IR/Constants.h> // for ConstantFP
 
-#include "ast/constant/constant.hpp" // for ASTConstant
-#include "bc/build_context.hpp"      // for BuildContext
-#include "float_constant.hpp"
+#include "bc/build_context.hpp" // for BuildContext
+#include "constant.hpp"         // for ASTConstant
 
 namespace by::ast {
 class ASTBlockExpression;
