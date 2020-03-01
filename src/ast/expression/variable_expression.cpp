@@ -14,6 +14,7 @@
 #include <utility>
 #include <vector>
 
+#include "ast/base.hpp"
 #include "ast/expression/expression.hpp"
 #include "bc/build_context.hpp"
 #include "block_expression.hpp"

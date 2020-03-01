@@ -19,10 +19,6 @@
 #include "bc/build_context.hpp"
 #include "if_expression.hpp"
 
-namespace llvm {
-class Value;
-} // namespace llvm
-
 namespace by::ast {
 
 ASTIfExpression::ASTIfExpression(const std::shared_ptr<peg::Ast> &ast,

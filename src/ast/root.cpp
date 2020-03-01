@@ -6,13 +6,23 @@
  */
 
 #include <algorithm>
+#include <llvm/Support/raw_os_ostream.h>
 #include <ostream>
+#include <stdexcept>
+#include <unordered_map>
+#include <utility>
 
 #include "ast/base.hpp"
 #include "ast/extern.hpp"
 #include "ast/function.hpp"
 #include "peglib.h"
 #include "root.hpp"
+
+namespace by {
+namespace bc {
+struct BuildContext;
+} // namespace bc
+} // namespace by
 
 namespace by::ast {
 
@@ -26,6 +36,34 @@ ASTRoot::ASTRoot(const std::shared_ptr<peg::Ast> &ast) : ASTBase(ast, nullptr) {
   }
 }
 
+void ASTRoot::compile(std::ostream &out) {
+  // Calculating compiling order
+  std::cerr << "Generate compiling Order: ";
+  reorder_functions();
+  std::cerr << "Success!\n";
+
+  std::cerr << "Determiining return types: ";
+  auto build_context = std::make_unique<by::bc::BuildContext>();
+  for (const auto &func : externs) {
+    func->determine_type(build_context->symbols);
+  }
+  for (const auto &func : functions) {
+    func->determine_type(build_context->symbols);
+  }
+  std::cerr << "Success!\n";
+
+  std::cerr << "Compiling:\n";
+  for (const auto &func : functions) {
+    func->build_ir(build_context);
+  }
+  std::cerr << "Success!\n";
+
+  std::cerr << "Wrinting Module!\n";
+  llvm::raw_os_ostream rso(out);
+  build_context->module.print(rso, nullptr);
+  std::cerr << "Success!\n";
+}
+
 void ASTRoot::get_dependencies(std::unordered_set<std::string> &functions,
                                std::unordered_set<std::string> &types) const {
 
@@ -34,23 +72,6 @@ void ASTRoot::get_dependencies(std::unordered_set<std::string> &functions,
   //  }
   for (const auto &func : this->functions) {
     func->get_dependencies(functions, types);
-  }
-}
-
-void ASTRoot::determine_type(type::variable_map &symbols) {
-
-  for (const auto &func : externs) {
-    func->determine_type(symbols);
-  }
-  for (const auto &func : functions) {
-    func->determine_type(symbols);
-  }
-}
-
-void ASTRoot::build_ir(
-    std::unique_ptr<by::bc::BuildContext> &build_context) const {
-  for (const auto &func : functions) {
-    func->build_ir(build_context);
   }
 }
 
@@ -113,16 +134,6 @@ void ASTRoot::reorder_functions() {
     }
   }
   this->functions = new_functions;
-}
-
-auto ASTRoot::get_functions()
-    -> const std::vector<std::shared_ptr<by::ast::ASTFunction>> & {
-  return functions;
-}
-
-auto ASTRoot::get_externs()
-    -> const std::vector<std::shared_ptr<by::ast::ASTExtern>> & {
-  return externs;
 }
 
 auto operator<<(std::ostream &os, const ASTRoot &root) -> std::ostream & {

@@ -12,6 +12,7 @@
 #include <stack>
 #include <vector>
 
+#include "ast/base.hpp"
 #include "ast/expression/block_expression.hpp"
 #include "ast/expression/expression.hpp"
 #include "bc/build_context.hpp"

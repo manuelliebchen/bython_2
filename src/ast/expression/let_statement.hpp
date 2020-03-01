@@ -8,6 +8,7 @@
 #ifndef SRC_AST_ASTLETSTATEMENT_HPP_
 #define SRC_AST_ASTLETSTATEMENT_HPP_
 
+#include <llvm/IR/Value.h>
 #include <memory>
 #include <ostream>
 #include <string>

@@ -14,6 +14,7 @@
 
 #include "../base.hpp"
 #include "../constant/constant.hpp"
+#include "../expression/expression.hpp"
 #include "arithmetic_expression.hpp"
 #include "block_expression.hpp"
 #include "call_expression.hpp"

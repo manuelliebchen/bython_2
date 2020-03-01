@@ -22,9 +22,6 @@ namespace ast {
 class ASTBlockExpression;
 } // namespace ast
 } // namespace by
-namespace llvm {
-class Value;
-} // namespace llvm
 
 namespace by::ast {
 

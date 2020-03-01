@@ -5,16 +5,14 @@
 #include <cxxopts.hpp>
 #include <fstream>
 #include <iostream>
+#include <iterator>
 #include <llvm/IR/Module.h>
-#include <llvm/Support/raw_os_ostream.h>
 #include <memory>
 #include <peglib.h>
+#include <stdexcept>
 #include <stdlib.h>
 #include <string>
 #include <vector>
-
-#include "ast/function.hpp"
-#include "type/type_name.hpp"
 
 auto read_file(const std::string &filepath) -> std::string {
   std::ifstream ifs;
@@ -71,24 +69,7 @@ auto main(int argc, char *argv[]) -> int {
     root = std::make_shared<by::ast::ASTRoot>(ast);
     std::cerr << "Success!\n";
 
-    // Calculating compiling order
-    std::cerr << "Generate compiling Order: ";
-    root->reorder_functions();
-    std::cerr << "Success!\n";
-
-    std::cerr << "Determiining return types: ";
-    auto build_context = std::make_unique<by::bc::BuildContext>();
-    root->determine_type(build_context->symbols);
-    std::cerr << "Success!\n";
-
-    std::cerr << "Compiling:\n";
-    root->build_ir(build_context);
-    std::cerr << "Success!\n";
-
-    std::cerr << "Wrinting Module!\n";
-    llvm::raw_os_ostream rso(std::cout);
-    build_context->module.print(rso, nullptr);
-    std::cerr << "Success!\n";
+    root->compile(std::cout);
   } catch (const std::exception &e) {
     std::cerr << "\nBuild failed:\n";
     std::cerr << e.what() << std::endl;

@@ -19,10 +19,6 @@
 #include "bc/build_context.hpp"
 #include "block_expression.hpp"
 
-namespace llvm {
-class Value;
-} // namespace llvm
-
 namespace by::ast {
 
 ASTBlockExpression::ASTBlockExpression(const std::shared_ptr<peg::Ast> &ast,

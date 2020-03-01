@@ -20,6 +20,7 @@
 #include <stddef.h>
 #include <unordered_map>
 
+#include "ast/base.hpp"
 #include "ast/expression/block_expression.hpp"
 #include "ast/variable_declaration.hpp"
 #include "bc/build_context.hpp"
@@ -30,7 +31,6 @@
 
 namespace llvm {
 class Type;
-class Value;
 } // namespace llvm
 
 namespace by::ast {

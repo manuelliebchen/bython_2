@@ -8,6 +8,7 @@
 #include <ostream>
 #include <vector>
 
+#include "ast/base.hpp"
 #include "extern.hpp"
 #include "peglib.h"
 #include "type/function_type.hpp"
@@ -18,9 +19,6 @@ namespace bc {
 struct BuildContext;
 } // namespace bc
 } // namespace by
-namespace llvm {
-class Value;
-} // namespace llvm
 
 namespace by::ast {
 

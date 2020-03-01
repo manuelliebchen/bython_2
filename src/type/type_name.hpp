@@ -8,7 +8,6 @@
 #ifndef SRC_AST_ASTTYPENAME_HPP_
 #define SRC_AST_ASTTYPENAME_HPP_
 
-#include "peglib.h" // for Ast
 #include <ast/base.hpp>
 #include <bits/exception.h> // for exception
 #include <iosfwd>           // for ostream, size_t
@@ -18,6 +17,8 @@
 #include <unordered_map>    // for unordered_map
 #include <unordered_set>    // for unordered_set
 #include <vector>           // for vector
+
+#include "peglib.h" // for Ast
 
 namespace llvm {
 class LLVMContext;

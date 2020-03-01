@@ -8,6 +8,7 @@
 #ifndef SRC_AST_ASTARITHMETICEXPRESSION_HPP_
 #define SRC_AST_ASTARITHMETICEXPRESSION_HPP_
 
+#include <llvm/IR/Value.h>
 #include <map>
 #include <memory>
 #include <ostream>

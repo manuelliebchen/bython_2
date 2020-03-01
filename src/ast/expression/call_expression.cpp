@@ -13,6 +13,7 @@
 #include <stack>
 #include <stddef.h>
 
+#include "ast/base.hpp"
 #include "ast/expression/expression.hpp"
 #include "bc/build_context.hpp"
 #include "call_expression.hpp"
@@ -23,9 +24,6 @@ namespace ast {
 class ASTBlockExpression;
 } // namespace ast
 } // namespace by
-namespace llvm {
-class Value;
-} // namespace llvm
 
 namespace by::ast {
 

@@ -20,6 +20,12 @@
 #include "function.hpp"
 #include "type/type_name.hpp"
 
+namespace by {
+namespace bc {
+struct BuildContext;
+} // namespace bc
+} // namespace by
+
 namespace by::ast {
 
 class ASTFunction;
@@ -29,19 +35,14 @@ class ASTRoot : public ASTBase {
 public:
   ASTRoot(const std::shared_ptr<peg::Ast> &);
 
+  void compile(std::ostream &);
+
+private:
   void reorder_functions();
-
-  void determine_type(type::variable_map &);
-
-  void build_ir(std::unique_ptr<by::bc::BuildContext> &) const;
-
-  const std::vector<std::shared_ptr<by::ast::ASTFunction>> &get_functions();
-  const std::vector<std::shared_ptr<by::ast::ASTExtern>> &get_externs();
 
   void get_dependencies(std::unordered_set<std::string> &functions,
                         std::unordered_set<std::string> &types) const;
 
-private:
   std::vector<std::shared_ptr<by::ast::ASTFunction>> functions;
   std::vector<std::shared_ptr<by::ast::ASTExtern>> externs;
 

@@ -4,7 +4,6 @@
  *  Created on: Aug 6, 2019
  *      Author: jemand
  */
-#include "type_name.hpp"
 #include <algorithm>              // for max
 #include <ext/alloc_traits.h>     // for __alloc_traits<>::value_type
 #include <llvm/IR/DerivedTypes.h> // for PointerType, IntegerType
@@ -14,6 +13,10 @@
 #include <stdexcept>              // for runtime_error
 #include <string>                 // for allocator, operator+, string, oper...
 #include <utility>                // for move
+
+#include "ast/base.hpp"
+#include "type_name.hpp"
+
 namespace llvm {
 class LLVMContext;
 }
