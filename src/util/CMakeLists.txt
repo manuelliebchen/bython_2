@@ -7,8 +7,4 @@ target_include_directories(bython-util PRIVATE
     ${EXTERNAL_INSTALL_LOCATION}/cpp-peglib
 )
 
-if (CLANG_TIDY)
-    set_target_properties(
-            bython-util PROPERTIES
-            CXX_CLANG_TIDY "${CLANG_TIDY_COMMAND}")
-endif()
+set(CMAKE_CXX_CLANG_TIDY "clang-tidy;-checks=*")

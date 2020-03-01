@@ -8,7 +8,26 @@
 #ifndef SRC_AST_CONSTANT_BOOLEAN_CONSTANT_HPP_
 #define SRC_AST_CONSTANT_BOOLEAN_CONSTANT_HPP_
 
-#include "constant.hpp"
+#include <llvm/IR/Value.h>
+#include <memory>   // for shared_ptr, unique_ptr
+#include <ostream>  // for operator<<, ostream
+#include <peglib.h> // for Ast
+
+#include "constant.hpp" // for ASTConstant
+
+namespace by {
+namespace ast {
+class ASTBlockExpression;
+}
+} // namespace by
+namespace by {
+namespace bc {
+struct BuildContext;
+}
+} // namespace by
+namespace llvm {
+class Value;
+}
 
 namespace by::ast {
 

@@ -5,9 +5,23 @@
  *      Author: Manuel Liebchen
  */
 
-#include "block_expression.hpp"
+#include <algorithm>
+#include <ext/alloc_traits.h>
+#include <stack>
+#include <stddef.h>
+#include <stdexcept>
+#include <unordered_map>
+#include <utility>
 
 #include "../variable_declaration.hpp"
+#include "ast/base.hpp"
+#include "ast/expression/expression.hpp"
+#include "bc/build_context.hpp"
+#include "block_expression.hpp"
+
+namespace llvm {
+class Value;
+} // namespace llvm
 
 namespace by::ast {
 

@@ -5,9 +5,14 @@
  *      Author: jemand
  */
 
-#include "variable_declaration.hpp"
-
 #include <util/util.hpp>
+#include <vector>
+
+#include "ast/base.hpp"
+#include "ast/expression/block_expression.hpp"
+#include "peglib.h"
+#include "type/type_name.hpp"
+#include "variable_declaration.hpp"
 
 namespace by::ast {
 

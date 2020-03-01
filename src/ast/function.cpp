@@ -5,9 +5,34 @@
  *      Author: Manuel Liebchen
  */
 
-#include "function.hpp"
-
+#include <algorithm>
+#include <ext/alloc_traits.h>
+#include <iostream>
+#include <llvm/ADT/Twine.h>
+#include <llvm/ADT/iterator_range.h>
+#include <llvm/IR/Argument.h>
+#include <llvm/IR/BasicBlock.h>
 #include <llvm/IR/Function.h>
+#include <llvm/IR/GlobalValue.h>
+#include <llvm/IR/IRBuilder.h>
+#include <llvm/IR/Instructions.h>
+#include <stack>
+#include <stddef.h>
+#include <unordered_map>
+
+#include "ast/expression/block_expression.hpp"
+#include "ast/variable_declaration.hpp"
+#include "bc/build_context.hpp"
+#include "function.hpp"
+#include "peglib.h"
+#include "type/function_type.hpp"
+#include "type/type_name.hpp"
+#include "util/util.hpp"
+
+namespace llvm {
+class Type;
+class Value;
+} // namespace llvm
 
 namespace by::ast {
 

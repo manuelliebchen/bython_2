@@ -5,7 +5,16 @@
  *      Author: Manuel Liebchen
  */
 
+#include <llvm/ADT/APFloat.h>  // for APFloat
+#include <llvm/IR/Constants.h> // for ConstantFP
+
+#include "ast/constant/constant.hpp" // for ASTConstant
+#include "bc/build_context.hpp"      // for BuildContext
 #include "float_constant.hpp"
+
+namespace by::ast {
+class ASTBlockExpression;
+}
 
 namespace by::ast {
 

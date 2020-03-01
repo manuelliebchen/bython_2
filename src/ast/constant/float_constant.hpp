@@ -8,7 +8,24 @@
 #ifndef SRC_AST_ASTFLOATCONSTANT_HPP_
 #define SRC_AST_ASTFLOATCONSTANT_HPP_
 
-#include "constant.hpp"
+#include <iosfwd> // for ostream
+#include <llvm/IR/Value.h>
+#include <memory> // for shared_ptr, unique_ptr
+#include <string> // for operator<<, to_string
+
+#include "constant.hpp" // for ASTConstant
+#include "peglib.h"     // for Ast
+
+namespace by::ast {
+class ASTBlockExpression;
+}
+
+namespace by::bc {
+struct BuildContext;
+}
+namespace llvm {
+class Value;
+}
 
 namespace by::ast {
 

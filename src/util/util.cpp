@@ -5,14 +5,29 @@
  *      Author: Manuel Liebchen
  */
 
+#include <algorithm> // for reverse
 #include <fstream>
+#include <iostream> // for operator<<, ifstream, basic_ostream, cerr
+#include <iterator> // for istreambuf_iterator, operator!=
 #include <stdexcept>
 #include <unordered_map>
 #include <unordered_set>
+#include <utility> // for pair
 
+#include "ast/base.hpp"       // for ast_error
+#include "ast/extern.hpp"     // for ASTExtern
+#include "ast/function.hpp"   // for ASTFunction
+#include "ast/root.hpp"       // for ASTRoot
+#include "peglib.h"           // for AstBase, Ast
+#include "type/type_name.hpp" // for variable_map
 #include "util.hpp"
 
-namespace by::util {
+namespace by {
+namespace type {
+struct FunctionType;
+}
+
+namespace util {
 
 auto get_buildin_functions() -> type::variable_map {
   std::unordered_map<std::string, type::FunctionType> buildins;
@@ -123,4 +138,5 @@ auto read_file(const std::string &filepath) -> std::string {
   return file_string;
 };
 
-} // namespace by::util
+} // namespace util
+} // namespace by

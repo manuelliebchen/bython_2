@@ -5,11 +5,19 @@
  *      Author: jemand
  */
 #include "type_name.hpp"
-
-#include <llvm/IR/Constants.h>
-#include <string>
-
-#include <util/util.hpp>
+#include <algorithm>              // for max
+#include <ext/alloc_traits.h>     // for __alloc_traits<>::value_type
+#include <llvm/IR/DerivedTypes.h> // for PointerType, IntegerType
+#include <llvm/IR/Type.h>         // for Type
+#include <ostream>                // for operator<<, ostream, size_t
+#include <stddef.h>               // for size_t
+#include <stdexcept>              // for runtime_error
+#include <string>                 // for allocator, operator+, string, oper...
+#include <util/util.hpp>          // for to_string
+#include <utility>                // for move
+namespace llvm {
+class LLVMContext;
+}
 
 namespace by::type {
 

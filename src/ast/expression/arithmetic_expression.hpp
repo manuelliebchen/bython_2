@@ -10,10 +10,28 @@
 
 #include <map>
 #include <memory>
-
+#include <ostream>
 #include <peglib.h>
+#include <string>
+#include <unordered_set>
 
 #include "expression.hpp"
+#include "type/type_name.hpp"
+
+namespace by {
+namespace ast {
+class ASTBlockExpression;
+} // namespace ast
+namespace bc {
+struct BuildContext;
+} // namespace bc
+namespace type {
+struct BinaryOperator;
+} // namespace type
+} // namespace by
+namespace llvm {
+class Value;
+} // namespace llvm
 
 namespace by::ast {
 

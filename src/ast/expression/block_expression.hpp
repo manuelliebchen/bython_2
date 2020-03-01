@@ -9,9 +9,23 @@
 #define SRC_AST_ASTBLOCKEXPRESSION_HPP_
 
 #include <memory>
+#include <ostream>
+#include <string>
+#include <unordered_set>
 #include <vector>
 
 #include "expression.hpp"
+#include "peglib.h"
+#include "type/type_name.hpp"
+
+namespace by {
+namespace bc {
+struct BuildContext;
+} // namespace bc
+} // namespace by
+namespace llvm {
+class Value;
+} // namespace llvm
 
 namespace by::ast {
 

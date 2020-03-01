@@ -5,9 +5,23 @@
  *      Author: Manuel Liebchen
  */
 
-#include "extern.hpp"
+#include <ostream>
+#include <vector>
 
-#include <llvm/IR/Function.h>
+#include "extern.hpp"
+#include "peglib.h"
+#include "type/function_type.hpp"
+#include "type/type_name.hpp"
+#include "util/util.hpp"
+
+namespace by {
+namespace bc {
+struct BuildContext;
+} // namespace bc
+} // namespace by
+namespace llvm {
+class Value;
+} // namespace llvm
 
 namespace by::ast {
 

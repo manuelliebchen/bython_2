@@ -8,11 +8,20 @@
 #ifndef SRC_AST_ASTTYPENAME_HPP_
 #define SRC_AST_ASTTYPENAME_HPP_
 
-#include <llvm/IR/LLVMContext.h>
-#include <llvm/IR/Type.h>
-#include <unordered_map>
-
-#include <ast/base.hpp>
+#include "peglib.h"         // for Ast
+#include <bits/exception.h> // for exception
+#include <iosfwd>           // for ostream, size_t
+#include <memory>           // for shared_ptr
+#include <string>           // for string
+#include <system_error>     // for hash
+#include <unordered_map>    // for unordered_map
+#include <vector>           // for vector
+namespace llvm {
+class LLVMContext;
+}
+namespace llvm {
+class Type;
+}
 
 namespace by::type {
 struct TypeName {

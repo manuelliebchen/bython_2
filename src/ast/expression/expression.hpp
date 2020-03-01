@@ -8,15 +8,23 @@
 #ifndef SRC_AST_ASTEXPRESSION_HPP_
 #define SRC_AST_ASTEXPRESSION_HPP_
 
+#include <bc/build_context.hpp>
+#include <iosfwd>
 #include <llvm/IR/Value.h>
 #include <memory>
-
 #include <peglib.h>
-
-#include <bc/build_context.hpp>
 #include <type/type_name.hpp>
 
 #include "../base.hpp"
+
+namespace by {
+namespace bc {
+struct BuildContext;
+} // namespace bc
+} // namespace by
+namespace llvm {
+class Value;
+} // namespace llvm
 
 namespace by::ast {
 

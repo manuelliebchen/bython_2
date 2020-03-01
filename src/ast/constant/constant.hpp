@@ -7,8 +7,16 @@
 
 #ifndef SRC_AST_ASTCONSTANT_HPP_
 #define SRC_AST_ASTCONSTANT_HPP_
-
-#include "../expression/expression.hpp"
+#include "../expression/expression.hpp" // for ASTExpression
+#include "peglib.h"                     // for Ast
+#include "type/type_name.hpp"           // for TypeName_ptr, variable_map
+#include <iosfwd>                       // for ostream
+#include <memory>                       // for shared_ptr
+#include <string>                       // for string
+#include <unordered_set>                // for unordered_set
+namespace by::ast {
+class ASTBlockExpression;
+}
 
 namespace by::ast {
 

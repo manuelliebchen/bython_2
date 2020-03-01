@@ -5,13 +5,28 @@
  *      Author: Manuel Liebchen
  */
 
-#include "call_expression.hpp"
-
+#include <algorithm>
 #include <llvm/IR/DerivedTypes.h>
-#include <llvm/IR/Function.h>
-#include <llvm/IR/Value.h>
-
+#include <llvm/IR/IRBuilder.h>
+#include <llvm/IR/Instructions.h>
+#include <llvm/IR/Module.h>
+#include <stack>
+#include <stddef.h>
 #include <util/util.hpp>
+
+#include "ast/expression/expression.hpp"
+#include "bc/build_context.hpp"
+#include "call_expression.hpp"
+#include "type/function_type.hpp"
+
+namespace by {
+namespace ast {
+class ASTBlockExpression;
+} // namespace ast
+} // namespace by
+namespace llvm {
+class Value;
+} // namespace llvm
 
 namespace by::ast {
 

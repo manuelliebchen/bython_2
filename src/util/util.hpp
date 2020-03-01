@@ -10,14 +10,10 @@
 
 #include <memory>
 #include <string>
-#include <unordered_map>
 #include <vector>
 
 #include <peglib.h>
 
-#include <ast/base.hpp>
-#include <ast/root.hpp>
-#include <type/function_type.hpp>
 #include <type/type_name.hpp>
 
 namespace by {

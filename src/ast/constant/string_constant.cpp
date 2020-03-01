@@ -5,7 +5,26 @@
  *      Author: Manuel Liebchen
  */
 
+#include <llvm/IR/Constant.h>
+#include <llvm/IR/Constants.h>
+#include <llvm/IR/DerivedTypes.h>
+#include <llvm/IR/GlobalVariable.h>
+#include <llvm/IR/Module.h>
+#include <llvm/IR/Type.h>
+#include <llvm/Support/Casting.h>
+
+#include "ast/constant/constant.hpp"
+#include "bc/build_context.hpp"
 #include "string_constant.hpp"
+
+namespace by {
+namespace ast {
+class ASTBlockExpression;
+} // namespace ast
+} // namespace by
+namespace llvm {
+class Value;
+} // namespace llvm
 
 namespace by::ast {
 

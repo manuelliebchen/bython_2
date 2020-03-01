@@ -9,13 +9,20 @@
 #define SRC_AST_VARIABLE_DECLARATION_HPP_
 
 #include <memory>
-
+#include <ostream>
 #include <peglib.h>
-
+#include <string>
 #include <type/type_name.hpp>
+#include <unordered_set>
 
 #include "base.hpp"
 #include "expression/block_expression.hpp"
+
+namespace by {
+namespace ast {
+class ASTBlockExpression;
+} // namespace ast
+} // namespace by
 
 namespace by::ast {
 

@@ -5,7 +5,23 @@
  *      Author: Manuel Liebchen
  */
 
+#include <algorithm>
+#include <ext/alloc_traits.h>
+#include <llvm/IR/BasicBlock.h>
+#include <llvm/IR/Function.h>
+#include <llvm/IR/IRBuilder.h>
+#include <llvm/IR/Instructions.h>
+#include <stack>
+#include <vector>
+
+#include "ast/expression/block_expression.hpp"
+#include "ast/expression/expression.hpp"
+#include "bc/build_context.hpp"
 #include "if_expression.hpp"
+
+namespace llvm {
+class Value;
+} // namespace llvm
 
 namespace by::ast {
 

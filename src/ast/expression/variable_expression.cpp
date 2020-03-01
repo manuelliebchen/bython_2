@@ -5,11 +5,20 @@
  *      Author: Manuel Liebchen
  */
 
-#include "variable_expression.hpp"
-
+#include <algorithm>
+#include <llvm/IR/IRBuilder.h>
+#include <llvm/IR/Instructions.h>
+#include <stack>
+#include <stddef.h>
+#include <unordered_map>
 #include <util/util.hpp>
+#include <utility>
+#include <vector>
 
+#include "ast/expression/expression.hpp"
+#include "bc/build_context.hpp"
 #include "block_expression.hpp"
+#include "variable_expression.hpp"
 
 namespace by::ast {
 

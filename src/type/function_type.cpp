@@ -6,6 +6,15 @@
  */
 
 #include "function_type.hpp"
+#include "type/type_name.hpp"     // for TypeName, to_string
+#include <cstddef>                // for size_t
+#include <llvm/IR/DerivedTypes.h> // for FunctionType
+namespace llvm {
+class LLVMContext;
+}
+namespace llvm {
+class Type;
+}
 
 namespace by::type {
 

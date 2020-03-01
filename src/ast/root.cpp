@@ -5,6 +5,13 @@
  *      Author: Manuel Liebchen
  */
 
+#include <algorithm>
+#include <ostream>
+
+#include "ast/base.hpp"
+#include "ast/extern.hpp"
+#include "ast/function.hpp"
+#include "peglib.h"
 #include "root.hpp"
 
 namespace by::ast {

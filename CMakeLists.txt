@@ -1,18 +1,7 @@
-cmake_minimum_required(VERSION 3.0)
+cmake_minimum_required(VERSION 3.16)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 project(bython)
-
-find_program(CLANG_TIDY
-        NAMES "clang-tidy")
-if (CLANG_TIDY)
-    message(STATUS "clang-tidy found: ${CLANG_TIDY}")
-    set(CLANG_TIDY_COMMAND
-            "${CLANG_TIDY}" -checks=-*,bugprone-*,cert-*,clang-*,cppcoreguidelines-*,modernize-*,performance-*,readability-* -header-filter='^include')
-endif()
-
-find_package(Git REQUIRED)
-find_package(Threads REQUIRED)
 
 set(EXTERNAL_INSTALL_LOCATION ${PROJECT_SOURCE_DIR}/dep)
 
@@ -24,6 +13,11 @@ add_subdirectory(src)
 add_subdirectory(stdlib)
 
 FILE(GLOB_RECURSE ALL_BYTHON_SOURCE_FILES ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp ${CMAKE_CURRENT_SOURCE_DIR}/src/*.hpp)
+
+find_program(iwyu_path NAMES include-what-you-use iwyu)
+if(NOT iwyu_path)
+  message(FATAL_ERROR "Could not find the program include-what-you-use")
+endif()
 
 # Adding clang-format target if executable is found
 find_program(CLANG_FORMAT "clang-format")

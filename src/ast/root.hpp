@@ -8,13 +8,17 @@
 #ifndef SRC_ASTROOT_HPP_
 #define SRC_ASTROOT_HPP_
 
+#include <iosfwd>
 #include <memory>
 #include <peglib.h>
+#include <string>
+#include <unordered_set>
 #include <vector>
 
 #include "base.hpp"
 #include "extern.hpp"
 #include "function.hpp"
+#include "type/type_name.hpp"
 
 namespace by::ast {
 

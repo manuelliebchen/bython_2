@@ -14,6 +14,9 @@
 #include "llvm/IR/Module.h"
 
 #include <stack>
+#include <unordered_map>
+
+#include <ast/base.hpp>
 
 #include <type/function_type.hpp>
 #include <type/type_name.hpp>

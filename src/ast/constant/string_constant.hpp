@@ -8,9 +8,24 @@
 #ifndef SRC_AST_CONSTANT_STRING_CONSTANT_HPP_
 #define SRC_AST_CONSTANT_STRING_CONSTANT_HPP_
 
+#include <memory>
+#include <ostream>
 #include <string>
 
 #include "constant.hpp"
+#include "peglib.h"
+
+namespace by {
+namespace ast {
+class ASTBlockExpression;
+} // namespace ast
+namespace bc {
+struct BuildContext;
+} // namespace bc
+} // namespace by
+namespace llvm {
+class Value;
+} // namespace llvm
 
 namespace by::ast {
 

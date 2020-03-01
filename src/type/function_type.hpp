@@ -8,11 +8,19 @@
 #ifndef SRC_AST_FUNCTIONTYPE_HPP_
 #define SRC_AST_FUNCTIONTYPE_HPP_
 
-#include <llvm/IR/Function.h>
 #include <unordered_map>
 #include <vector>
 
+#include "peglib.h" // for Ast
 #include "type_name.hpp"
+#include <memory> // for shared_ptr
+#include <string> // for string
+namespace llvm {
+class FunctionType;
+}
+namespace llvm {
+class LLVMContext;
+}
 
 namespace by::type {
 
