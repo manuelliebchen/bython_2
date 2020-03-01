@@ -5,6 +5,8 @@
  *      Author: Manuel Liebchen
  */
 
+#include "expression.h"
+
 #include <algorithm>
 #include <ext/alloc_traits.h>
 #include <stddef.h>
@@ -12,20 +14,17 @@
 #include <unordered_set>
 #include <vector>
 
-#include "expression.hpp"
-
-#include "arithmetic_expression.hpp"
-#include "block_expression.hpp"
-#include "call_expression.hpp"
-#include "constant.hpp"
-#include "if_expression.hpp"
-#include "let_statement.hpp"
-#include "none_arithmetic_expression.hpp"
+#include "../type/type_name.h"
+#include "arithmetic_expression.h"
+#include "block_expression.h"
+#include "call_expression.h"
+#include "constant.h"
+#include "if_expression.h"
+#include "let_statement.h"
+#include "none_arithmetic_expression.h"
 #include "peglib.h"
 
-#include "type/type_name.hpp"
-
-#include "variable_expression.hpp"
+#include "variable_expression.h"
 
 namespace by::ast {
 ASTExpression::ASTExpression(const std::shared_ptr<peg::Ast> &ast,

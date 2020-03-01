@@ -5,14 +5,15 @@
  *      Author: Manuel Liebchen
  */
 
+#include "extern.h"
+
 #include <ostream>
 #include <vector>
 
-#include "ast/expression.hpp"
-#include "extern.hpp"
+#include "../type/function_type.h"
+#include "../type/type_name.h"
+#include "expression.h"
 #include "peglib.h"
-#include "type/function_type.hpp"
-#include "type/type_name.hpp"
 
 namespace by {
 namespace bc {

@@ -5,7 +5,7 @@
  *      Author: jemand
  */
 
-#include "arithmetic_expression.hpp"
+#include "arithmetic_expression.h"
 
 #include <algorithm>
 #include <llvm/IR/IRBuilder.h>
@@ -14,10 +14,10 @@
 #include <stack>
 #include <utility>
 
-#include "bc/build_context.hpp"
-#include "expression.hpp"
+#include "../bc/build_context.h"
+#include "../type/function_type.h"
+#include "expression.h"
 #include "peglib.h"
-#include "type/function_type.hpp"
 
 namespace by {
 namespace ast {

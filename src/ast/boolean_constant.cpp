@@ -5,14 +5,14 @@
  *      Author: Manuel Liebchen
  */
 
-#include "boolean_constant.hpp"
+#include "boolean_constant.h"
 
 #include <llvm/IR/Constants.h> // for ConstantInt
 #include <string>              // for operator==, string
 
-#include "bc/build_context.hpp" // for BuildContext
-#include "constant.hpp"         // for ASTConstant
-#include "peglib.h"             // for Ast, AstBase
+#include "../bc/build_context.h" // for BuildContext
+#include "constant.h"            // for ASTConstant
+#include "peglib.h"              // for Ast, AstBase
 
 namespace by::ast {
 class ASTBlockExpression;

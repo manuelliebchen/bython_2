@@ -5,15 +5,15 @@
  *      Author: Manuel Liebchen
  */
 
-#ifndef SRC_AST_BOOLEAN_CONSTANT_HPP_
-#define SRC_AST_BOOLEAN_CONSTANT_HPP_
+#ifndef SRC_AST_BOOLEAN_CONSTANT_H_
+#define SRC_AST_BOOLEAN_CONSTANT_H_
 
 #include <llvm/IR/Value.h>
 #include <memory>   // for shared_ptr, unique_ptr
 #include <ostream>  // for operator<<, ostream
 #include <peglib.h> // for Ast
 
-#include "constant.hpp" // for ASTConstant
+#include "constant.h" // for ASTConstant
 
 namespace by {
 namespace ast {
@@ -55,4 +55,4 @@ inline std::ostream &operator<<(std::ostream &os,
 
 } /* namespace by::ast */
 
-#endif /* SRC_AST_BOOLEAN_CONSTANT_HPP_ */
+#endif /* SRC_AST_BOOLEAN_CONSTANT_H_ */

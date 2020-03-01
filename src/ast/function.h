@@ -8,20 +8,20 @@
 #ifndef SRC_ASTFUNCTION_HPP_
 #define SRC_ASTFUNCTION_HPP_
 
-#include <bc/build_context.hpp>
 #include <iosfwd>
 #include <llvm/IR/Value.h>
 #include <memory>
 #include <peglib.h>
 #include <string>
-#include <type/function_type.hpp>
-#include <type/type_name.hpp>
 #include <unordered_set>
 #include <vector>
 
-#include "block_expression.hpp"
-#include "expression.hpp"
-#include "variable_declaration.hpp"
+#include "../bc/build_context.h"
+#include "../type/function_type.h"
+#include "../type/type_name.h"
+#include "block_expression.h"
+#include "expression.h"
+#include "variable_declaration.h"
 
 namespace by {
 namespace ast {

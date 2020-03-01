@@ -16,10 +16,10 @@
 #include <unordered_set>
 #include <variant>
 
-#include "block_expression.hpp"
-#include "expression.hpp"
+#include "../type/type_name.h"
+#include "block_expression.h"
+#include "expression.h"
 #include "peglib.h"
-#include "type/type_name.hpp"
 
 namespace by {
 namespace bc {

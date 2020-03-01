@@ -5,7 +5,7 @@
  *      Author: Manuel Liebchen
  */
 
-#include "string_constant.hpp"
+#include "string_constant.h"
 
 #include <llvm/IR/Constant.h>
 #include <llvm/IR/Constants.h>
@@ -15,8 +15,8 @@
 #include <llvm/IR/Type.h>
 #include <llvm/Support/Casting.h>
 
-#include "bc/build_context.hpp"
-#include "constant.hpp"
+#include "../bc/build_context.h"
+#include "constant.h"
 
 namespace by {
 namespace ast {

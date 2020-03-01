@@ -5,19 +5,19 @@
  *      Author: jemand
  */
 
-#ifndef SRC_AST_VARIABLE_DECLARATION_HPP_
-#define SRC_AST_VARIABLE_DECLARATION_HPP_
+#ifndef SRC_AST_VARIABLE_DECLARATION_H_
+#define SRC_AST_VARIABLE_DECLARATION_H_
 
 #include <llvm/IR/Value.h>
 #include <memory>
 #include <ostream>
 #include <peglib.h>
 #include <string>
-#include <type/type_name.hpp>
 #include <unordered_set>
 
-#include "block_expression.hpp"
-#include "expression.hpp"
+#include "../type/type_name.h"
+#include "block_expression.h"
+#include "expression.h"
 
 namespace by {
 namespace bc {
@@ -66,4 +66,4 @@ inline std::ostream &operator<<(std::ostream &os,
 
 } // namespace by::ast
 
-#endif /* SRC_AST_VARIABLE_DECLARATION_HPP_ */
+#endif /* SRC_AST_VARIABLE_DECLARATION_H_ */

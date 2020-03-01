@@ -17,9 +17,9 @@
 #include <unordered_map>
 #include <unordered_set>
 
-#include <ast/expression.hpp>
-#include <type/function_type.hpp>
-#include <type/type_name.hpp>
+#include "../ast/expression.h"
+#include "../type/function_type.h"
+#include "../type/type_name.h"
 
 namespace by {
 namespace ast {

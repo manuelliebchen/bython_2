@@ -12,9 +12,10 @@
 #include <vector>
 
 #include "peglib.h" // for Ast
-#include "type_name.hpp"
 #include <memory> // for shared_ptr
 #include <string> // for string
+
+#include "type_name.h"
 namespace llvm {
 class FunctionType;
 class LLVMContext;

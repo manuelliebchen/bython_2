@@ -5,7 +5,7 @@
  *      Author: Manuel Liebchen
  */
 
-#include "variable_expression.hpp"
+#include "variable_expression.h"
 
 #include <algorithm>
 #include <llvm/IR/IRBuilder.h>
@@ -16,9 +16,9 @@
 #include <utility>
 #include <vector>
 
-#include "bc/build_context.hpp"
-#include "block_expression.hpp"
-#include "expression.hpp"
+#include "../bc/build_context.h"
+#include "block_expression.h"
+#include "expression.h"
 
 namespace by::ast {
 

@@ -5,15 +5,15 @@
  *      Author: Manuel Liebchen
  */
 
-#include "constant.hpp"
+#include "constant.h"
 
 #include <utility> // for move
 
-#include "boolean_constant.hpp" // for operator<<, ASTBooleanConstant
-#include "expression.hpp"       // for operator<<, ASTExpression
-#include "float_constant.hpp"   // for operator<<, ASTFloatConstant
-#include "integer_constant.hpp" // for operator<<, ASTIntegerConstant
-#include "string_constant.hpp"  // for operator<<, ASTStringConstant
+#include "boolean_constant.h" // for operator<<, ASTBooleanConstant
+#include "expression.h"       // for operator<<, ASTExpression
+#include "float_constant.h"   // for operator<<, ASTFloatConstant
+#include "integer_constant.h" // for operator<<, ASTIntegerConstant
+#include "string_constant.h"  // for operator<<, ASTStringConstant
 namespace by::ast {
 class ASTBlockExpression;
 }

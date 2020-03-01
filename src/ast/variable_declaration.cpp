@@ -5,13 +5,14 @@
  *      Author: jemand
  */
 
+#include "variable_declaration.h"
+
 #include <vector>
 
-#include "ast/expression.hpp"
-#include "block_expression.hpp"
+#include "../type/type_name.h"
+#include "block_expression.h"
+#include "expression.h"
 #include "peglib.h"
-#include "type/type_name.hpp"
-#include "variable_declaration.hpp"
 
 namespace by {
 namespace bc {

@@ -16,8 +16,8 @@
 #include <string>
 #include <unordered_set>
 
-#include "expression.hpp"
-#include "type/type_name.hpp"
+#include "../type/type_name.h"
+#include "expression.h"
 
 namespace by {
 namespace ast {

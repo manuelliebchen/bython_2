@@ -8,13 +8,13 @@
 #ifndef SRC_AST_ASTCONSTANT_HPP_
 #define SRC_AST_ASTCONSTANT_HPP_
 #include "peglib.h"           // for Ast
-#include "type/type_name.hpp" // for TypeName_ptr, variable_map
 #include <iosfwd>             // for ostream
 #include <memory>             // for shared_ptr
 #include <string>             // for string
 #include <unordered_set>      // for unordered_set
 
-#include "expression.hpp" // for ASTExpression
+#include "../type/type_name.h" // for TypeName_ptr, variable_map
+#include "expression.h" // for ASTExpression
 namespace by::ast {
 class ASTBlockExpression;
 }

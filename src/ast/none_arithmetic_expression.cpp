@@ -5,7 +5,7 @@
  *      Author: Manuel Liebchen
  */
 
-#include "none_arithmetic_expression.hpp"
+#include "none_arithmetic_expression.h"
 
 #include <algorithm>
 #include <ext/alloc_traits.h>
@@ -16,18 +16,18 @@
 #include <stddef.h>
 #include <vector>
 
-#include "ast/ast_error.hpp"
-#include "bc/build_context.hpp"
-#include "block_expression.hpp"
-#include "boolean_constant.hpp"
-#include "call_expression.hpp"
-#include "expression.hpp"
-#include "float_constant.hpp"
-#include "if_expression.hpp"
-#include "integer_constant.hpp"
-#include "let_statement.hpp"
-#include "string_constant.hpp"
-#include "variable_expression.hpp"
+#include "../bc/build_context.h"
+#include "ast_error.h"
+#include "block_expression.h"
+#include "boolean_constant.h"
+#include "call_expression.h"
+#include "expression.h"
+#include "float_constant.h"
+#include "if_expression.h"
+#include "integer_constant.h"
+#include "let_statement.h"
+#include "string_constant.h"
+#include "variable_expression.h"
 
 namespace by::ast {
 

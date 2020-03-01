@@ -5,20 +5,21 @@
  *      Author: Manuel Liebchen
  */
 
-#ifndef SRC_AST_ASTINTEGERCONSTANT_HPP_
-#define SRC_AST_ASTINTEGERCONSTANT_HPP_
+#ifndef SRC_AST_ASTFLOATCONSTANT_HPP_
+#define SRC_AST_ASTFLOATCONSTANT_HPP_
 
 #include <iosfwd> // for ostream
 #include <llvm/IR/Value.h>
 #include <memory> // for shared_ptr, unique_ptr
 #include <string> // for operator<<, to_string
 
-#include "constant.hpp" // for ASTConstant
+#include "constant.h" // for ASTConstant
 #include "peglib.h"     // for Ast
 
 namespace by::ast {
 class ASTBlockExpression;
 }
+
 namespace by::bc {
 struct BuildContext;
 }
@@ -28,20 +29,19 @@ class Value;
 
 namespace by::ast {
 
-class ASTIntegerConstant : public ASTConstant {
+class ASTFloatConstant : public ASTConstant {
 public:
-  ASTIntegerConstant(const std::shared_ptr<peg::Ast> &, ASTBlockExpression *);
+  ASTFloatConstant(const std::shared_ptr<peg::Ast> &, ASTBlockExpression *);
 
   llvm::Value *build_ir(std::unique_ptr<bc::BuildContext> &) const;
 
 private:
-  int value;
+  float value;
 
-  friend std::ostream &operator<<(std::ostream &, const ASTIntegerConstant &);
+  friend std::ostream &operator<<(std::ostream &, const ASTFloatConstant &);
 };
 
-inline std::ostream &operator<<(std::ostream &os,
-                                const ASTIntegerConstant &in) {
+inline std::ostream &operator<<(std::ostream &os, const ASTFloatConstant &in) {
   os << std::to_string(in.value);
   return os;
 }

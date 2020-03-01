@@ -15,9 +15,9 @@
 #include <unordered_set>
 #include <vector>
 
-#include "expression.hpp"
+#include "../type/type_name.h"
+#include "expression.h"
 #include "peglib.h"
-#include "type/type_name.hpp"
 
 namespace by {
 namespace bc {

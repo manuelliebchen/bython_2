@@ -8,16 +8,16 @@
 #ifndef SRC_AST_ASTEXPRESSION_HPP_
 #define SRC_AST_ASTEXPRESSION_HPP_
 
-#include <bc/build_context.hpp>
 #include <iosfwd>
 #include <llvm/IR/Value.h>
 #include <memory>
 #include <peglib.h>
 #include <string>
-#include <type/type_name.hpp>
 #include <unordered_set>
 
-#include "ast/ast_error.hpp"
+#include "../bc/build_context.h"
+#include "../type/type_name.h"
+#include "ast_error.h"
 
 namespace by {
 namespace bc {

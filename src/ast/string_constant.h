@@ -5,15 +5,15 @@
  *      Author: Manuel Liebchen
  */
 
-#ifndef SRC_AST_STRING_CONSTANT_HPP_
-#define SRC_AST_STRING_CONSTANT_HPP_
+#ifndef SRC_AST_STRING_CONSTANT_H_
+#define SRC_AST_STRING_CONSTANT_H_
 
 #include <llvm/IR/Value.h>
 #include <memory>
 #include <ostream>
 #include <string>
 
-#include "constant.hpp"
+#include "constant.h"
 #include "peglib.h"
 
 namespace by {
@@ -50,4 +50,4 @@ inline std::ostream &operator<<(std::ostream &os,
 
 } /* namespace by::ast */
 
-#endif /* SRC_AST_STRING_CONSTANT_HPP_ */
+#endif /* SRC_AST_STRING_CONSTANT_H_ */

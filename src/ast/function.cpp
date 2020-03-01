@@ -5,6 +5,8 @@
  *      Author: Manuel Liebchen
  */
 
+#include "function.h"
+
 #include <algorithm>
 #include <ext/alloc_traits.h>
 #include <iostream>
@@ -20,15 +22,13 @@
 #include <stddef.h>
 #include <unordered_map>
 
-#include "ast/expression.hpp"
-#include "ast/variable_declaration.hpp"
-#include "bc/build_context.hpp"
-#include "function.hpp"
-
-#include "block_expression.hpp"
+#include "../bc/build_context.h"
+#include "../type/function_type.h"
+#include "../type/type_name.h"
+#include "block_expression.h"
+#include "expression.h"
 #include "peglib.h"
-#include "type/function_type.hpp"
-#include "type/type_name.hpp"
+#include "variable_declaration.h"
 
 namespace llvm {
 class Type;

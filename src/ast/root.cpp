@@ -5,6 +5,8 @@
  *      Author: Manuel Liebchen
  */
 
+#include "root.h"
+
 #include <algorithm>
 #include <iostream>
 #include <llvm/IR/Module.h>
@@ -13,11 +15,10 @@
 #include <unordered_map>
 #include <utility>
 
-#include "ast/extern.hpp"
-#include "ast/function.hpp"
-#include "bc/build_context.hpp"
+#include "../bc/build_context.h"
+#include "extern.h"
+#include "function.h"
 #include "peglib.h"
-#include "root.hpp"
 
 namespace by::ast {
 

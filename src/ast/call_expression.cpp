@@ -5,7 +5,7 @@
  *      Author: Manuel Liebchen
  */
 
-#include "call_expression.hpp"
+#include "call_expression.h"
 
 #include <algorithm>
 #include <llvm/IR/DerivedTypes.h>
@@ -15,9 +15,9 @@
 #include <stack>
 #include <stddef.h>
 
-#include "bc/build_context.hpp"
-#include "expression.hpp"
-#include "type/function_type.hpp"
+#include "../bc/build_context.h"
+#include "../type/function_type.h"
+#include "expression.h"
 
 namespace by {
 namespace ast {

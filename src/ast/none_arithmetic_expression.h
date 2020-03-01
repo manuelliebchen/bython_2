@@ -1,23 +1,22 @@
 /*
- * ASTCallExpression.hpp
+ * ASTNoneArithmeticExpression.hpp
  *
  *  Created on: Aug 6, 2019
  *      Author: Manuel Liebchen
  */
 
-#ifndef SRC_AST_ASTCALLEXPRESSION_HPP_
-#define SRC_AST_ASTCALLEXPRESSION_HPP_
+#ifndef SRC_AST_ASTNONEARITHMETICEXPRESSION_HPP_
+#define SRC_AST_ASTNONEARITHMETICEXPRESSION_HPP_
 
 #include <llvm/IR/Value.h>
 #include <memory>
 #include <ostream>
 #include <string>
 #include <unordered_set>
-#include <vector>
 
-#include "expression.hpp"
+#include "../type/type_name.h"
+#include "expression.h"
 #include "peglib.h"
-#include "type/type_name.hpp"
 
 namespace by {
 namespace ast {
@@ -33,9 +32,10 @@ class Value;
 
 namespace by::ast {
 
-class ASTCallExpression : public ASTExpression {
+class ASTNoneArithmeticExpression : public ASTExpression {
 public:
-  ASTCallExpression(const std::shared_ptr<peg::Ast> &, ASTBlockExpression *);
+  ASTNoneArithmeticExpression(const std::shared_ptr<peg::Ast> &,
+                              ASTBlockExpression *);
 
   by::type::TypeName_ptr determine_type(type::variable_map &);
 
@@ -45,21 +45,19 @@ public:
                         std::unordered_set<std::string> &types) const;
 
 private:
-  std::string name;
-  std::vector<std::shared_ptr<ASTExpression>> arguments;
-  friend std::ostream &operator<<(std::ostream &, const ASTCallExpression &);
+  std::string UnaryOperator;
+  std::shared_ptr<ASTExpression> rhs;
+
+  friend std::ostream &operator<<(std::ostream &,
+                                  const ASTNoneArithmeticExpression &);
 };
 
 inline std::ostream &operator<<(std::ostream &os,
-                                const ASTCallExpression &call) {
-  os << call.name << "( ";
-  for (auto &arg : call.arguments) {
-    os << *arg << ", ";
-  }
-  os << ")";
+                                const ASTNoneArithmeticExpression &none) {
+  os << none.UnaryOperator << *none.rhs;
   return os;
 }
 
 } /* namespace by::ast */
 
-#endif /* SRC_AST_ASTCALLEXPRESSION_HPP_ */
+#endif /* SRC_AST_ASTNONEARITHMETICEXPRESSION_HPP_ */

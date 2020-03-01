@@ -5,7 +5,7 @@
  *      Author: Manuel Liebchen
  */
 
-#include "block_expression.hpp"
+#include "block_expression.h"
 
 #include <algorithm>
 #include <ext/alloc_traits.h>
@@ -15,9 +15,9 @@
 #include <unordered_map>
 #include <utility>
 
-#include "bc/build_context.hpp"
-#include "expression.hpp"
-#include "variable_declaration.hpp"
+#include "../bc/build_context.h"
+#include "expression.h"
+#include "variable_declaration.h"
 
 namespace by::ast {
 

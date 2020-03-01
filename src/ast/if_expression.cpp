@@ -5,7 +5,7 @@
  *      Author: Manuel Liebchen
  */
 
-#include "if_expression.hpp"
+#include "if_expression.h"
 
 #include <algorithm>
 #include <ext/alloc_traits.h>
@@ -16,9 +16,9 @@
 #include <stack>
 #include <vector>
 
-#include "bc/build_context.hpp"
-#include "block_expression.hpp"
-#include "expression.hpp"
+#include "../bc/build_context.h"
+#include "block_expression.h"
+#include "expression.h"
 
 namespace by::ast {
 

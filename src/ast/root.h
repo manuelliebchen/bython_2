@@ -15,9 +15,9 @@
 #include <unordered_set>
 #include <vector>
 
-#include "extern.hpp"
-#include "function.hpp"
-#include "type/type_name.hpp"
+#include "../type/type_name.h"
+#include "extern.h"
+#include "function.h"
 
 namespace by {
 namespace bc {

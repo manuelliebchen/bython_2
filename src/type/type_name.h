@@ -17,7 +17,7 @@
 #include <unordered_set>    // for unordered_set
 #include <vector>           // for vector
 
-#include "ast/ast_error.hpp"
+#include "../ast/ast_error.h"
 #include "peglib.h" // for Ast
 
 namespace llvm {

@@ -1,12 +1,12 @@
 /*
- * ASTLetStatement.hpp
+ * ASTVariableExpression.hpp
  *
  *  Created on: Aug 6, 2019
  *      Author: Manuel Liebchen
  */
 
-#ifndef SRC_AST_ASTLETSTATEMENT_HPP_
-#define SRC_AST_ASTLETSTATEMENT_HPP_
+#ifndef SRC_AST_ASTVARIABLEEXPRESSION_HPP_
+#define SRC_AST_ASTVARIABLEEXPRESSION_HPP_
 
 #include <llvm/IR/Value.h>
 #include <memory>
@@ -14,10 +14,9 @@
 #include <string>
 #include <unordered_set>
 
-#include "expression.hpp"
+#include "../type/type_name.h"
+#include "expression.h"
 #include "peglib.h"
-#include "type/type_name.hpp"
-#include "variable_declaration.hpp"
 
 namespace by {
 namespace ast {
@@ -33,9 +32,10 @@ class Value;
 
 namespace by::ast {
 
-class ASTLetStatement : public ASTExpression {
+class ASTVariableExpression : public ASTExpression {
 public:
-  ASTLetStatement(const std::shared_ptr<peg::Ast> &, ASTBlockExpression *);
+  ASTVariableExpression(const std::shared_ptr<peg::Ast> &,
+                        ASTBlockExpression *);
 
   by::type::TypeName_ptr determine_type(type::variable_map &);
 
@@ -45,16 +45,21 @@ public:
                         std::unordered_set<std::string> &types) const;
 
 private:
-  std::string var;
-  std::shared_ptr<ASTExpression> value;
-
-  friend std::ostream &operator<<(std::ostream &, const ASTLetStatement &);
+  std::string name;
+  std::shared_ptr<ASTVariableExpression> next;
+  friend std::ostream &operator<<(std::ostream &,
+                                  const ASTVariableExpression &);
 };
 
-inline std::ostream &operator<<(std::ostream &os, const ASTLetStatement &let) {
-  os << "let " << let.var << " = " << *let.value;
+inline std::ostream &operator<<(std::ostream &os,
+                                const ASTVariableExpression &var) {
+  os << var.name;
+  if (var.next) {
+    os << "." << *var.next;
+  }
   return os;
 }
+
 } /* namespace by::ast */
 
-#endif /* SRC_AST_ASTLETSTATEMENT_HPP_ */
+#endif /* SRC_AST_ASTVARIABLEEXPRESSION_HPP_ */
