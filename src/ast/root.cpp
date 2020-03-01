@@ -47,6 +47,13 @@ void ASTRoot::determine_type(type::variable_map &symbols) {
   }
 }
 
+void ASTRoot::build_ir(
+    std::unique_ptr<by::bc::BuildContext> &build_context) const {
+  for (const auto &func : functions) {
+    func->build_ir(build_context);
+  }
+}
+
 void ASTRoot::reorder_functions() {
 
   std::vector<std::string> order;

@@ -33,6 +33,8 @@ public:
 
   void determine_type(type::variable_map &);
 
+  void build_ir(std::unique_ptr<by::bc::BuildContext> &) const;
+
   const std::vector<std::shared_ptr<by::ast::ASTFunction>> &get_functions();
   const std::vector<std::shared_ptr<by::ast::ASTExtern>> &get_externs();
 

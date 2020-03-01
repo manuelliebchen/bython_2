@@ -8,14 +8,17 @@
 #ifndef SRC_AST_ASTTYPENAME_HPP_
 #define SRC_AST_ASTTYPENAME_HPP_
 
-#include "peglib.h"         // for Ast
+#include "peglib.h" // for Ast
+#include <ast/base.hpp>
 #include <bits/exception.h> // for exception
 #include <iosfwd>           // for ostream, size_t
 #include <memory>           // for shared_ptr
 #include <string>           // for string
 #include <system_error>     // for hash
 #include <unordered_map>    // for unordered_map
+#include <unordered_set>    // for unordered_set
 #include <vector>           // for vector
+
 namespace llvm {
 class LLVMContext;
 }
@@ -57,21 +60,13 @@ struct TypeName {
 
 using TypeName_ptr = std::shared_ptr<const TypeName>;
 using variable_map = std::unordered_map<std::string, TypeName_ptr>;
+using type_set = std::unordered_set<TypeName_ptr>;
 
 std::ostream &operator<<(std::ostream &, const TypeName &);
 
-struct type_deduction_exeption : std::exception {
-  const std::shared_ptr<peg::Ast> ast;
-  TypeName_ptr expected;
-  TypeName_ptr got;
-  const std::string what_str;
-
+struct type_deduction_exeption : public by::ast::ast_error {
   type_deduction_exeption(const std::shared_ptr<peg::Ast> ast,
                           TypeName_ptr expected, TypeName_ptr got);
-
-  [[nodiscard]] const char *what() const noexcept override {
-    return what_str.c_str();
-  }
 };
 } // namespace by::type
 

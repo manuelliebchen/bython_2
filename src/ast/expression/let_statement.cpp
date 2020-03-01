@@ -10,7 +10,6 @@
 #include <llvm/IR/Instructions.h>
 #include <llvm/IR/Value.h>
 #include <stack>
-#include <util/util.hpp>
 #include <vector>
 
 #include "ast/expression/block_expression.hpp"
@@ -27,7 +26,7 @@ namespace by::ast {
 ASTLetStatement::ASTLetStatement(const std::shared_ptr<peg::Ast> &ast,
                                  ASTBlockExpression *parent)
     : ASTExpression(ast, parent) {
-  var = util::to_string(ast->nodes[0]);
+  var = std::to_string(ast->nodes[0]);
   value = create_expression(ast->nodes[1], parent);
 }
 

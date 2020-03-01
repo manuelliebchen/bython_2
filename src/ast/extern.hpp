@@ -16,7 +16,6 @@
 #include <type/function_type.hpp>
 #include <type/type_name.hpp>
 #include <unordered_set>
-#include <util/util.hpp>
 #include <vector>
 
 #include "ast/expression/expression.hpp"

@@ -11,7 +11,6 @@
 #include <stack>
 #include <stddef.h>
 #include <unordered_map>
-#include <util/util.hpp>
 #include <utility>
 #include <vector>
 
@@ -25,7 +24,7 @@ namespace by::ast {
 ASTVariableExpression::ASTVariableExpression(
     const std::shared_ptr<peg::Ast> &ast, ASTBlockExpression *parent)
     : ASTExpression(ast, parent) {
-  name = util::to_string(ast->nodes[0]);
+  name = std::to_string(ast->nodes[0]);
   if (ast->nodes.size() > 1) {
     next = std::make_shared<ASTVariableExpression>(ast->nodes[1], parent);
   }

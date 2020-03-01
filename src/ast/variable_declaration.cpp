@@ -5,7 +5,6 @@
  *      Author: jemand
  */
 
-#include <util/util.hpp>
 #include <vector>
 
 #include "ast/base.hpp"
@@ -19,7 +18,7 @@ namespace by::ast {
 ASTVariableDeclaration::ASTVariableDeclaration(
     const std::shared_ptr<peg::Ast> &ast, ASTBlockExpression *parent)
     : ASTBase(ast, parent) {
-  name = util::to_string(ast->nodes[0]);
+  name = std::to_string(ast->nodes[0]);
   type = std::make_shared<const type::TypeName>(ast->nodes[1]);
 
   if (parent != nullptr) {

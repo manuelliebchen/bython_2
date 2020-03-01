@@ -13,7 +13,6 @@
 #include <stddef.h>               // for size_t
 #include <stdexcept>              // for runtime_error
 #include <string>                 // for allocator, operator+, string, oper...
-#include <util/util.hpp>          // for to_string
 #include <utility>                // for move
 namespace llvm {
 class LLVMContext;
@@ -29,7 +28,7 @@ const std::shared_ptr<const TypeName> TypeName::None =
 TypeName::TypeName() : name("None"), subtypes() {}
 
 TypeName::TypeName(const std::shared_ptr<peg::Ast> &ast) {
-  name = util::to_string(ast->nodes[0]);
+  name = std::to_string(ast->nodes[0]);
   if (name.back() == '*') {
     generic = true;
     name = name.substr(0, name.length() - 1);
@@ -152,11 +151,9 @@ std::ostream &operator<<(std::ostream &os, const TypeName &type) {
 type_deduction_exeption::type_deduction_exeption(
     const std::shared_ptr<peg::Ast> ast, TypeName_ptr expected,
     TypeName_ptr got)
-    : ast(ast), expected(expected), got(got),
-      what_str((ast->path + ":" + std::to_string(ast->line) + ":" +
-                std::to_string(ast->column) +
-                ": error: type missmatch of types: " +
-                std::to_string(*expected) + " and " + std::to_string(*got))) {}
+    : ast_error(
+          ast, " error: type missmatch of types: " + std::to_string(*expected) +
+                   " and " + std::to_string(*got)) {}
 
 } // namespace by::type
 

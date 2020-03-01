@@ -12,7 +12,6 @@
 #include "peglib.h"
 #include "type/function_type.hpp"
 #include "type/type_name.hpp"
-#include "util/util.hpp"
 
 namespace by {
 namespace bc {
@@ -27,7 +26,7 @@ namespace by::ast {
 
 ASTExtern::ASTExtern(const std::shared_ptr<peg::Ast> &ast)
     : ASTExpression(ast, nullptr) {
-  name = util::to_string(ast->nodes[0]);
+  name = std::to_string(ast->nodes[0]);
   type = std::make_shared<const type::FunctionType>(ast->nodes[1]);
 }
 

@@ -27,7 +27,6 @@
 #include "peglib.h"
 #include "type/function_type.hpp"
 #include "type/type_name.hpp"
-#include "util/util.hpp"
 
 namespace llvm {
 class Type;
@@ -39,7 +38,7 @@ namespace by::ast {
 ASTFunction::ASTFunction(const std::shared_ptr<peg::Ast> &ast)
     : ASTExpression(ast, nullptr) {
   size_t varscount = ast->nodes.size() - 2;
-  name = util::to_string(ast->nodes[0]);
+  name = std::to_string(ast->nodes[0]);
   type::TypeName_ptr returntype;
   if (const std::shared_ptr<peg::Ast> &astreturntype = *(ast->nodes.end() - 2);
       astreturntype->original_name == "TypeName") {

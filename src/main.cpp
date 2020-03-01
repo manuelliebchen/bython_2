@@ -3,6 +3,7 @@
 #include <bc/build_context.hpp>
 #include <bits/exception.h>
 #include <cxxopts.hpp>
+#include <fstream>
 #include <iostream>
 #include <llvm/IR/Module.h>
 #include <llvm/Support/raw_os_ostream.h>
@@ -10,11 +11,27 @@
 #include <peglib.h>
 #include <stdlib.h>
 #include <string>
-#include <util/util.hpp>
 #include <vector>
 
 #include "ast/function.hpp"
 #include "type/type_name.hpp"
+
+auto read_file(const std::string &filepath) -> std::string {
+  std::ifstream ifs;
+  std::cerr << "\nOpening ifstream: " << filepath << " ";
+  ifs.open(filepath);
+  if (!ifs.good()) {
+    throw std::invalid_argument{"Unable to open " + filepath};
+  }
+  std::cerr << "Success!\n";
+
+  std::string file_string((std::istreambuf_iterator<char>(ifs)),
+                          std::istreambuf_iterator<char>());
+
+  ifs.close();
+
+  return file_string;
+};
 
 auto main(int argc, char *argv[]) -> int {
   try {
@@ -33,7 +50,7 @@ auto main(int argc, char *argv[]) -> int {
 
     // Parsing Grammar
     std::cerr << "Parsing Grammar: ";
-    const std::string bython_grammar = by::util::read_file(GRAMMAR_PATH);
+    const std::string bython_grammar = read_file(GRAMMAR_PATH);
     peg::parser parser;
     parser.load_grammar(bython_grammar.c_str());
     std::cerr << "Success!\n";
@@ -42,16 +59,16 @@ auto main(int argc, char *argv[]) -> int {
     std::cerr << "Parsing Code: ";
     std::string file_path = result["input"].as<std::string>();
 
-    const std::string bython_code = by::util::read_file(file_path);
+    const std::string bython_code = read_file(file_path);
     parser.enable_ast();
-    std::shared_ptr<peg::Ast> basic;
-    parser.parse(bython_code.c_str(), basic, file_path.c_str());
+    std::shared_ptr<peg::Ast> ast;
+    parser.parse(bython_code.c_str(), ast, file_path.c_str());
     std::cerr << "Success!\n";
 
     // Building internal AST
     std::shared_ptr<by::ast::ASTRoot> root;
     std::cerr << "Constructing AST!\n";
-    root = std::make_shared<by::ast::ASTRoot>(basic);
+    root = std::make_shared<by::ast::ASTRoot>(ast);
     std::cerr << "Success!\n";
 
     // Calculating compiling order
@@ -65,9 +82,7 @@ auto main(int argc, char *argv[]) -> int {
     std::cerr << "Success!\n";
 
     std::cerr << "Compiling:\n";
-    for (const auto &func : root->get_functions()) {
-      func->build_ir(build_context);
-    }
+    root->build_ir(build_context);
     std::cerr << "Success!\n";
 
     std::cerr << "Wrinting Module!\n";

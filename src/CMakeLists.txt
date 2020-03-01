@@ -1,6 +1,5 @@
 add_subdirectory(ast)
 add_subdirectory(type)
-add_subdirectory(util)
 
 find_package(LLVM REQUIRED CONFIG)
 
@@ -21,7 +20,7 @@ message(STATUS "Grammar set to ${GRAMMAR_PATH}")
 
 llvm_map_components_to_libnames(llvm_libs support core irreader)
 
-target_link_libraries(${BYTHON} PRIVATE bython-ast bython-util bython-type ${llvm_libs})
+target_link_libraries(${BYTHON} PRIVATE bython-ast bython-type ${llvm_libs})
 
 set( CMAKE_CXX_FLAGS "-O2 -Wall -pthread")
 set( CMAKE_CXX_CLANG_TIDY "clang-tidy;-checks=*")

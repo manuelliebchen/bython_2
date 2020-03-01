@@ -12,7 +12,6 @@
 #include <llvm/IR/Module.h>
 #include <stack>
 #include <stddef.h>
-#include <util/util.hpp>
 
 #include "ast/expression/expression.hpp"
 #include "bc/build_context.hpp"
@@ -33,7 +32,7 @@ namespace by::ast {
 ASTCallExpression::ASTCallExpression(const std::shared_ptr<peg::Ast> &ast,
                                      ASTBlockExpression *parent)
     : ASTExpression(ast, parent) {
-  name = util::to_string(ast->nodes[0]);
+  name = std::to_string(ast->nodes[0]);
   for (size_t i = 1; i < ast->nodes.size(); ++i) {
     arguments.push_back(create_expression(ast->nodes[i], parent));
   }

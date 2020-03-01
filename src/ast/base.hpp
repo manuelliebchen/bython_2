@@ -19,7 +19,7 @@ namespace by::ast {
 
 class ASTBlockExpression;
 
-struct ast_error : std::runtime_error {
+struct ast_error : public std::runtime_error {
   ast_error(const std::shared_ptr<peg::Ast> ast, std::string what_str)
       : runtime_error(ast->path + ":" + std::to_string(ast->line) + ":" +
                       std::to_string(ast->column) + ": " + what_str) {}
@@ -54,6 +54,15 @@ inline std::ostream &operator<<(std::ostream &os, const ASTBase &base) {
 }
 
 } /* namespace by::ast */
+
+namespace std {
+inline auto to_string(const std::shared_ptr<peg::Ast> &ast) -> std::string {
+  if (ast->original_name == "Identifier" && ast->is_token) {
+    return ast->token;
+  }
+  throw by::ast::ast_error(ast, "Expected Identifier");
+};
+} // namespace std
 
 #define CHECK                                                                  \
   {                                                                            \
