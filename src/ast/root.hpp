@@ -15,7 +15,6 @@
 #include <unordered_set>
 #include <vector>
 
-#include "base.hpp"
 #include "extern.hpp"
 #include "function.hpp"
 #include "type/type_name.hpp"
@@ -34,25 +33,12 @@ class ASTExtern;
 /**
  * Top most AST node of tree. Containg all functions and externs
  */
-class ASTRoot : public ASTBase {
-public:
-  ASTRoot(const std::shared_ptr<peg::Ast> &);
-
-  /**
-   * Function for compiling to ir code.
-   * Writes output to @1
-   */
-  void compile(std::ostream &);
-
+class ASTRoot {
 private:
   /**
-   * Sorts functions by dependencies
+   * Pointer to peg::Ast object of this AST node
    */
-  void reorder_functions();
-
-  void get_dependencies(std::unordered_set<std::string> &functions,
-                        std::unordered_set<std::string> &types) const;
-
+  const std::shared_ptr<peg::Ast> ast;
   /**
    * Functions of the programm
    */
@@ -61,6 +47,22 @@ private:
    * Extern declarations
    */
   std::vector<std::shared_ptr<by::ast::ASTExtern>> externs;
+  /**
+   * Sorts functions by dependencies
+   */
+  void reorder_functions();
+
+  void get_dependencies(std::unordered_set<std::string> &functions,
+                        std::unordered_set<std::string> &types) const;
+
+public:
+  ASTRoot(const std::shared_ptr<peg::Ast> &);
+
+  /**
+   * Function for compiling to ir code.
+   * Writes output to @1
+   */
+  void compile(std::ostream &);
 
   friend std::ostream &operator<<(std::ostream &, const ASTRoot &);
 };

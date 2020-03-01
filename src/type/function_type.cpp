@@ -5,16 +5,16 @@
  *      Author: Manuel Liebchen
  */
 
-#include "function_type.hpp"
-#include "type/type_name.hpp"     // for TypeName, to_string
 #include <cstddef>                // for size_t
 #include <llvm/IR/DerivedTypes.h> // for FunctionType
+
+#include "function_type.hpp"
+#include "type/type_name.hpp"
+
 namespace llvm {
 class LLVMContext;
-}
-namespace llvm {
 class Type;
-}
+} // namespace llvm
 
 namespace by::type {
 

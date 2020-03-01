@@ -14,8 +14,8 @@
 #include <stack>
 #include <vector>
 
+#include "../expression.hpp"
 #include "ast/expression/block_expression.hpp"
-#include "ast/expression/expression.hpp"
 #include "bc/build_context.hpp"
 #include "if_expression.hpp"
 

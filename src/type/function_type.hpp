@@ -17,10 +17,8 @@
 #include <string> // for string
 namespace llvm {
 class FunctionType;
-}
-namespace llvm {
 class LLVMContext;
-}
+} // namespace llvm
 
 namespace by::type {
 

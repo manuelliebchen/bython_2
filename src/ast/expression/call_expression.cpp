@@ -13,10 +13,10 @@
 #include <stack>
 #include <stddef.h>
 
-#include "ast/base.hpp"
-#include "ast/expression/expression.hpp"
 #include "bc/build_context.hpp"
 #include "call_expression.hpp"
+
+#include "../expression.hpp"
 #include "type/function_type.hpp"
 
 namespace by {

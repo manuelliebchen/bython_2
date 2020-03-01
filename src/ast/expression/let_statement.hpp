@@ -14,8 +14,8 @@
 #include <string>
 #include <unordered_set>
 
+#include "../expression.hpp"
 #include "../variable_declaration.hpp"
-#include "expression.hpp"
 #include "peglib.h"
 #include "type/type_name.hpp"
 

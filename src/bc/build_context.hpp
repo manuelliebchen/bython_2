@@ -15,17 +15,16 @@
 
 #include <stack>
 #include <unordered_map>
+#include <unordered_set>
 
-#include <ast/base.hpp>
-
+#include <ast/expression.hpp>
 #include <type/function_type.hpp>
 #include <type/type_name.hpp>
 
 namespace by {
 namespace ast {
-struct ASTFunctionSignatur;
-} // namespace ast
-
+class ASTExpression;
+}
 namespace bc {
 
 struct compiling_error_exeption : std::exception {
@@ -46,7 +45,7 @@ struct BuildContext {
   llvm::Module module{"Bython Module", context};
 
   std::vector<std::unordered_map<std::string, llvm::Value *>> variables;
-  std::stack<const by::ast::ASTBase *> ast_stack;
+  std::stack<const ast::ASTExpression *> ast_stack;
 
   type::variable_map symbols;
   std::unordered_set<type::TypeName> known_types;

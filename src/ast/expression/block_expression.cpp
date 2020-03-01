@@ -13,9 +13,8 @@
 #include <unordered_map>
 #include <utility>
 
+#include "../expression.hpp"
 #include "../variable_declaration.hpp"
-#include "ast/base.hpp"
-#include "ast/expression/expression.hpp"
 #include "bc/build_context.hpp"
 #include "block_expression.hpp"
 

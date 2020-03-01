@@ -15,7 +15,7 @@
 #include <unordered_set>
 #include <vector>
 
-#include "expression.hpp"
+#include "../expression.hpp"
 #include "peglib.h"
 #include "type/type_name.hpp"
 

@@ -14,7 +14,7 @@
 #include <string>                 // for allocator, operator+, string, oper...
 #include <utility>                // for move
 
-#include "ast/base.hpp"
+#include "ast/expression.hpp"
 #include "type_name.hpp"
 
 namespace llvm {

@@ -19,8 +19,7 @@
 #include <unordered_set>
 #include <vector>
 
-#include "ast/expression/expression.hpp"
-#include "base.hpp"
+#include "expression.hpp"
 #include "expression/block_expression.hpp"
 #include "variable_declaration.hpp"
 

@@ -8,7 +8,7 @@
 #include <ostream>
 #include <vector>
 
-#include "ast/base.hpp"
+#include "ast/expression.hpp"
 #include "extern.hpp"
 #include "peglib.h"
 #include "type/function_type.hpp"

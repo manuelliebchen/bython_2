@@ -6,27 +6,22 @@
  */
 
 #include <algorithm>
+#include <iostream>
+#include <llvm/IR/Module.h>
 #include <llvm/Support/raw_os_ostream.h>
-#include <ostream>
 #include <stdexcept>
 #include <unordered_map>
 #include <utility>
 
-#include "ast/base.hpp"
 #include "ast/extern.hpp"
 #include "ast/function.hpp"
+#include "bc/build_context.hpp"
 #include "peglib.h"
 #include "root.hpp"
 
-namespace by {
-namespace bc {
-struct BuildContext;
-} // namespace bc
-} // namespace by
-
 namespace by::ast {
 
-ASTRoot::ASTRoot(const std::shared_ptr<peg::Ast> &ast) : ASTBase(ast, nullptr) {
+ASTRoot::ASTRoot(const std::shared_ptr<peg::Ast> &ast) : ast(ast) {
   for (const auto &node : ast->nodes) {
     if (node->original_name == "Function") {
       functions.push_back(std::make_shared<ASTFunction>(node));

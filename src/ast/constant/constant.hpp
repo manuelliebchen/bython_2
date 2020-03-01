@@ -7,13 +7,14 @@
 
 #ifndef SRC_AST_ASTCONSTANT_HPP_
 #define SRC_AST_ASTCONSTANT_HPP_
-#include "../expression/expression.hpp" // for ASTExpression
-#include "peglib.h"                     // for Ast
-#include "type/type_name.hpp"           // for TypeName_ptr, variable_map
-#include <iosfwd>                       // for ostream
-#include <memory>                       // for shared_ptr
-#include <string>                       // for string
-#include <unordered_set>                // for unordered_set
+#include "peglib.h"           // for Ast
+#include "type/type_name.hpp" // for TypeName_ptr, variable_map
+#include <iosfwd>             // for ostream
+#include <memory>             // for shared_ptr
+#include <string>             // for string
+#include <unordered_set>      // for unordered_set
+
+#include "../expression.hpp" // for ASTExpression
 namespace by::ast {
 class ASTBlockExpression;
 }
@@ -21,13 +22,12 @@ class ASTBlockExpression;
 namespace by::ast {
 
 class ASTConstant : public ASTExpression {
-private:
+protected:
   std::string const_string;
-
-public:
   ASTConstant(const std::shared_ptr<peg::Ast> &, ASTBlockExpression *,
               std::string);
 
+public:
   by::type::TypeName_ptr determine_type(type::variable_map &);
 
   void get_dependencies(std::unordered_set<std::string> &functions,

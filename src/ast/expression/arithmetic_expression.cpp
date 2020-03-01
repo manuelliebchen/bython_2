@@ -13,7 +13,8 @@
 #include <utility>
 
 #include "arithmetic_expression.hpp"
-#include "ast/expression/expression.hpp"
+
+#include "../expression.hpp"
 #include "bc/build_context.hpp"
 #include "peglib.h"
 #include "type/function_type.hpp"

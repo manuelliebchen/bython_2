@@ -8,7 +8,6 @@
 #ifndef SRC_AST_ASTTYPENAME_HPP_
 #define SRC_AST_ASTTYPENAME_HPP_
 
-#include <ast/base.hpp>
 #include <bits/exception.h> // for exception
 #include <iosfwd>           // for ostream, size_t
 #include <memory>           // for shared_ptr
@@ -18,6 +17,7 @@
 #include <unordered_set>    // for unordered_set
 #include <vector>           // for vector
 
+#include "ast/ast_error.hpp"
 #include "peglib.h" // for Ast
 
 namespace llvm {

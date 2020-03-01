@@ -16,8 +16,8 @@
 #include <unordered_set>
 #include <variant>
 
+#include "../expression.hpp"
 #include "block_expression.hpp"
-#include "expression.hpp"
 #include "peglib.h"
 #include "type/type_name.hpp"
 
