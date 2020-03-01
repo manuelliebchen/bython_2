@@ -31,19 +31,35 @@ namespace by::ast {
 class ASTFunction;
 class ASTExtern;
 
+/**
+ * Top most AST node of tree. Containg all functions and externs
+ */
 class ASTRoot : public ASTBase {
 public:
   ASTRoot(const std::shared_ptr<peg::Ast> &);
 
+  /**
+   * Function for compiling to ir code.
+   * Writes output to @1
+   */
   void compile(std::ostream &);
 
 private:
+  /**
+   * Sorts functions by dependencies
+   */
   void reorder_functions();
 
   void get_dependencies(std::unordered_set<std::string> &functions,
                         std::unordered_set<std::string> &types) const;
 
+  /**
+   * Functions of the programm
+   */
   std::vector<std::shared_ptr<by::ast::ASTFunction>> functions;
+  /**
+   * Extern declarations
+   */
   std::vector<std::shared_ptr<by::ast::ASTExtern>> externs;
 
   friend std::ostream &operator<<(std::ostream &, const ASTRoot &);

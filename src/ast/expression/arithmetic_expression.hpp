@@ -36,12 +36,27 @@ class Value;
 
 namespace by::ast {
 
+/**
+ * AST node for binary expressions
+ */
 class ASTArithmeticExpression : public ASTExpression {
 private:
+  /**
+   * left hand side of the exprssion
+   */
   std::shared_ptr<ASTExpression> lhs;
+  /**
+   * Binary Operator
+   */
   std::string BinaryOperator;
+  /**
+   * right hand side of the expression
+   */
   std::shared_ptr<ASTExpression> rhs;
 
+  /**
+   * type of the sub expression
+   */
   type::TypeName_ptr operation_type;
 
 public:

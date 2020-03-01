@@ -39,10 +39,24 @@ class Value;
 
 namespace by::ast {
 
+/**
+ * AST node for function declarations
+ */
+
 class ASTFunction : public ASTExpression {
 protected:
+  /**
+   * name of the functino
+   */
   std::string name;
+  /**
+   * parameters of the function
+   */
   std::vector<std::shared_ptr<by::ast::ASTVariableDeclaration>> parameters;
+
+  /**
+   * content of the function
+   */
   std::shared_ptr<by::ast::ASTBlockExpression> blockexpression;
 
 public:

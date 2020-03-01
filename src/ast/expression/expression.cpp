@@ -61,8 +61,8 @@ auto operator<<(std::ostream &os, const by::ast::ASTExpression &exp)
   return os;
 };
 
-auto create_expression(const std::shared_ptr<peg::Ast> &ast,
-                       ASTBlockExpression *parent)
+auto ASTExpression::create_expression(const std::shared_ptr<peg::Ast> &ast,
+                                      ASTBlockExpression *parent)
     -> std::shared_ptr<by::ast::ASTExpression> {
   const std::unordered_set<std::string> first_class_operator = {"*", "/", "%",
                                                                 "&&"};

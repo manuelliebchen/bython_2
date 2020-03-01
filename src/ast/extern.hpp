@@ -35,8 +35,14 @@ class Value;
 
 namespace by::ast {
 
+/**
+ * AST node for extern declarations of functions
+ */
 class ASTExtern : public ASTExpression {
 protected:
+  /**
+   * Name of the function
+   */
   std::string name;
 
 public:
@@ -44,6 +50,9 @@ public:
 
   type::TypeName_ptr determine_type(type::variable_map &);
 
+  /**
+   * returns name of the function
+   */
   std::string get_name() const;
   void get_dependencies(std::unordered_set<std::string> &functions,
                         std::unordered_set<std::string> &types) const;

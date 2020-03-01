@@ -26,9 +26,18 @@ class ASTBlockExpression;
 
 namespace by::ast {
 
+/**
+ * Simple AST node to save name,type relations
+ */
 class ASTVariableDeclaration : public ASTBase {
 protected:
+  /**
+   * Name of the variable
+   */
   std::string name;
+  /**
+   * type of the variable
+   */
   by::type::TypeName_ptr type;
 
 public:
