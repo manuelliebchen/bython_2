@@ -56,7 +56,7 @@ auto main(int argc, char *argv[]) -> int {
 
     // Calculating compiling order
     std::cerr << "Generate compiling Order: ";
-    root->reorder_functions(by::util::compiling_order(root));
+    root->reorder_functions();
     std::cerr << "Success!\n";
 
     std::cerr << "Determiining return types: ";

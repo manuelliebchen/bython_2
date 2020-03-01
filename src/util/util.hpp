@@ -22,8 +22,6 @@ class ASTRoot;
 }
 
 namespace util {
-std::vector<std::string>
-compiling_order(const std::shared_ptr<by::ast::ASTRoot> &);
 
 std::string to_string(const std::shared_ptr<peg::Ast> &ast);
 std::string read_file(const std::string &filepath);

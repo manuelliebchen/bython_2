@@ -29,7 +29,7 @@ class ASTRoot : public ASTBase {
 public:
   ASTRoot(const std::shared_ptr<peg::Ast> &);
 
-  void reorder_functions(const std::vector<std::string> &order);
+  void reorder_functions();
 
   void determine_type(type::variable_map &);
 

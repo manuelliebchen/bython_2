@@ -29,58 +29,6 @@ struct FunctionType;
 
 namespace util {
 
-auto compiling_order(const std::shared_ptr<by::ast::ASTRoot> &root)
-    -> std::vector<std::string> {
-  std::vector<std::string> order;
-  std::unordered_map<std::string, std::unordered_set<std::string>> functions;
-  for (const auto &ext : root->get_externs()) {
-    functions.emplace(ext->get_name(), std::unordered_set<std::string>());
-  }
-  for (const auto &func : root->get_functions()) {
-    std::unordered_set<std::string> all_dep;
-    std::unordered_set<std::string> type_dep;
-    func->get_dependencies(all_dep, type_dep);
-    functions.emplace(func->get_name(), all_dep);
-  }
-
-  std::unordered_map<std::string, std::unordered_set<std::string>> list;
-  for (auto &func : functions) {
-    if (func.first == "main") {
-      list.insert(functions.extract(func.first));
-      break;
-    }
-  }
-  if (list.empty()) {
-    throw std::runtime_error("No main function found!");
-  }
-
-  while (!list.empty()) {
-    auto current = *list.begin();
-    list.erase(current.first);
-    functions.erase(current.first);
-    order.push_back(current.first);
-    for (const std::string &dep : current.second) {
-      if (dep == current.first) {
-        continue;
-      }
-      bool add = true;
-      for (auto func : functions) {
-        if (dep == func.first) {
-          continue;
-        }
-        add &= func.second.find(dep) == func.second.end();
-      }
-      if (add) {
-        if (auto it = functions.find(dep); it != functions.end()) {
-          list.insert(*it);
-        }
-      }
-    }
-  }
-  std::reverse(order.begin(), order.end());
-  return order;
-};
-
 auto to_string(const std::shared_ptr<peg::Ast> &ast) -> std::string {
   if (ast->original_name == "Identifier" && ast->is_token) {
     return ast->token;
