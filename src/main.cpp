@@ -56,16 +56,12 @@ auto main(int argc, char *argv[]) -> int {
 
     // Calculating compiling order
     std::cerr << "Generate compiling Order: ";
-    std::vector<std::string> order = by::util::compiling_order(root);
-    root->reorder_functions(order);
+    root->reorder_functions(by::util::compiling_order(root));
     std::cerr << "Success!\n";
 
     std::cerr << "Determiining return types: ";
     auto build_context = std::make_unique<by::bc::BuildContext>();
-    build_context->symbols = by::util::get_buildin_functions();
-
     root->determine_type(build_context->symbols);
-
     std::cerr << "Success!\n";
 
     std::cerr << "Compiling:\n";

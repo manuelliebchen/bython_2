@@ -22,7 +22,6 @@ class ASTRoot;
 }
 
 namespace util {
-type::variable_map get_buildin_functions();
 std::vector<std::string>
 compiling_order(const std::shared_ptr<by::ast::ASTRoot> &);
 
