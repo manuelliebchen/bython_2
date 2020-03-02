@@ -116,17 +116,12 @@ auto ASTFunction::build_ir(std::unique_ptr<by::bc::BuildContext> &bc) const
   bc->variables.emplace_back(std::unordered_map<std::string, llvm::Value *>());
   unsigned idx = 0;
   for (auto &arg : function->args()) {
-    std::string name = parameters[idx++]->get_name();
-    arg.setName(name);
-
     llvm::Type *arg_type = arg.getType();
     llvm::AllocaInst *variable_value = bc->builder.CreateAlloca(arg_type);
     bc->builder.CreateStore(&arg, variable_value);
-    bc->variables.back().emplace(name, variable_value);
+    bc->variables.back().emplace(parameters[idx++]->get_name(), variable_value);
   }
 
-  //  if (llvm::Value *return_value = blockexpression->build_ir(bc);
-  //      return_value != nullptr) {
   llvm::Value *return_value = blockexpression->build_ir(bc);
   if (*type) {
     bc->builder.CreateRet(return_value);
