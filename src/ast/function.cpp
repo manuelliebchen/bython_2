@@ -43,10 +43,10 @@ ASTFunction::ASTFunction(const std::shared_ptr<peg::Ast> &ast)
   type::TypeName_ptr returntype;
   if (const std::shared_ptr<peg::Ast> &astreturntype = *(ast->nodes.end() - 2);
       astreturntype->original_name == "TypeName") {
-    returntype = std::make_shared<type::TypeName>(astreturntype);
+    returntype = std::make_shared<const type::TypeName>(astreturntype);
     --varscount;
   } else {
-    returntype = std::make_shared<type::TypeName>();
+    returntype = type::TypeName::None;
   }
 
   for (size_t i = 0; i < varscount; ++i) {

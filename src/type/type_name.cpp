@@ -28,42 +28,50 @@ const std::shared_ptr<const TypeName> TypeName::Void =
     std::make_shared<const TypeName>("Void");
 const std::shared_ptr<const TypeName> TypeName::None =
     std::make_shared<const TypeName>("None");
+const std::shared_ptr<const TypeName> TypeName::Int =
+    std::make_shared<const TypeName>("Int");
+const std::shared_ptr<const TypeName> TypeName::Float =
+    std::make_shared<const TypeName>("Float");
+const std::shared_ptr<const TypeName> TypeName::String =
+    std::make_shared<const TypeName>("String");
 
-TypeName::TypeName() : name("None"), subtypes() {}
-
-TypeName::TypeName(const std::shared_ptr<peg::Ast> &ast) {
+TypeName::TypeName(const std::shared_ptr<peg::Ast> &ast) : pointer(false) {
   name = std::to_string(ast->nodes[0]);
-  if (name.back() == '*') {
-    generic = true;
-    name = name.substr(0, name.length() - 1);
+  if (ast->nodes.back()->original_name == "PointerSymbol") {
+    pointer = true;
   }
   if (ast->nodes.size() > 1) {
     for (size_t i = 1; i < ast->nodes.size(); ++i) {
-      subtypes.push_back(TypeName(ast->nodes[i]));
+      if (ast->nodes[i]->original_name == "TypeName") {
+        subtypes.push_back(TypeName(ast->nodes[i]));
+      } else {
+        break;
+      }
     }
   }
 }
 
 TypeName::TypeName(std::string name, std::vector<TypeName> subtypes)
-    : name(std::move(name)), subtypes(std::move(subtypes)) {
+    : name(std::move(name)), pointer(false), subtypes(std::move(subtypes)) {
   if (this->name.back() == '*') {
-    generic = true;
+    pointer = true;
     this->name = this->name.substr(0, name.length() - 1);
   }
 }
 
-TypeName::TypeName(std::string name) : name(std::move(name)), subtypes() {
+TypeName::TypeName(std::string name)
+    : name(std::move(name)), pointer(false), subtypes() {
   if (this->name == "") {
     this->name = "None";
   }
   if (this->name.back() == '*') {
-    generic = true;
+    pointer = true;
     this->name = this->name.substr(0, this->name.length() - 1);
   }
 }
 
 TypeName::TypeName(TypeName const &type)
-    : name(type.name), generic(type.generic) {
+    : name(type.name), pointer(type.pointer) {
   for (const auto &subtype : type.subtypes) {
     subtypes.push_back(TypeName(subtype));
   }
@@ -71,14 +79,13 @@ TypeName::TypeName(TypeName const &type)
 
 TypeName TypeName::operator=(TypeName type) {
   name = type.name;
-  generic = type.generic;
+  pointer = type.pointer;
   for (const auto &subtype : type.subtypes) {
     subtypes.push_back(TypeName(subtype));
   }
   return *this;
 }
 
-/// TODO
 auto TypeName::deduct_type(TypeName rhs_name) const -> TypeName {
   if (*this == rhs_name) {
     return TypeName(*this);
@@ -93,33 +100,36 @@ auto TypeName::deduct_type(TypeName rhs_name) const -> TypeName {
 }
 
 llvm::Type *TypeName::get_llvm_type(llvm::LLVMContext &context) const {
-  if (generic) {
-    return llvm::Type::getInt8PtrTy(context);
-  } else if (name == "Int") {
-    return llvm::Type::getInt32Ty(context);
+  llvm::Type *type;
+  if (name == "Int") {
+    type = llvm::Type::getInt32Ty(context);
   } else if (name == "Void") {
-    return llvm::Type::getVoidTy(context);
+    type = llvm::Type::getVoidTy(context);
   } else if (name == "Bool") {
-    return llvm::Type::getInt1Ty(context);
+    type = llvm::Type::getInt1Ty(context);
   } else if (name == "Float") {
-    return llvm::Type::getFloatTy(context);
+    type = llvm::Type::getFloatTy(context);
   } else if (name == "List") {
-    return llvm::Type::getInt8PtrTy(context);
+    type = llvm::Type::getInt8PtrTy(context);
   } else if (name == "String") {
-    return llvm::Type::getInt8PtrTy(context);
+    type = llvm::Type::getInt8PtrTy(context);
   } else if (name == "None") {
     throw std::runtime_error("Could not determin type!");
   } else {
     throw std::runtime_error("Trying to get invalid llvm type: " +
                              std::to_string(*this));
   }
+  if (pointer) {
+    return type->getPointerTo();
+  }
+  return type;
 }
 
 bool TypeName::operator==(const TypeName &rhs) const {
   if (name != rhs.name) {
     return false;
   }
-  if (!(generic || rhs.generic)) {
+  if (!(pointer || rhs.pointer)) {
     if (subtypes.size() != rhs.subtypes.size()) {
       return false;
     }
@@ -139,9 +149,6 @@ TypeName::operator bool() const { return !(*this == *None || *this == *Void); }
 
 std::ostream &operator<<(std::ostream &os, const TypeName &type) {
   os << type.name;
-  if (type.generic) {
-    os << " *";
-  }
   if (!type.subtypes.empty()) {
     os << "[";
     for (auto &subtype : type.subtypes) {

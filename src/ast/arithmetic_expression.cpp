@@ -201,7 +201,7 @@ auto ASTArithmeticExpression::build_ir(
       return bc->builder.CreateICmpSLE(lhs_llvm, rhs_llvm);
     }
   }
-  throw bc::compiling_error_exeption(ast, "Type not Implementet!");
+  throw ast_error(ast, "Unimplemented Binary Operator.");
 }
 
 void ASTArithmeticExpression::get_dependencies(

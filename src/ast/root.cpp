@@ -34,11 +34,10 @@ ASTRoot::ASTRoot(const std::shared_ptr<peg::Ast> &ast) : ast(ast) {
 
 void ASTRoot::compile(std::ostream &out) {
   // Calculating compiling order
-  std::cerr << "Generate compiling Order: ";
+  std::cerr << "Generate compiling Order\n";
   reorder_functions();
-  std::cerr << "Success!\n";
 
-  std::cerr << "Determiining return types: ";
+  std::cerr << "Determiining return types\n";
   auto build_context = std::make_unique<by::bc::BuildContext>();
   for (const auto &func : externs) {
     func->determine_type(build_context->symbols);
@@ -46,18 +45,15 @@ void ASTRoot::compile(std::ostream &out) {
   for (const auto &func : functions) {
     func->determine_type(build_context->symbols);
   }
-  std::cerr << "Success!\n";
 
-  std::cerr << "Compiling:\n";
+  std::cerr << "Compiling\n";
   for (const auto &func : functions) {
     func->build_ir(build_context);
   }
-  std::cerr << "Success!\n";
 
-  std::cerr << "Wrinting Module!\n";
+  std::cerr << "Wrinting IRCode\n";
   llvm::raw_os_ostream rso(out);
   build_context->module.print(rso, nullptr);
-  std::cerr << "Success!\n";
 }
 
 void ASTRoot::get_dependencies(std::unordered_set<std::string> &functions,

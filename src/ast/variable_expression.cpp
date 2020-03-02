@@ -47,7 +47,7 @@ auto ASTVariableExpression::build_ir(
       return bc->builder.CreateLoad(vall->second);
     }
   }
-  throw bc::compiling_error_exeption(ast, "Variable not found!");
+  throw ast_error(ast, "Variable not found: " + name);
 }
 
 void ASTVariableExpression::get_dependencies(

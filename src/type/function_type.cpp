@@ -58,7 +58,7 @@ auto BinaryOperator::get_llvm_function_type(llvm::LLVMContext &context) const
 namespace std {
 
 std::string to_string(by::type::FunctionType const &func) {
-  std::string str = std::to_string(static_cast<by::type::TypeName>(func)) + "(";
+  std::string str = std::to_string(*(by::type::TypeName *)(&func)) + "(";
   if (!func.parameters.empty()) {
     str += std::to_string(func.parameters[0]);
     for (size_t i = 1; i < func.parameters.size(); ++i) {
@@ -70,7 +70,7 @@ std::string to_string(by::type::FunctionType const &func) {
 }
 
 std::string to_string(by::type::BinaryOperator const &func) {
-  std::string str = std::to_string(static_cast<by::type::TypeName>(func)) + "(";
+  std::string str = std::to_string(*(by::type::TypeName *)(&func)) + "(";
   str += std::to_string(func.lhs) + "," + std::to_string(func.rhs) + ")";
   return str;
 }

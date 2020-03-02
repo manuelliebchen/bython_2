@@ -14,12 +14,11 @@
 
 auto read_file(const std::string &filepath) -> std::string {
   std::ifstream ifs;
-  std::cerr << "\nOpening ifstream: " << filepath << " ";
+  std::cerr << "Opening file " << filepath << std::endl;
   ifs.open(filepath);
   if (!ifs.good()) {
     throw std::invalid_argument{"Unable to open " + filepath};
   }
-  std::cerr << "Success!\n";
 
   std::string file_string((std::istreambuf_iterator<char>(ifs)),
                           std::istreambuf_iterator<char>());
@@ -45,31 +44,30 @@ auto main(int argc, char *argv[]) -> int {
     }
 
     // Parsing Grammar
-    std::cerr << "Parsing Grammar: ";
+    std::cerr << "Parsing Grammar\n";
     const std::string bython_grammar = read_file(GRAMMAR_PATH);
     peg::parser parser;
     parser.load_grammar(bython_grammar.c_str());
-    std::cerr << "Success!\n";
 
     // Parsing and generating peg ast
-    std::cerr << "Parsing Code: ";
+    std::cerr << "Parsing Code\n";
     std::string file_path = result["input"].as<std::string>();
 
     const std::string bython_code = read_file(file_path);
     parser.enable_ast();
     std::shared_ptr<peg::Ast> ast;
+    CHECK
     parser.parse(bython_code.c_str(), ast, file_path.c_str());
-    std::cerr << "Success!\n";
+    CHECK
 
     // Building internal AST
     std::shared_ptr<by::ast::ASTRoot> root;
-    std::cerr << "Constructing AST!\n";
+    std::cerr << "Constructing AST\n";
     root = std::make_shared<by::ast::ASTRoot>(ast);
-    std::cerr << "Success!\n";
 
     root->compile(std::cout);
   } catch (const std::exception &e) {
-    std::cerr << "\nBuild failed:\n";
+    std::cerr << "Build failed\n";
     std::cerr << e.what() << std::endl;
     exit(1);
   }

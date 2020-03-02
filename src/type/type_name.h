@@ -29,17 +29,21 @@ class Type;
 
 namespace by::type {
 struct TypeName {
-
   std::string name;
-  bool generic = false;
+  bool pointer;
   std::vector<TypeName> subtypes;
 
-  TypeName();
-  TypeName(const std::shared_ptr<peg::Ast> &ast);
   TypeName(std::string, std::vector<TypeName>);
   TypeName(std::string);
   TypeName(TypeName const &);
 
+  static const std::shared_ptr<const TypeName> Void;
+  static const std::shared_ptr<const TypeName> None;
+  static const std::shared_ptr<const TypeName> Int;
+  static const std::shared_ptr<const TypeName> Float;
+  static const std::shared_ptr<const TypeName> String;
+
+  TypeName(const std::shared_ptr<peg::Ast> &ast);
   TypeName operator=(TypeName);
 
   TypeName deduct_type(TypeName) const;
@@ -51,9 +55,6 @@ struct TypeName {
   bool is_void() const;
 
   llvm::Type *get_llvm_type(llvm::LLVMContext &) const;
-
-  static const std::shared_ptr<const TypeName> Void;
-  static const std::shared_ptr<const TypeName> None;
 
   friend std::ostream &operator<<(std::ostream &, const TypeName &);
   friend std::string to_string(by::type::TypeName const &);

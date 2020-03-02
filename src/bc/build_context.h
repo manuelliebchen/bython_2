@@ -27,18 +27,6 @@ class ASTExpression;
 }
 namespace bc {
 
-struct compiling_error_exeption : std::exception {
-  const std::shared_ptr<peg::Ast> ast;
-  const std::string what_str;
-  compiling_error_exeption(const std::shared_ptr<peg::Ast> ast,
-                           const char *name)
-      : ast(ast), what_str(ast->path + ":" + std::to_string(ast->line) + ":" +
-                           std::to_string(ast->column) + ":" + name) {}
-  [[nodiscard]] const char *what() const noexcept override {
-    return what_str.c_str();
-  }
-};
-
 struct BuildContext {
   llvm::LLVMContext context;
   llvm::IRBuilder<> builder{context};
