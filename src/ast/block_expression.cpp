@@ -24,8 +24,13 @@ namespace by::ast {
 ASTBlockExpression::ASTBlockExpression(const std::shared_ptr<peg::Ast> &ast,
                                        ASTBlockExpression *parent)
     : ASTExpression(ast, parent) {
-  for (const std::shared_ptr<peg::Ast> &n : ast->nodes) {
-    expressions.push_back(create_expression(n, this));
+  int n = ast->nodes.size();
+  if (ast->nodes.back()->original_name == "EndExpression") {
+    end_expression = create_expression(ast->nodes.back()->nodes[0], this);
+    n -= 1;
+  }
+  for (int i = 0; i < n; ++i) {
+    expressions.push_back(create_expression(ast->nodes[i], this));
   }
 }
 
@@ -37,18 +42,24 @@ ASTBlockExpression::ASTBlockExpression(
   for (const auto &variable : preregistered_variables) {
     register_variable(variable->get_name(), variable->get_type());
   }
-  for (const std::shared_ptr<peg::Ast> &n : ast->nodes) {
-    expressions.push_back(create_expression(n, this));
+  int n = ast->nodes.size();
+  if (ast->nodes.back()->original_name == "EndExpression") {
+    end_expression = create_expression(ast->nodes.back()->nodes[0], this);
+    n -= 1;
+  }
+  for (int i = 0; i < n; ++i) {
+    expressions.push_back(create_expression(ast->nodes[i], this));
   }
 }
 
 auto ASTBlockExpression::determine_type(type::variable_map &symbols)
     -> by::type::TypeName_ptr {
-  if (!expressions.empty()) {
-    for (auto &exp : expressions) {
-      exp->determine_type(symbols);
-    }
-    type = expressions.back()->get_type();
+  for (auto &exp : expressions) {
+    exp->determine_type(symbols);
+  }
+
+  if (end_expression) {
+    type = end_expression->determine_type(symbols);
     return type;
   }
   return type::TypeName::Void;
@@ -84,6 +95,9 @@ void ASTBlockExpression::get_dependencies(identifier_set &functions,
   for (const auto &exp : expressions) {
     exp->get_dependencies(functions, types);
   }
+  if (end_expression) {
+    end_expression->get_dependencies(functions, types);
+  }
 }
 
 auto ASTBlockExpression::build_ir(std::unique_ptr<bc::BuildContext> &bc) const
@@ -92,11 +106,12 @@ auto ASTBlockExpression::build_ir(std::unique_ptr<bc::BuildContext> &bc) const
   bc->variables.emplace_back(std::unordered_map<std::string, llvm::Value *>());
 
   llvm::Value *ret = nullptr;
-  if (!expressions.empty()) {
-    for (size_t i = 0; i < expressions.size() - 1; ++i) {
-      expressions[i]->build_ir(bc);
-    }
-    ret = expressions.back()->build_ir(bc);
+  for (const auto &exp : expressions) {
+    exp->build_ir(bc);
+  }
+
+  if (end_expression) {
+    ret = end_expression->build_ir(bc);
   }
 
   bc->variables.pop_back();

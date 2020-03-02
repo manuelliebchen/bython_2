@@ -10,7 +10,8 @@ VariableDeclaration <- Identifier ':' %ows TypeName
 # Function insides
 Expression <- NoneArithmeticExpression (BinaryOperator Expression)?
 NoneArithmeticExpression <- UnaryOperator?  ( '(' %ows Expression ')' %ows / BlockExpression / CallExpression / LetStatement / IfExpression / VariableExpression / FloatConstant / IntegerConstant / StringConstant / BooleanConstant)
-BlockExpression <- '{' %ows (Expression ';' %ows)* Expression? '}' %ows
+BlockExpression <- '{' %ows (Expression ';' %ows)* EndExpression? '}' %ows
+EndExpression <- Expression
 LetStatement <- 'let' %ows Identifier '=' %ows Expression
 CallExpression <- Identifier '(' %ows CommaSeparatedList(Expression)? ')' %ows
 IfExpression <- 'if' %ows Expression BlockExpression ('else' %ows (IfExpression / BlockExpression))?

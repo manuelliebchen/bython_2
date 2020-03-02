@@ -35,6 +35,7 @@ class ASTVariableDeclaration;
 class ASTBlockExpression : public ASTExpression {
 protected:
   std::vector<std::shared_ptr<ASTExpression>> expressions;
+  std::shared_ptr<ASTExpression> end_expression;
 
   by::type::variable_map known_variables;
 
