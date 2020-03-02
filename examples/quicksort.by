@@ -1,0 +1,63 @@
+func sortedHelper = list: List[Int], accum: List[Int], pivot: Int, position: Int, larger: Bool -> List[Int] {
+    if position == list_size(list) {
+        accum
+    }
+    else {
+        let value = list_get_int(list, position);
+        let new_accum = 
+	        if larger {
+		        if value >= pivot {
+		            list_push_back(accum, value)
+		        } else {
+		            accum
+		        }
+	        } else {
+		        if value < pivot {
+		            list_push_back(accum, value)
+		        } else {
+		            accum
+		        }
+			};
+	
+        sortedHelper(list, new_accum, pivot, position + 1, larger)
+    }
+}
+
+func quickSort = list: List[Int] -> List[Int] {
+    if list_size(list) <= 1 {
+        list
+    }
+    else {
+        let pivot = list_get_int(list, 0);
+        let unordered = list_pop_front(list);
+
+        let lhs = quickSort(sortedHelper(unordered, list_int_init(), pivot, 0, false));
+        let rhs = quickSort(sortedHelper(unordered, list_int_init(), pivot, 0, true));
+
+        list_merge(list_push_back(lhs, pivot), rhs)
+    }
+}
+
+func main = argc: Int, argv: List[String] -> Int {
+    let list0 = list_int_init();
+    let list1 = list_push_back(list0, 1);
+    let list2 = list_push_back(list1, 2);
+    let list3 = list_push_back(list2, 3);
+    let list4 = list_push_back(list3, 4);
+    let list5 = list_push_back(list4, 8);
+    let list6 = list_push_back(list5, 7);
+    let list7 = list_push_back(list6, 6);
+    let list8 = list_push_back(list7, 5);
+
+    let nlist = quickSort(list8);
+    list_print(nlist);
+    0
+}
+
+extern func list_int_init = -> List[Int]
+extern func list_merge = List[Int], List[Int] -> List[Int]
+extern func list_pop_front = List[Int] -> List[Int]
+extern func list_push_back = List[Int], Int -> List[Int]
+extern func list_print = List[Int] -> Void
+extern func list_size = List[Int] -> Int
+extern func list_get_int = List[Int], Int -> Int

@@ -105,14 +105,17 @@ llvm::Type *TypeName::get_llvm_type(llvm::LLVMContext &context) const {
     type = llvm::Type::getInt32Ty(context);
   } else if (name == "Void") {
     type = llvm::Type::getVoidTy(context);
+    if (pointer) {
+      return llvm::Type::getInt64PtrTy(context);
+    }
   } else if (name == "Bool") {
     type = llvm::Type::getInt1Ty(context);
   } else if (name == "Float") {
     type = llvm::Type::getFloatTy(context);
   } else if (name == "List") {
-    type = llvm::Type::getInt8PtrTy(context);
+    return llvm::Type::getInt64PtrTy(context);
   } else if (name == "String") {
-    type = llvm::Type::getInt8PtrTy(context);
+    type = llvm::Type::getInt64PtrTy(context);
   } else if (name == "None") {
     throw std::runtime_error("Could not determin type!");
   } else {
@@ -145,7 +148,9 @@ bool TypeName::operator==(const TypeName &rhs) const {
 bool TypeName::operator!=(const TypeName &rhs) const { return !(*this == rhs); }
 
 auto TypeName::is_void() const -> bool { return *this == *Void; }
-TypeName::operator bool() const { return !(*this == *None || *this == *Void); }
+TypeName::operator bool() const {
+  return !(*this == *None || (*this == *Void && !pointer));
+}
 
 std::ostream &operator<<(std::ostream &os, const TypeName &type) {
   os << type.name;

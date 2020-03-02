@@ -56,9 +56,7 @@ auto main(int argc, char *argv[]) -> int {
     const std::string bython_code = read_file(file_path);
     parser.enable_ast();
     std::shared_ptr<peg::Ast> ast;
-    CHECK
     parser.parse(bython_code.c_str(), ast, file_path.c_str());
-    CHECK
 
     // Building internal AST
     std::shared_ptr<by::ast::ASTRoot> root;
