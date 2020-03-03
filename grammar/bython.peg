@@ -19,8 +19,7 @@ VariableExpression <- Identifier ('.' %ows VariableExpression)?
 
 # Nameing
 FunctionType <- (CommaSeparatedList(TypeName))? '->' %ows TypeName
-TypeName <- Identifier ('[' %ows CommaSeparatedList(TypeName) ']' %ows)? (PointerSymbol)?
-PointerSymbol <- '*' %ows
+TypeName <- Identifier ('[' %ows CommaSeparatedList(TypeName) ']' %ows)?
 Identifier <- < (NoneIdentifier [a-zA-Z0-9_]+) / (!NoneIdentifier [a-zA-Z_][a-zA-Z0-9_]*)  > %ows
 ~NoneIdentifier <- 'true' / 'false' / 'if' / 'else' / 'func' / 'new'
 
@@ -31,7 +30,7 @@ BooleanConstant <- < ( 'false' / 'true' ) > %ows
 StringConstant <- (('"' < (!'"' .)*  > '"') / ("'" < (!"'" .)*  > "'")) %ows
 
 # Operators
-UnaryOperator <- < ('-' / '!' / '*' / '&') > %ows
+UnaryOperator <- < ('-' / '!') > %ows
 BinaryOperator <- < ( '/' / '*' / '%' / '+' / '-' / '&&' / '||' / '!=' / '==' / '!=' / '>=' / '<=' / '>' / '<' ) > %ows
 
 ~%ows <- [ \t\n\r]* Comment?

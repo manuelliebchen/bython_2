@@ -100,26 +100,80 @@ auto ASTFunction::get_name() const -> std::string { return name; }
 
 auto ASTFunction::build_ir(std::unique_ptr<by::bc::BuildContext> &bc) const
     -> llvm::Value * {
-  std::cerr << "Building " << name << std::endl;
-
   bc->ast_stack.push(this);
 
-  llvm::Function *function = llvm::Function::Create(
+  llvm::FunctionType *function_type =
       std::static_pointer_cast<const type::FunctionType>(type)
-          ->get_llvm_function_type(bc->context),
-      llvm::Function::ExternalLinkage, name, bc->module);
+          ->get_llvm_function_type(bc->context);
+  if (name == "main") {
+    std::vector<llvm::Type *> llvm_parameters;
+    llvm_parameters.emplace_back(llvm::Type::getInt32Ty(bc->context));
+    llvm_parameters.emplace_back(
+        llvm::Type::getInt8PtrTy(bc->context)->getPointerTo());
+    llvm::Type *llvm_returntype =
+        type::TypeName::Int->get_llvm_type(bc->context);
+    function_type =
+        llvm::FunctionType::get(llvm_returntype, llvm_parameters, false);
+  }
+
+  llvm::Function *function = llvm::Function::Create(
+      function_type, llvm::Function::ExternalLinkage, name, bc->module);
 
   llvm::BasicBlock *entry_block = llvm::BasicBlock::Create(bc->context);
   function->getBasicBlockList().push_back(entry_block);
   bc->builder.SetInsertPoint(entry_block);
+  if (name == "main") {
 
-  bc->variables.emplace_back(std::unordered_map<std::string, llvm::Value *>());
-  unsigned idx = 0;
-  for (auto &arg : function->args()) {
-    llvm::Type *arg_type = arg.getType();
-    llvm::AllocaInst *variable_value = bc->builder.CreateAlloca(arg_type);
-    bc->builder.CreateStore(&arg, variable_value);
-    bc->variables.back().emplace(parameters[idx++]->get_name(), variable_value);
+    bc->variables.emplace_back(
+        std::unordered_map<std::string, llvm::Value *>());
+
+    std::vector<llvm::Type *> llvm_parameters;
+    llvm_parameters.emplace_back(llvm::Type::getInt32Ty(bc->context));
+    llvm_parameters.emplace_back(
+        llvm::Type::getInt8PtrTy(bc->context)->getPointerTo());
+    llvm::Type *llvm_returntype =
+        type::TypeName::List->get_llvm_type(bc->context);
+    llvm::FunctionType *init_function_type =
+        llvm::FunctionType::get(llvm_returntype, llvm_parameters, false);
+
+    llvm::FunctionCallee function_callee =
+        bc->module.getOrInsertFunction("list_init_main", init_function_type);
+
+    std::string arg_name = parameters[0]->get_name();
+
+    std::vector<llvm::Value *> llvm_args;
+    for (auto &arg : function->args()) {
+      llvm_args.emplace_back(&arg);
+    }
+
+    llvm::AllocaInst *variable_value = bc->builder.CreateAlloca(
+        type::TypeName::List->get_llvm_type(bc->context), nullptr,
+        llvm::Twine(arg_name));
+
+    bc->builder.CreateStore(bc->builder.CreateCall(function_callee, llvm_args),
+                            variable_value);
+    bc->variables.back().emplace(arg_name, variable_value);
+
+  } else {
+    function = llvm::Function::Create(
+        std::static_pointer_cast<const type::FunctionType>(type)
+            ->get_llvm_function_type(bc->context),
+        llvm::Function::ExternalLinkage, name, bc->module);
+
+    llvm::BasicBlock *entry_block = llvm::BasicBlock::Create(bc->context);
+    function->getBasicBlockList().push_back(entry_block);
+    bc->builder.SetInsertPoint(entry_block);
+
+    bc->variables.emplace_back(
+        std::unordered_map<std::string, llvm::Value *>());
+    unsigned idx = 0;
+    for (auto &arg : function->args()) {
+      std::string arg_name = parameters[idx++]->get_name();
+      llvm::AllocaInst *variable_value = bc->builder.CreateAlloca(
+          arg.getType(), nullptr, llvm::Twine(arg_name));
+      bc->builder.CreateStore(&arg, variable_value);
+      bc->variables.back().emplace(arg_name, variable_value);
+    }
   }
 
   llvm::Value *return_value = blockexpression->build_ir(bc);

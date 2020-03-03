@@ -43,8 +43,8 @@ auto ASTVariableExpression::build_ir(
   for (size_t i = bc->variables.size() - 1; i >= 0; --i) {
     if (const auto &vall = bc->variables[i].find(name);
         vall != bc->variables[i].end()) {
-      bc->ast_stack.pop();
       return bc->builder.CreateLoad(vall->second);
+      bc->ast_stack.pop();
     }
   }
   throw ast_error(ast, "Variable not found: " + name);

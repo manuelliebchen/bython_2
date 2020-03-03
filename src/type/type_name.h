@@ -30,7 +30,6 @@ class Type;
 namespace by::type {
 struct TypeName {
   std::string name;
-  bool pointer;
   std::vector<TypeName> subtypes;
 
   TypeName(std::string, std::vector<TypeName>);
@@ -42,6 +41,7 @@ struct TypeName {
   static const std::shared_ptr<const TypeName> Int;
   static const std::shared_ptr<const TypeName> Float;
   static const std::shared_ptr<const TypeName> String;
+  static const std::shared_ptr<const TypeName> List;
 
   TypeName(const std::shared_ptr<peg::Ast> &ast);
   TypeName operator=(TypeName);

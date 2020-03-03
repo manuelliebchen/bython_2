@@ -1,0 +1,50 @@
+func add = a:Int, b:Int -> Int { 
+	if b == 0 {
+		a
+	} else {
+		add(a + 1, b - 1)
+	}
+}
+
+func sub = a:Int, b:Int -> Int {
+	if b == 0 {
+		a
+	} else { 
+		sub( a - 1, b - 1)
+	}
+}
+
+func mult_helper = a:Int, b:Int, res:Int -> Int {
+	if b == 0 {
+		res
+	} else {
+		mult_helper(a, b-1, add(res, a))
+	}
+}
+
+func mult = a:Int, b:Int -> Int {
+	mult_helper(a, b, 0)
+}
+
+func div_helper = a:Int, b:Int, res:Int -> Int {
+	if a <= 0 {
+		res - 1
+	} else {
+		div_helper(a - b, b, res + 1)
+	}
+}
+
+func div = a:Int, b:Int -> Int {
+	div_helper(a, b, 0)
+}
+
+
+func main = args:List[String] -> Int {
+	printf("add test 7 + 8 = %d\n", add(7,8));
+	printf("sub test 7 - 8 = %d\n", sub(7,8));
+	printf("mult test 7 * 8 = %d\n", mult(7,8));
+	printf("div test 23 / 8 = %d\n", div(23,8));
+	0
+}
+
+extern func printf = String, Int -> Void

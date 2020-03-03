@@ -79,21 +79,6 @@ auto ASTNoneArithmeticExpression::determine_type(type::variable_map &symbols)
 auto ASTNoneArithmeticExpression::build_ir(
     std::unique_ptr<bc::BuildContext> &bc) const -> llvm::Value * {
   bc->ast_stack.push(this);
-  if (UnaryOperator == "&") {
-    if (std::shared_ptr<ASTVariableExpression> rhs_var =
-            std::dynamic_pointer_cast<ASTVariableExpression>(rhs);
-        rhs_var != nullptr) {
-      for (size_t i = bc->variables.size() - 1; i >= 0; --i) {
-        if (const auto &vall = bc->variables[i].find(rhs_var->get_name());
-            vall != bc->variables[i].end()) {
-          bc->ast_stack.pop();
-          return vall->second;
-        }
-      }
-    } else {
-      throw ast_error(ast, "Unable to get pointer to rvalue.");
-    }
-  }
   llvm::Value *rhs_llvm = rhs->build_ir(bc);
   bc->ast_stack.pop();
   if (UnaryOperator == "-") {
@@ -106,9 +91,6 @@ auto ASTNoneArithmeticExpression::build_ir(
   }
   if (UnaryOperator == "!") {
     return bc->builder.CreateNot(rhs_llvm);
-  }
-  if (UnaryOperator == "*") {
-    return bc->builder.CreateLoad(rhs_llvm);
   }
   if (UnaryOperator.empty()) {
     return rhs_llvm;
