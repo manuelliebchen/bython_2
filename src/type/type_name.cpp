@@ -115,7 +115,7 @@ llvm::Type *TypeName::get_llvm_type(llvm::LLVMContext &context) const {
   } else if (name == "List") {
     return llvm::Type::getInt64PtrTy(context);
   } else if (name == "String") {
-    type = llvm::Type::getInt64PtrTy(context);
+    type = llvm::Type::getInt8PtrTy(context);
   } else if (name == "None") {
     throw std::runtime_error("Could not determin type!");
   } else {

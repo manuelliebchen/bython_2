@@ -41,20 +41,28 @@ auto ASTCallExpression::determine_type(type::variable_map &symbols)
   for (auto &arg : arguments) {
     arg->determine_type(symbols);
   }
-  type = symbols.at(name);
+  try {
+    type = symbols.at(name);
+  } catch (std::out_of_range &oor) {
+    throw ast_error(ast, "Function not found: " + name);
+  }
   return type;
 }
 
 auto ASTCallExpression::build_ir(std::unique_ptr<bc::BuildContext> &bc) const
     -> llvm::Value * {
   bc->ast_stack.push(this);
-
-  type::FunctionType_ptr functiontype =
-      std::static_pointer_cast<const by::type::FunctionType>(
-          bc->symbols.at(name));
+  type::FunctionType_ptr functiontype;
+  try {
+    functiontype = std::static_pointer_cast<const by::type::FunctionType>(
+        bc->symbols.at(name));
+  } catch (std::out_of_range &oor) {
+    throw ast_error(ast, "Function not found: " + name);
+  }
 
   llvm::FunctionType *llvm_functype =
       functiontype->get_llvm_function_type(bc->context);
+
   llvm::FunctionCallee function_callee =
       bc->module.getOrInsertFunction(name, llvm_functype);
 

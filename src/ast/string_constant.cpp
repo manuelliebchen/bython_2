@@ -30,12 +30,15 @@ ASTStringConstant::ASTStringConstant(const std::shared_ptr<peg::Ast> &ast,
                                      ASTBlockExpression *parent)
     : ASTConstant(ast, parent, "String") {
   value = ast->token;
+  auto p = value.find(R"(\n)");
+  if (p != value.npos) {
+    value.replace(p, 2, "\n");
+  }
 }
 
 auto ASTStringConstant::build_ir(std::unique_ptr<bc::BuildContext> &bc) const
     -> llvm::Value * {
-  const auto gname = ".str" + value;
-
+  const std::string gname = ".str" + value;
   const auto gdata = llvm::ConstantDataArray::getString(bc->context, value,
                                                         /*AddNull*/ true);
 
@@ -48,7 +51,7 @@ auto ASTStringConstant::build_ir(std::unique_ptr<bc::BuildContext> &bc) const
   gdata_loc->setInitializer(gdata);
 
   // Cast to appropriate type and return
-  return llvm::ConstantExpr::getBitCast(gdata_loc,
-                                        llvm::Type::getInt8PtrTy(bc->context));
+  return llvm::ConstantExpr::getBitCast(
+      gdata_loc, type::TypeName::String->get_llvm_type(bc->context));
 }
 } /* namespace by::ast */

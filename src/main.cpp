@@ -14,7 +14,6 @@
 
 auto read_file(const std::string &filepath) -> std::string {
   std::ifstream ifs;
-  std::cerr << "Opening file " << filepath << std::endl;
   ifs.open(filepath);
   if (!ifs.good()) {
     throw std::invalid_argument{"Unable to open " + filepath};
@@ -29,6 +28,7 @@ auto read_file(const std::string &filepath) -> std::string {
 };
 
 auto main(int argc, char *argv[]) -> int {
+  std::string last_op = "";
   try {
     cxxopts::Options options(*argv, "Bython Compiler.");
     options.positional_help("input").show_positional_help();
@@ -44,13 +44,13 @@ auto main(int argc, char *argv[]) -> int {
     }
 
     // Parsing Grammar
-    std::cerr << "Parsing Grammar\n";
+    last_op = "Parsing Grammar";
     const std::string bython_grammar = read_file(GRAMMAR_PATH);
     peg::parser parser;
     parser.load_grammar(bython_grammar.c_str());
 
     // Parsing and generating peg ast
-    std::cerr << "Parsing Code\n";
+    last_op = "Parsing Code";
     std::string file_path = result["input"].as<std::string>();
 
     const std::string bython_code = read_file(file_path);
@@ -60,12 +60,12 @@ auto main(int argc, char *argv[]) -> int {
 
     // Building internal AST
     std::shared_ptr<by::ast::ASTRoot> root;
-    std::cerr << "Constructing AST\n";
+    last_op = "Constructing AST";
     root = std::make_shared<by::ast::ASTRoot>(ast);
 
     root->compile(std::cout);
   } catch (const std::exception &e) {
-    std::cerr << "Build failed\n";
+    std::cerr << "Build failed while " << last_op << std::endl;
     std::cerr << e.what() << std::endl;
     exit(1);
   }
