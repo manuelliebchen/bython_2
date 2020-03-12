@@ -155,15 +155,6 @@ auto ASTFunction::build_ir(std::unique_ptr<by::bc::BuildContext> &bc) const
     bc->variables.back().emplace(arg_name, variable_value);
 
   } else {
-    function = llvm::Function::Create(
-        std::static_pointer_cast<const type::FunctionType>(type)
-            ->get_llvm_function_type(bc->context),
-        llvm::Function::ExternalLinkage, name, bc->module);
-
-    llvm::BasicBlock *entry_block = llvm::BasicBlock::Create(bc->context);
-    function->getBasicBlockList().push_back(entry_block);
-    bc->builder.SetInsertPoint(entry_block);
-
     bc->variables.emplace_back(
         std::unordered_map<std::string, llvm::Value *>());
     unsigned idx = 0;

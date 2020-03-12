@@ -26,6 +26,8 @@ namespace by::type {
 
 const std::shared_ptr<const TypeName> TypeName::Void =
     std::make_shared<const TypeName>("Void");
+const std::shared_ptr<const TypeName> TypeName::Null =
+    std::make_shared<const TypeName>("Null");
 const std::shared_ptr<const TypeName> TypeName::None =
     std::make_shared<const TypeName>("None");
 const std::shared_ptr<const TypeName> TypeName::Int =
@@ -96,15 +98,13 @@ llvm::Type *TypeName::get_llvm_type(llvm::LLVMContext &context) const {
     type = llvm::Type::getInt1Ty(context);
   } else if (name == "Float") {
     type = llvm::Type::getFloatTy(context);
-  } else if (name == "List") {
-    return llvm::Type::getInt64PtrTy(context);
   } else if (name == "String") {
     type = llvm::Type::getInt8PtrTy(context);
   } else if (name == "None") {
     throw std::runtime_error("Could not determin type!");
   } else {
-    throw std::runtime_error("Trying to get invalid llvm type: " +
-                             std::to_string(*this));
+    type = llvm::Type::getInt8PtrTy(context);
+    //    type = llvm::PointerType::getUnqual(llvm::Type::getVoidTy(context));
   }
   return type;
 }

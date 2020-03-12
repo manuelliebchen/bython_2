@@ -37,6 +37,7 @@ struct TypeName {
   TypeName(TypeName const &);
 
   static const std::shared_ptr<const TypeName> Void;
+  static const std::shared_ptr<const TypeName> Null;
   static const std::shared_ptr<const TypeName> None;
   static const std::shared_ptr<const TypeName> Int;
   static const std::shared_ptr<const TypeName> Float;

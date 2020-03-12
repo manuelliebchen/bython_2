@@ -1,0 +1,19 @@
+func main = argv: llist[String] -> Int {
+    printlist(argv);
+    0
+}
+
+func printlist = list: llist[String] -> Void {
+    puts(llist_peek(list));
+    if llist_has_next(list) {
+        puts(", ");
+        printlist(llist_pop(list));
+    };
+}
+
+
+extern func llist_has_next = llist -> Bool
+extern func llist_peek = llist -> String
+extern func llist_pop = llist -> llist
+extern func printf = String, Bool -> Void
+extern func puts = String -> Void

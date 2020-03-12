@@ -31,6 +31,7 @@ struct BuildContext {
   llvm::LLVMContext context;
   llvm::IRBuilder<> builder{context};
   llvm::Module module{"Bython Module", context};
+  llvm::DataLayout data_layout{&module};
 
   std::vector<std::unordered_map<std::string, llvm::Value *>> variables;
   std::stack<const ast::ASTExpression *> ast_stack;

@@ -33,21 +33,30 @@ ASTVariableExpression::ASTVariableExpression(
 
 auto ASTVariableExpression::determine_type(type::variable_map &known_functions)
     -> by::type::TypeName_ptr {
-  type = parent->find_variable_type(name);
+  if (name != "Null") {
+    type = parent->find_variable_type(name);
+  } else {
+    type = type::TypeName::Null;
+  }
   return type;
 }
 
 auto ASTVariableExpression::build_ir(
     std::unique_ptr<bc::BuildContext> &bc) const -> llvm::Value * {
   bc->ast_stack.push(this);
-  for (size_t i = bc->variables.size() - 1; i >= 0; --i) {
-    if (const auto &vall = bc->variables[i].find(name);
-        vall != bc->variables[i].end()) {
-      return bc->builder.CreateLoad(vall->second);
-      bc->ast_stack.pop();
+  if (name != "Null") {
+    for (size_t i = bc->variables.size() - 1; i >= 0; --i) {
+      if (const auto &vall = bc->variables[i].find(name);
+          vall != bc->variables[i].end()) {
+        return bc->builder.CreateLoad(vall->second);
+        bc->ast_stack.pop();
+      }
     }
+    throw ast_error(ast, "Variable not found: " + name);
+  } else {
+    return llvm::ConstantPointerNull::get(
+        (llvm::PointerType *)type::TypeName::Null->get_llvm_type(bc->context));
   }
-  throw ast_error(ast, "Variable not found: " + name);
 }
 
 void ASTVariableExpression::get_dependencies(
