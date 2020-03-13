@@ -127,31 +127,21 @@ auto ASTFunction::build_ir(std::unique_ptr<by::bc::BuildContext> &bc) const
     bc->variables.emplace_back(
         std::unordered_map<std::string, llvm::Value *>());
 
-    std::vector<llvm::Type *> llvm_parameters;
-    llvm_parameters.emplace_back(llvm::Type::getInt32Ty(bc->context));
-    llvm_parameters.emplace_back(
-        llvm::Type::getInt8PtrTy(bc->context)->getPointerTo());
-    llvm::Type *llvm_returntype =
-        type::TypeName::List->get_llvm_type(bc->context);
-    llvm::FunctionType *init_function_type =
-        llvm::FunctionType::get(llvm_returntype, llvm_parameters, false);
-
-    llvm::FunctionCallee function_callee =
-        bc->module.getOrInsertFunction("list_init_main", init_function_type);
-
     std::string arg_name = parameters[0]->get_name();
+
+    llvm::AllocaInst *variable_value = bc->builder.CreateAlloca(
+        type::TypeName::List->get_llvm_type(bc->context), nullptr,
+        llvm::Twine(arg_name));
 
     std::vector<llvm::Value *> llvm_args;
     for (auto &arg : function->args()) {
       llvm_args.emplace_back(&arg);
     }
 
-    llvm::AllocaInst *variable_value = bc->builder.CreateAlloca(
-        type::TypeName::List->get_llvm_type(bc->context), nullptr,
-        llvm::Twine(arg_name));
+    bc->builder.CreateStore(
+        bc::build_internal_call(bc, "llist_init_main", llvm_args),
+        variable_value);
 
-    bc->builder.CreateStore(bc->builder.CreateCall(function_callee, llvm_args),
-                            variable_value);
     bc->variables.back().emplace(arg_name, variable_value);
 
   } else {

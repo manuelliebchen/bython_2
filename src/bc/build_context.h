@@ -40,6 +40,8 @@ struct BuildContext {
   std::unordered_set<type::TypeName> known_types;
 };
 
+llvm::Value* build_internal_call(std::unique_ptr<by::bc::BuildContext> &, std::string, std::vector<llvm::Value*>);
+
 } // namespace bc
 } // namespace by
 

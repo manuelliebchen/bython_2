@@ -43,6 +43,7 @@ struct TypeName {
   static const std::shared_ptr<const TypeName> Float;
   static const std::shared_ptr<const TypeName> String;
   static const std::shared_ptr<const TypeName> List;
+  static const std::shared_ptr<const TypeName> llist;
 
   TypeName(const std::shared_ptr<peg::Ast> &ast);
   TypeName operator=(TypeName);

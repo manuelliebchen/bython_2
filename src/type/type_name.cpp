@@ -38,6 +38,8 @@ const std::shared_ptr<const TypeName> TypeName::String =
     std::make_shared<const TypeName>("String");
 const std::shared_ptr<const TypeName> TypeName::List =
     std::make_shared<const TypeName>("List");
+const std::shared_ptr<const TypeName> TypeName::llist =
+    std::make_shared<const TypeName>("llist");
 
 TypeName::TypeName(const std::shared_ptr<peg::Ast> &ast) {
   name = std::to_string(ast->nodes[0]);

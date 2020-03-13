@@ -9,10 +9,10 @@ VariableDeclaration <- Identifier ':' %ows TypeName
 
 # Function insides
 Expression <- NoneArithmeticExpression (BinaryOperator Expression)?
-NoneArithmeticExpression <- UnaryOperator?  ( '(' %ows Expression ')' %ows / BlockExpression / CallExpression / LetStatement / IfExpression / VariableExpression / FloatConstant / IntegerConstant / StringConstant / BooleanConstant)
+NoneArithmeticExpression <- UnaryOperator?  ( '(' %ows Expression ')' %ows / BlockExpression / CallExpression / LetStatement / IfExpression / BooleanConstant / VariableExpression / FloatConstant / IntegerConstant / StringConstant)
 BlockExpression <- '{' %ows (Expression ';' %ows)* EndExpression? '}' %ows
 EndExpression <- Expression
-LetStatement <- 'let' %ows Identifier '=' %ows Expression
+LetStatement <- 'let' %ows (HeadTail / Identifier) '=' %ows Expression
 CallExpression <- Identifier '(' %ows CommaSeparatedList(Expression)? ')' %ows
 IfExpression <- 'if' %ows Expression BlockExpression ('else' %ows (IfExpression / BlockExpression))?
 VariableExpression <- Identifier ('.' %ows VariableExpression)?
@@ -20,6 +20,7 @@ VariableExpression <- Identifier ('.' %ows VariableExpression)?
 # Nameing
 FunctionType <- (CommaSeparatedList(TypeName))? '->' %ows TypeName
 TypeName <- Identifier ('[' %ows CommaSeparatedList(TypeName) ']' %ows)?
+HeadTail <- Identifier ':' %ows Identifier
 Identifier <- < (NoneIdentifier [a-zA-Z0-9_]+) / (!NoneIdentifier [a-zA-Z_][a-zA-Z0-9_]*)  > %ows
 ~NoneIdentifier <- 'true' / 'false' / 'if' / 'else' / 'func' / 'new'
 

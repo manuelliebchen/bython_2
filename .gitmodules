@@ -1,10 +1,6 @@
-
 [submodule "dep/cpp-peglib"]
 	path = dep/cpp-peglib
 	url = https://github.com/yhirose/cpp-peglib
-[submodule "stdlib"]
-	path = stdlib
-	url = https://gitlab.com/compilerbau-ovgu/bython-stdlib
 [submodule "dep/cxxopts"]
 	path = dep/cxxopts
 	url = https://github.com/jarro2783/cxxopts

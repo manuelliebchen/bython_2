@@ -46,6 +46,8 @@ public:
 
 private:
   std::string var;
+  type::TypeName_ptr tailtype;
+  std::string tail;
   std::shared_ptr<ASTExpression> value;
 
   friend std::ostream &operator<<(std::ostream &, const ASTLetStatement &);

@@ -1,5 +1,7 @@
 add_subdirectory(ast)
 add_subdirectory(type)
+add_subdirectory(bc)
+add_subdirectory(std)
 
 find_package(LLVM REQUIRED CONFIG)
 
