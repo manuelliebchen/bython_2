@@ -33,27 +33,34 @@ ASTRoot::ASTRoot(const std::shared_ptr<peg::Ast> &ast) : ast(ast) {
 }
 
 void ASTRoot::compile(std::ostream &out) {
-  // Calculating compiling order
-  std::cerr << "Generate compiling Order\n";
-  reorder_functions();
+  std::string last_op = "";
+  try {
+    // Calculating compiling order
+    last_op = "Generate compiling Order\n";
+    reorder_functions();
 
-  std::cerr << "Determiining return types\n";
-  auto build_context = std::make_unique<by::bc::BuildContext>();
-  for (const auto &func : externs) {
-    func->determine_type(build_context->symbols);
-  }
-  for (const auto &func : functions) {
-    func->determine_type(build_context->symbols);
-  }
+    last_op = "Determiining return types\n";
+    auto build_context = std::make_unique<by::bc::BuildContext>();
+    for (const auto &func : externs) {
+      func->determine_type(build_context->symbols);
+    }
+    for (const auto &func : functions) {
+      func->determine_type(build_context->symbols);
+    }
 
-  std::cerr << "Compiling\n";
-  for (const auto &func : functions) {
-    func->build_ir(build_context);
-  }
+    last_op = "Compiling\n";
+    for (const auto &func : functions) {
+      func->build_ir(build_context);
+    }
 
-  std::cerr << "Wrinting IRCode\n";
-  llvm::raw_os_ostream rso(out);
-  build_context->module.print(rso, nullptr);
+    last_op = "Wrinting IRCode\n";
+    llvm::raw_os_ostream rso(out);
+    build_context->module.print(rso, nullptr);
+  } catch (const std::exception &e) {
+    std::cerr << "Compilation failed while " << last_op << std::endl;
+    std::cerr << e.what() << std::endl;
+    exit(1);
+  }
 }
 
 void ASTRoot::get_dependencies(std::unordered_set<std::string> &functions,

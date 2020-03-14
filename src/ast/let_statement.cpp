@@ -68,8 +68,9 @@ auto ASTLetStatement::build_ir(std::unique_ptr<bc::BuildContext> &bc) const
   if (tail != "") {
     llvm::Value *head_ir =
         bc::build_internal_call(bc, "llist_peek", {rhs_llvm});
+    head_ir = bc->builder.CreateLoad(head_ir);
 
-    bc->builder.CreateStore(bc->builder.CreateLoad(head_ir), variable_value);
+    bc->builder.CreateStore(head_ir, variable_value);
     bc->variables.back().emplace(var, variable_value);
 
     llvm::Value *tail_ir = bc::build_internal_call(bc, "llist_pop", {rhs_llvm});

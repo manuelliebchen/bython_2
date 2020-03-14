@@ -18,7 +18,7 @@ func isprime_ = n:Int, k:Int -> Bool {
     }
 }
 
-func main -> Int {
+func main = args:List[String] -> Int {
 	let a = 4001;
     if isprime(a) {
         printf("The given number is a prime number.");
