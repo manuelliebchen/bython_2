@@ -12,7 +12,11 @@ Expression <- NoneArithmeticExpression (BinaryOperator Expression)?
 NoneArithmeticExpression <- UnaryOperator?  ( '(' %ows Expression ')' %ows / BlockExpression / CallExpression / LetStatement / IfExpression / BooleanConstant / VariableExpression / FloatConstant / IntegerConstant / StringConstant)
 BlockExpression <- '{' %ows (Expression ';' %ows)* EndExpression? '}' %ows
 EndExpression <- Expression
+<<<<<<< HEAD
+LetStatement <- 'let' %ows Identifier (':' %ows Identifier)? '=' %ows Expression
+=======
 LetStatement <- 'let' %ows (HeadTail / Identifier) '=' %ows Expression
+>>>>>>> 24ecd6e2d627ee8301dd4d31afc8f41dfebc5d5e
 CallExpression <- Identifier '(' %ows CommaSeparatedList(Expression)? ')' %ows
 IfExpression <- 'if' %ows Expression BlockExpression ('else' %ows (IfExpression / BlockExpression))?
 VariableExpression <- Identifier ('.' %ows VariableExpression)?

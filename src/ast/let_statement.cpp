@@ -29,13 +29,13 @@ namespace by::ast {
 ASTLetStatement::ASTLetStatement(const std::shared_ptr<peg::Ast> &ast,
                                  ASTBlockExpression *parent)
     : ASTExpression(ast, parent) {
-  if (ast->nodes[0]->original_name == "HeadTail") {
-    var = std::to_string(ast->nodes[0]->nodes[0]);
-    tail = std::to_string(ast->nodes[0]->nodes[1]);
-    value = create_expression(ast->nodes[1], parent);
+  if (ast->nodes.size() > 2) {
+    var = std::to_string(ast->nodes[0]);
+    tail = std::to_string(ast->nodes[1]);
+    value = create_expression(ast->nodes[2], parent);
   } else {
     var = std::to_string(ast->nodes[0]);
-    value = create_expression(ast->nodes[2], parent);
+    value = create_expression(ast->nodes[1], parent);
   }
 }
 

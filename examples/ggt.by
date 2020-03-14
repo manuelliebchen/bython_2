@@ -6,7 +6,7 @@ func ggt = n: Int, k: Int -> Int {
     }
 }
 
-func main = argc: Int, argv: List[String] -> Int {
+func main = argv: llist[String] -> Int {
     printf("%d", ggt(42,77));
     0
 }
