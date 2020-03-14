@@ -29,12 +29,11 @@ namespace by::ast {
 ASTLetStatement::ASTLetStatement(const std::shared_ptr<peg::Ast> &ast,
                                  ASTBlockExpression *parent)
     : ASTExpression(ast, parent) {
+  var = std::to_string(ast->nodes[0]);
   if (ast->nodes.size() > 2) {
-    var = std::to_string(ast->nodes[0]);
     tail = std::to_string(ast->nodes[1]);
     value = create_expression(ast->nodes[2], parent);
   } else {
-    var = std::to_string(ast->nodes[0]);
     value = create_expression(ast->nodes[1], parent);
   }
 }
@@ -70,8 +69,8 @@ auto ASTLetStatement::build_ir(std::unique_ptr<bc::BuildContext> &bc) const
         bc::build_internal_call(bc, "llist_peek", {rhs_llvm});
     head_ir = bc->builder.CreateLoad(head_ir);
 
-    bc->builder.CreateStore(head_ir, variable_value);
-    bc->variables.back().emplace(var, variable_value);
+    //    bc->builder.CreateStore(head_ir, variable_value);
+    //    bc->variables.back().emplace(var, variable_value);
 
     llvm::Value *tail_ir = bc::build_internal_call(bc, "llist_pop", {rhs_llvm});
     llvm::AllocaInst *tail_value = bc->builder.CreateAlloca(
@@ -79,10 +78,12 @@ auto ASTLetStatement::build_ir(std::unique_ptr<bc::BuildContext> &bc) const
     bc->builder.CreateStore(tail_ir, tail_value);
     bc->variables.back().emplace(tail, tail_value);
 
-  } else {
-    bc->builder.CreateStore(rhs_llvm, variable_value);
-    bc->variables.back().emplace(var, variable_value);
+    rhs_llvm = head_ir;
   }
+  //  else {
+  bc->builder.CreateStore(rhs_llvm, variable_value);
+  bc->variables.back().emplace(var, variable_value);
+  //  }
 
   bc->ast_stack.pop();
   return variable_value;
