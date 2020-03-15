@@ -30,6 +30,8 @@ const std::shared_ptr<const TypeName> TypeName::Null =
     std::make_shared<const TypeName>("Null");
 const std::shared_ptr<const TypeName> TypeName::None =
     std::make_shared<const TypeName>("None");
+const std::shared_ptr<const TypeName> TypeName::Bool =
+    std::make_shared<const TypeName>("Bool");
 const std::shared_ptr<const TypeName> TypeName::Int =
     std::make_shared<const TypeName>("Int");
 const std::shared_ptr<const TypeName> TypeName::Float =
@@ -38,8 +40,8 @@ const std::shared_ptr<const TypeName> TypeName::String =
     std::make_shared<const TypeName>("String");
 const std::shared_ptr<const TypeName> TypeName::List =
     std::make_shared<const TypeName>("List");
-const std::shared_ptr<const TypeName> TypeName::llist =
-    std::make_shared<const TypeName>("llist");
+
+const TypeName buildin[] = {{"Void"}, {"Bool"}, {"Int"}, {"Float"}};
 
 TypeName::TypeName(const std::shared_ptr<peg::Ast> &ast) {
   name = std::to_string(ast->nodes[0]);
@@ -91,24 +93,18 @@ auto TypeName::deduct_type(TypeName rhs_name) const -> TypeName {
 }
 
 llvm::Type *TypeName::get_llvm_type(llvm::LLVMContext &context) const {
-  llvm::Type *type;
-  if (name == "Int") {
-    type = llvm::Type::getInt32Ty(context);
-  } else if (name == "Void") {
-    type = llvm::Type::getVoidTy(context);
+  if (name == "Void") {
+    return llvm::Type::getVoidTy(context);
   } else if (name == "Bool") {
-    type = llvm::Type::getInt1Ty(context);
+    return llvm::Type::getInt1Ty(context);
+  } else if (name == "Int") {
+    return llvm::Type::getInt32Ty(context);
   } else if (name == "Float") {
-    type = llvm::Type::getFloatTy(context);
-  } else if (name == "String") {
-    type = llvm::Type::getInt8PtrTy(context);
+    return llvm::Type::getFloatTy(context);
   } else if (name == "None") {
     throw std::runtime_error("Could not determin type!");
-  } else {
-    type = llvm::Type::getInt8PtrTy(context);
-    //    type = llvm::PointerType::getUnqual(llvm::Type::getVoidTy(context));
   }
-  return type;
+  return llvm::Type::getInt8PtrTy(context);
 }
 
 bool TypeName::operator==(const TypeName &rhs) const {

@@ -29,15 +29,18 @@ namespace bc {
 
 struct BuildContext {
   llvm::LLVMContext context;
-  llvm::IRBuilder<> builder{context};
-  llvm::Module module{"Bython Module", context};
-  llvm::DataLayout data_layout{&module};
+  llvm::IRBuilder<> builder;
+  llvm::Module module;
+  llvm::DataLayout data_layout;
 
   std::vector<std::unordered_map<std::string, llvm::Value *>> variables;
   std::stack<const ast::ASTExpression *> ast_stack;
 
   type::variable_map symbols;
   std::unordered_set<type::TypeName> known_types;
+
+  BuildContext(std::string);
+
 };
 
 llvm::Value* build_internal_call(std::unique_ptr<by::bc::BuildContext> &, std::string, std::vector<llvm::Value*>);

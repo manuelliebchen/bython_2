@@ -1,15 +1,19 @@
-func main = argv: llist[String] -> Int {
+func main = argv: List[String] -> Int {
     printlist(argv);
     0
 }
 
-func printlist = list: llist[String] -> Void {
+func printlist = list: List[String] -> Void {
+    let b = list_has_next(list);
     let head : tail = list;
-    puts(head);
-    if tail != Null {
+    if b {
+        printf("%s, ", head);
         printlist(tail);
+    } else {
+        printf("%s;\n", head);
     };
 }
 
-
+extern func printf = String, String -> Void
+extern func list_has_next = List -> Bool
 extern func puts = String -> Void

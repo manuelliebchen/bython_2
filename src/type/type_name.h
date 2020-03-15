@@ -36,14 +36,18 @@ struct TypeName {
   TypeName(std::string);
   TypeName(TypeName const &);
 
-  static const std::shared_ptr<const TypeName> Void;
   static const std::shared_ptr<const TypeName> Null;
-  static const std::shared_ptr<const TypeName> None;
+  static const std::shared_ptr<const TypeName> Void;
+  static const std::shared_ptr<const TypeName> Bool;
   static const std::shared_ptr<const TypeName> Int;
   static const std::shared_ptr<const TypeName> Float;
   static const std::shared_ptr<const TypeName> String;
   static const std::shared_ptr<const TypeName> List;
-  static const std::shared_ptr<const TypeName> llist;
+
+  static const std::shared_ptr<const TypeName> None;
+
+  static const TypeName buildin[];
+
 
   TypeName(const std::shared_ptr<peg::Ast> &ast);
   TypeName operator=(TypeName);

@@ -56,12 +56,15 @@ auto main(int argc, char *argv[]) -> int {
     const std::string bython_code = read_file(file_path);
     parser.enable_ast();
     std::shared_ptr<peg::Ast> ast;
-    parser.parse(bython_code.c_str(), ast, file_path.c_str());
+    if (!parser.parse(bython_code.c_str(), ast, file_path.c_str())) {
+      peg::Log log = parser.log;
+      throw std::runtime_error("Unable to Parse file: Syntax Error");
+    }
 
     // Building internal AST
     std::shared_ptr<by::ast::ASTRoot> root;
     last_op = "Constructing AST";
-    root = std::make_shared<by::ast::ASTRoot>(ast);
+    root = std::make_shared<by::ast::ASTRoot>(file_path, ast);
 
     root->compile(std::cout);
   } catch (const std::exception &e) {

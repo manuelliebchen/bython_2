@@ -66,20 +66,10 @@ ASTFunction::ASTFunction(const std::shared_ptr<peg::Ast> &ast)
 
 auto ASTFunction::determine_type(type::variable_map &symbol)
     -> type::TypeName_ptr {
-  if (!type) {
-    type::FunctionType_ptr blocktype =
-        std::make_shared<const type::FunctionType>(
-            *blockexpression->determine_type(symbol),
-            static_cast<const type::FunctionType>(*type).parameters);
-    type = blocktype;
-    symbol.emplace(name, type);
-  } else {
-    symbol.emplace(name, type);
-    type::TypeName_ptr blocktype = blockexpression->determine_type(symbol);
-    if (*blocktype != *type) {
-      throw by::type::type_deduction_exeption(ast, type,
-                                              blockexpression->get_type());
-    }
+  type::TypeName_ptr blocktype = blockexpression->determine_type(symbol);
+  if (*blocktype != *type) {
+    throw by::type::type_deduction_exeption(ast, type,
+                                            blockexpression->get_type());
   }
   return type;
 }
@@ -98,10 +88,8 @@ void ASTFunction::get_dependencies(
 
 auto ASTFunction::get_name() const -> std::string { return name; }
 
-auto ASTFunction::build_ir(std::unique_ptr<by::bc::BuildContext> &bc) const
-    -> llvm::Value * {
-  bc->ast_stack.push(this);
-
+void ASTFunction::insertFunction(
+    std::unique_ptr<by::bc::BuildContext> &bc) const {
   llvm::FunctionType *function_type =
       std::static_pointer_cast<const type::FunctionType>(type)
           ->get_llvm_function_type(bc->context);
@@ -115,9 +103,14 @@ auto ASTFunction::build_ir(std::unique_ptr<by::bc::BuildContext> &bc) const
     function_type =
         llvm::FunctionType::get(llvm_returntype, llvm_parameters, false);
   }
+  bc->module.getOrInsertFunction(name, function_type);
+}
 
-  llvm::Function *function = llvm::Function::Create(
-      function_type, llvm::Function::ExternalLinkage, name, bc->module);
+auto ASTFunction::build_ir(std::unique_ptr<by::bc::BuildContext> &bc) const
+    -> llvm::Value * {
+  bc->ast_stack.push(this);
+
+  llvm::Function *function = bc->module.getFunction(name);
 
   llvm::BasicBlock *entry_block = llvm::BasicBlock::Create(bc->context);
   function->getBasicBlockList().push_back(entry_block);
@@ -139,7 +132,7 @@ auto ASTFunction::build_ir(std::unique_ptr<by::bc::BuildContext> &bc) const
     }
 
     bc->builder.CreateStore(
-        bc::build_internal_call(bc, "llist_init_main", llvm_args),
+        bc::build_internal_call(bc, "list_init_main", llvm_args),
         variable_value);
 
     bc->variables.back().emplace(arg_name, variable_value);

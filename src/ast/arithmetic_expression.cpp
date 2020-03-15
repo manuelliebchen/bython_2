@@ -31,6 +31,7 @@ const std::multimap<std::string, type::BinaryOperator>
         {"==", {{"Bool"}, {"Int"}, {"Int"}}},
         {"==", {{"Bool"}, {"Float"}, {"Float"}}},
         {"==", {{"Bool"}, {"Bool"}, {"Bool"}}},
+
         {"!=", {{"Bool"}, {"Int"}, {"Int"}}},
         {"!=", {{"Bool"}, {"Float"}, {"Float"}}},
         {"!=", {{"Bool"}, {"Bool"}, {"Bool"}}},
@@ -55,7 +56,6 @@ const std::multimap<std::string, type::BinaryOperator>
         {"/", {{"Int"}, {"Int"}, {"Int"}}},
         {"/", {{"Float"}, {"Float"}, {"Float"}}},
         {"%", {{"Int"}, {"Int"}, {"Int"}}},
-        {"%", {{"Float"}, {"Float"}, {"Float"}}},
 
         {"&&", {{"Bool"}, {"Bool"}, {"Bool"}}},
         {"||", {{"Bool"}, {"Bool"}, {"Bool"}}},

@@ -22,7 +22,8 @@
 
 namespace by::ast {
 
-ASTRoot::ASTRoot(const std::shared_ptr<peg::Ast> &ast) : ast(ast) {
+ASTRoot::ASTRoot(std::string file, const std::shared_ptr<peg::Ast> &ast)
+    : file(file), ast(ast) {
   for (const auto &node : ast->nodes) {
     if (node->original_name == "Function") {
       functions.push_back(std::make_shared<ASTFunction>(node));
@@ -36,24 +37,33 @@ void ASTRoot::compile(std::ostream &out) {
   std::string last_op = "";
   try {
     // Calculating compiling order
-    last_op = "Generate compiling Order\n";
-    reorder_functions();
+    //    last_op = "Generate compiling Order";
+    //    reorder_functions();
 
-    last_op = "Determiining return types\n";
-    auto build_context = std::make_unique<by::bc::BuildContext>();
+    last_op = "Determiining return types";
+    auto build_context = std::make_unique<by::bc::BuildContext>(file);
     for (const auto &func : externs) {
       func->determine_type(build_context->symbols);
     }
     for (const auto &func : functions) {
+      build_context->symbols.emplace(func->get_name(), func->get_type());
+    }
+    for (const auto &func : functions) {
       func->determine_type(build_context->symbols);
     }
+    build_context->module.setTargetTriple("x86_64-pc-linux-gnu");
 
-    last_op = "Compiling\n";
+    last_op = "Declaring Functions";
+    for (const auto &func : functions) {
+      func->insertFunction(build_context);
+    }
+
+    last_op = "Compiling";
     for (const auto &func : functions) {
       func->build_ir(build_context);
     }
 
-    last_op = "Wrinting IRCode\n";
+    last_op = "Wrinting IRCode";
     llvm::raw_os_ostream rso(out);
     build_context->module.print(rso, nullptr);
   } catch (const std::exception &e) {
@@ -123,6 +133,7 @@ void ASTRoot::reorder_functions() {
 
   std::vector<std::shared_ptr<by::ast::ASTFunction>> new_functions;
   for (const std::string &func_name : order) {
+    ;
     auto func =
         std::find_if(this->functions.begin(), this->functions.end(),
                      [&](std::shared_ptr<by::ast::ASTFunction> const &f) {

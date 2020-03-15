@@ -64,9 +64,9 @@ public:
   type::TypeName_ptr determine_type(type::variable_map &);
 
   std::string get_name() const;
-  void get_dependencies(std::unordered_set<std::string> &functions,
-                        std::unordered_set<std::string> &types) const;
-
+  void get_dependencies(std::unordered_set<std::string> &,
+                        std::unordered_set<std::string> &) const;
+  void insertFunction(std::unique_ptr<by::bc::BuildContext> &) const;
   llvm::Value *build_ir(std::unique_ptr<by::bc::BuildContext> &) const;
 
   friend std::ostream &operator<<(std::ostream &, const ASTFunction &);

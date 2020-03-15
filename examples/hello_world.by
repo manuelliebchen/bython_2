@@ -1,4 +1,4 @@
-func main = argc: Int, argv: List[String] -> Int {
+func main = argv: List[String] -> Int {
     printf("Hello World!");
     0
 }

@@ -1,37 +1,99 @@
-#include "../std/list.h"
-
+#include <inttypes.h>
+#include <stdbool.h>
+#include <stddef.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-llist llist_push_alloc(void *data, size_t memory, llist next) {
+struct node {
+  void *data;
+  struct node *next;
+};
+
+typedef struct node *List;
+
+List list_push_alloc(void *data, size_t memory, List next);
+List list_push(void *data, List next);
+void *list_peek(List list);
+List list_pop(List list);
+bool list_has_next(List list);
+List list_concatenate(List list, List list2);
+
+bool is_null(void *ptr) { return ptr == NULL; }
+
+List list_push_alloc(void *data, size_t memory, List next) {
   void *data_alloc = malloc(memory);
   memcpy(data_alloc, data, memory);
-  return llist_push(data_alloc, next);
+  return list_push(data_alloc, next);
 }
 
-llist llist_push(void *data, llist next) {
-  llist new = (llist)malloc(sizeof(struct node));
+List list_push(void *data, List next) {
+  List new = (List)malloc(sizeof(struct node));
   new->data = data;
   new->next = next;
   return new;
 }
 
-void *llist_peek(llist list) { return list->data; }
+void *list_peek(List list) {
+  if (list == NULL) {
+    puts("Error: List is Null, while list_peek!");
+    exit(0);
+  }
+  return list->data;
+}
 
-bool llist_has_next(llist list) { return list->next != NULL; }
+bool list_has_next(List list) {
+  if (list == NULL) {
+    return false;
+  }
+  return list->next != NULL;
+}
 
-llist llist_pop(llist list) {
-  llist next = list->next;
+List list_pop(List list) {
+  if (list == NULL) {
+    return list;
+  }
+  List next = list->next;
   free(list->data);
   free(list);
   return next;
 }
 
-llist llist_init_main(int32_t argc, char **argv) {
-  llist list = NULL;
+List list_concatenate(List list, List list2) {
+  if (list == NULL) {
+    return list2;
+  }
+  List l = list;
+  while (l->next != NULL) {
+    l = l->next;
+  }
+  l->next = list2;
+  return list;
+}
+
+List list_init_main(int32_t argc, char **argv) {
+  List list = NULL;
   for (int i = argc - 1; i >= 0; --i) {
-    list = llist_push_alloc(argv + i, sizeof(argv), list);
+    list = list_push_alloc(argv + i, sizeof(argv), list);
   }
   return list;
 }
+
+List list_push_int(int32_t a, List next) {
+  return list_push_alloc(&a, sizeof(a), next);
+}
+
+int32_t list_peek_int(List list) { return *(int32_t *)list_peek(list); }
+
+List list_push_bool(bool a, List next) {
+  return list_push_alloc(&a, sizeof(a), next);
+}
+
+bool list_peek_bool(List list) { return *(bool *)list_peek(list); }
+
+List list_push_float(float a, List next) {
+  return list_push_alloc(&a, sizeof(a), next);
+}
+
+float list_peek_float(List list) { return *(float *)list_peek(list); }

@@ -35,6 +35,8 @@ class ASTExtern;
  */
 class ASTRoot {
 private:
+	std::string file;
+
   /**
    * Pointer to peg::Ast object of this AST node
    */
@@ -56,7 +58,7 @@ private:
                         std::unordered_set<std::string> &types) const;
 
 public:
-  ASTRoot(const std::shared_ptr<peg::Ast> &);
+  ASTRoot(std::string, const std::shared_ptr<peg::Ast> &);
 
   /**
    * Function for compiling to ir code.
