@@ -36,7 +36,6 @@ ASTRoot::ASTRoot(std::string file, const std::shared_ptr<peg::Ast> &ast)
 void ASTRoot::compile(std::ostream &out) {
   std::string last_op = "";
   try {
-    last_op = "Determiining return types";
     auto build_context = std::make_unique<by::bc::BuildContext>(file);
     for (const auto &func : externs) {
       func->determine_type(build_context->symbols);
@@ -44,6 +43,7 @@ void ASTRoot::compile(std::ostream &out) {
     for (const auto &func : functions) {
       build_context->symbols.emplace(func->get_name(), func->get_type());
     }
+    last_op = "Determiining return types";
     for (const auto &func : functions) {
       func->determine_type(build_context->symbols);
     }

@@ -42,7 +42,7 @@ auto ASTLetStatement::determine_type(type::variable_map &symbols)
     -> by::type::TypeName_ptr {
   if (tail != "") {
     tailtype = value->determine_type(symbols);
-    type = std::make_shared<type::TypeName>(tailtype->subtypes[0]);
+    type = tailtype->subtypes[0];
     if (tailtype->name != "List") {
       throw type::type_deduction_exeption(ast, type::TypeName::List, tailtype);
     }
@@ -65,10 +65,12 @@ auto ASTLetStatement::build_ir(std::unique_ptr<bc::BuildContext> &bc) const
   llvm::AllocaInst *variable_value = bc->builder.CreateAlloca(
       type->get_llvm_type(bc->context), nullptr, llvm::Twine(var));
   if (tail != "") {
-    llvm::Value *head_ir = bc::build_internal_call(bc, "list_peek", {rhs_llvm});
+    llvm::Value *head_ir =
+        bc::build_internal_call(bc, "list_peek", type->subtypes[0], {rhs_llvm});
     head_ir = bc->builder.CreateLoad(head_ir);
 
-    llvm::Value *tail_ir = bc::build_internal_call(bc, "list_pop", {rhs_llvm});
+    llvm::Value *tail_ir =
+        bc::build_internal_call(bc, "list_pop", type, {rhs_llvm});
     llvm::AllocaInst *tail_value = bc->builder.CreateAlloca(
         tailtype->get_llvm_type(bc->context), nullptr, llvm::Twine(tail));
     bc->builder.CreateStore(tail_ir, tail_value);

@@ -48,7 +48,7 @@ TypeName::TypeName(const std::shared_ptr<peg::Ast> &ast) {
   if (ast->nodes.size() > 1) {
     for (size_t i = 1; i < ast->nodes.size(); ++i) {
       if (ast->nodes[i]->original_name == "TypeName") {
-        subtypes.push_back(TypeName(ast->nodes[i]));
+        subtypes.push_back(std::make_shared<const TypeName>(ast->nodes[i]));
       } else {
         break;
       }
@@ -56,7 +56,7 @@ TypeName::TypeName(const std::shared_ptr<peg::Ast> &ast) {
   }
 }
 
-TypeName::TypeName(std::string name, std::vector<TypeName> subtypes)
+TypeName::TypeName(std::string name, std::vector<TypeName_ptr> subtypes)
     : name(std::move(name)), subtypes(std::move(subtypes)) {}
 
 TypeName::TypeName(std::string name) : name(std::move(name)), subtypes() {
@@ -67,14 +67,14 @@ TypeName::TypeName(std::string name) : name(std::move(name)), subtypes() {
 
 TypeName::TypeName(TypeName const &type) : name(type.name) {
   for (const auto &subtype : type.subtypes) {
-    subtypes.push_back(TypeName(subtype));
+    subtypes.push_back(std::make_shared<const TypeName>(*subtype));
   }
 }
 
 TypeName TypeName::operator=(TypeName type) {
   name = type.name;
   for (const auto &subtype : type.subtypes) {
-    subtypes.push_back(TypeName(subtype));
+    subtypes.push_back(std::make_shared<const TypeName>(*subtype));
   }
   return *this;
 }
@@ -115,7 +115,7 @@ bool TypeName::operator==(const TypeName &rhs) const {
     return false;
   }
   for (size_t i = 0; i < subtypes.size(); ++i) {
-    if (subtypes[i] != rhs.subtypes[i]) {
+    if (*subtypes[i] != *rhs.subtypes[i]) {
       return false;
     }
   }
@@ -155,9 +155,9 @@ std::string to_string(by::type::TypeName const &val) {
   std::string str = val.name;
   if (!val.subtypes.empty()) {
     str += "[";
-    str += std::to_string(val.subtypes.front());
+    str += std::to_string(*val.subtypes.front());
     for (size_t i = 1; i < val.subtypes.size(); ++i) {
-      str += "," + std::to_string(val.subtypes[i]);
+      str += "," + std::to_string(*val.subtypes[i]);
     }
     str += "]";
   }

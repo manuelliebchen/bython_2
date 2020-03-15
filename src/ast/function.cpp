@@ -131,9 +131,10 @@ auto ASTFunction::build_ir(std::unique_ptr<by::bc::BuildContext> &bc) const
       llvm_args.emplace_back(&arg);
     }
 
-    bc->builder.CreateStore(
-        bc::build_internal_call(bc, "list_init_main", llvm_args),
-        variable_value);
+    bc->builder.CreateStore(bc::build_internal_call(bc, "list_init_main",
+                                                    type::TypeName::List,
+                                                    llvm_args),
+                            variable_value);
 
     bc->variables.back().emplace(arg_name, variable_value);
 

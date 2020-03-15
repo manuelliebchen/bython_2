@@ -30,9 +30,9 @@ class Type;
 namespace by::type {
 struct TypeName {
   std::string name;
-  std::vector<TypeName> subtypes;
+  std::vector<std::shared_ptr<const TypeName>> subtypes;
 
-  TypeName(std::string, std::vector<TypeName>);
+  TypeName(std::string, std::vector<std::shared_ptr<const TypeName>>);
   TypeName(std::string);
   TypeName(TypeName const &);
 

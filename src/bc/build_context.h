@@ -43,7 +43,7 @@ struct BuildContext {
 
 };
 
-llvm::Value* build_internal_call(std::unique_ptr<by::bc::BuildContext> &, std::string, std::vector<llvm::Value*>);
+llvm::Value* build_internal_call(std::unique_ptr<by::bc::BuildContext> &, std::string, type::TypeName_ptr, std::vector<llvm::Value*>);
 
 } // namespace bc
 } // namespace by
