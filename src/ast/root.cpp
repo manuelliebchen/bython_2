@@ -38,21 +38,21 @@ void ASTRoot::compile(std::ostream &out) {
   try {
     auto build_context = std::make_unique<by::bc::BuildContext>(file);
     for (const auto &func : externs) {
-      func->determine_type(build_context->symbols);
+      build_context->functions.emplace(func->get_name(),
+                                       func->get_function_type());
+      build_context->symbols.emplace(func->get_name(),
+                                     func->get_function_type()->return_type);
     }
+    last_op = "Declaring Functions";
     for (const auto &func : functions) {
-      build_context->symbols.emplace(func->get_name(), func->get_type());
+      func->insertFunction(build_context);
     }
+
     last_op = "Determiining return types";
     for (const auto &func : functions) {
       func->determine_type(build_context->symbols);
     }
     build_context->module.setTargetTriple("x86_64-pc-linux-gnu");
-
-    last_op = "Declaring Functions";
-    for (const auto &func : functions) {
-      func->insertFunction(build_context);
-    }
 
     last_op = "Compiling";
     for (const auto &func : functions) {

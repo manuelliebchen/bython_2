@@ -2,15 +2,23 @@ extern func list_push_int = Int, List[Int] -> List[Int]
 extern func puts = String -> Void
 
 func main = args: List[String] -> Int {
-    let list = list_push_int(463, list_push_int(62, list_push_int(345, list_push_int(678, list_push_int(445, list_push_int(523, list_push_int(2645, list_push_int(14, Null))))))));
+    let list = build_list(20);
     let list4 = printlist(list);
     let sorted = quickSort(list4);
     printlist(sorted);
     0
 }
 
-extern func list_pop = List[Int] -> List[Int]
-extern func list_peek_int = List[Int] -> Int
+extern func rand = -> Int
+
+func build_list = n: Int -> List[Int] {
+    if n == 0 { 
+        list_push_int(rand(), Null)
+    } else {
+        rand() : build_list(n-1)
+    }
+}
+
 extern func list_has_next = List[Int] -> Bool
 extern func is_null = List[Int] -> Bool
 
@@ -19,8 +27,8 @@ func quickSort = list: List[Int] -> List[Int] {
         list
     }
     else {
-        let pivot = list_peek_int(list);
-        sortedHelper(list_pop(list), Null, Null, pivot)
+        let pivot : tail = list;
+        sortedHelper(tail, Null, Null, pivot)
     }
 }
 
@@ -31,11 +39,11 @@ func sortedHelper = list: List[Int], lower: List[Int], heigher: List[Int], pivot
         list_concatenate(quickSort(lower), list_push_int( pivot,quickSort( heigher)))
     }
     else {
-        let value = list_peek_int(list);
+        let value : tail = list;
         if value >= pivot {
-            sortedHelper(list_pop(list), lower, list_push_int(value, heigher), pivot)
+            sortedHelper(tail, lower, list_push_int(value, heigher), pivot)
         } else {
-            sortedHelper(list_pop(list), list_push_int(value, lower), heigher, pivot)
+            sortedHelper(tail, list_push_int(value, lower), heigher, pivot)
         }
     }
 }
@@ -49,8 +57,7 @@ func printlist = list: List[Int] -> List[Int] {
         list
     } else {
         let b = list_has_next(list);
-        let head = list_peek_int(list);
-        let tail = list_pop(list);
+        let head :tail = list;
         printf("%d, ", head);
         list_push_int(head, printlist(tail))
     }

@@ -26,39 +26,69 @@ class ASTBlockExpression;
 } // namespace by
 
 namespace by::ast {
-const std::multimap<std::string, type::BinaryOperator>
+const std::multimap<std::string, type::FunctionType>
     ASTArithmeticExpression::operators = {
-        {"==", {{"Bool"}, {"Int"}, {"Int"}}},
-        {"==", {{"Bool"}, {"Float"}, {"Float"}}},
-        {"==", {{"Bool"}, {"Bool"}, {"Bool"}}},
+        {"==",
+         {type::TypeName::Bool, type::TypeName::Int, type::TypeName::Int}},
+        {"==",
+         {type::TypeName::Bool, type::TypeName::Float, type::TypeName::Float}},
+        {"==",
+         {type::TypeName::Bool, type::TypeName::Bool, type::TypeName::Bool}},
 
-        {"!=", {{"Bool"}, {"Int"}, {"Int"}}},
-        {"!=", {{"Bool"}, {"Float"}, {"Float"}}},
-        {"!=", {{"Bool"}, {"Bool"}, {"Bool"}}},
+        {"!=",
+         {type::TypeName::Bool, type::TypeName::Int, type::TypeName::Int}},
+        {"!=",
+         {type::TypeName::Bool, type::TypeName::Float, type::TypeName::Float}},
+        {"!=",
+         {type::TypeName::Bool, type::TypeName::Bool, type::TypeName::Bool}},
 
-        {">", {{"Bool"}, {"Int"}, {"Int"}}},
-        {">", {{"Bool"}, {"Float"}, {"Float"}}},
-        {">=", {{"Bool"}, {"Int"}, {"Int"}}},
-        {">=", {{"Bool"}, {"Float"}, {"Float"}}},
+        {">", {type::TypeName::Bool, type::TypeName::Int, type::TypeName::Int}},
+        {">",
+         {type::TypeName::Bool, type::TypeName::Float, type::TypeName::Float}},
+        {">=",
+         {type::TypeName::Bool, type::TypeName::Int, type::TypeName::Int}},
+        {">=",
+         {type::TypeName::Bool, type::TypeName::Float, type::TypeName::Float}},
 
-        {"<", {{"Bool"}, {"Int"}, {"Int"}}},
-        {"<", {{"Bool"}, {"Float"}, {"Float"}}},
-        {"<=", {{"Bool"}, {"Int"}, {"Int"}}},
-        {"<=", {{"Bool"}, {"Float"}, {"Float"}}},
+        {"<", {type::TypeName::Bool, type::TypeName::Int, type::TypeName::Int}},
+        {"<",
+         {type::TypeName::Bool, type::TypeName::Float, type::TypeName::Float}},
+        {"<=",
+         {type::TypeName::Bool, type::TypeName::Int, type::TypeName::Int}},
+        {"<=",
+         {type::TypeName::Bool, type::TypeName::Float, type::TypeName::Float}},
 
-        {"+", {{"Int"}, {"Int"}, {"Int"}}},
-        {"+", {{"Float"}, {"Float"}, {"Float"}}},
-        {"-", {{"Int"}, {"Int"}, {"Int"}}},
-        {"-", {{"Float"}, {"Float"}, {"Float"}}},
+        {"+", {type::TypeName::Int, type::TypeName::Int, type::TypeName::Int}},
+        {"+",
+         {type::TypeName::Float, type::TypeName::Float, type::TypeName::Float}},
+        {"-", {type::TypeName::Int, type::TypeName::Int, type::TypeName::Int}},
+        {"-",
+         {type::TypeName::Float, type::TypeName::Float, type::TypeName::Float}},
 
-        {"*", {{"Int"}, {"Int"}, {"Int"}}},
-        {"*", {{"Float"}, {"Float"}, {"Float"}}},
-        {"/", {{"Int"}, {"Int"}, {"Int"}}},
-        {"/", {{"Float"}, {"Float"}, {"Float"}}},
-        {"%", {{"Int"}, {"Int"}, {"Int"}}},
+        {"*", {type::TypeName::Int, type::TypeName::Int, type::TypeName::Int}},
+        {"*",
+         {type::TypeName::Float, type::TypeName::Float, type::TypeName::Float}},
+        {"/", {type::TypeName::Int, type::TypeName::Int, type::TypeName::Int}},
+        {"/",
+         {type::TypeName::Float, type::TypeName::Float, type::TypeName::Float}},
+        {"%", {type::TypeName::Int, type::TypeName::Int, type::TypeName::Int}},
 
-        {"&&", {{"Bool"}, {"Bool"}, {"Bool"}}},
-        {"||", {{"Bool"}, {"Bool"}, {"Bool"}}},
+        {"&&",
+         {type::TypeName::Bool, type::TypeName::Bool, type::TypeName::Bool}},
+        {"||",
+         {type::TypeName::Bool, type::TypeName::Bool, type::TypeName::Bool}},
+
+        {":",
+         {type::TypeName::List, type::TypeName::Bool, type::TypeName::List}},
+        {":",
+         {type::TypeName::List, type::TypeName::Int, type::TypeName::List}},
+        {":",
+         {type::TypeName::List, type::TypeName::Float, type::TypeName::List}},
+        {":",
+         {type::TypeName::List, type::TypeName::String, type::TypeName::List}},
+
+        {":",
+         {type::TypeName::List, type::TypeName::List, type::TypeName::List}},
 };
 
 ASTArithmeticExpression::ASTArithmeticExpression(
@@ -71,15 +101,17 @@ ASTArithmeticExpression::ASTArithmeticExpression(
 auto ASTArithmeticExpression::determine_type(type::variable_map &symbols)
     -> by::type::TypeName_ptr {
 
+  // TODO: rhs type and lhs type do not have to be the same
   operation_type = std::make_shared<const type::TypeName>(
       this->lhs->determine_type(symbols)->deduct_type(
           *(this->rhs->determine_type(symbols))));
 
   auto bin = operators.equal_range(BinaryOperator);
   for (auto it = bin.first; it != bin.second; ++it) {
-    type::BinaryOperator binop = it->second;
-    if (binop.lhs == *operation_type) {
-      type = std::make_shared<const type::FunctionType>(binop);
+    type::FunctionType binop = it->second;
+    if (*binop.lhs() == *operation_type) {
+      function_type = std::make_shared<const type::FunctionType>(binop);
+      type = function_type->return_type;
       return type;
     }
   }
@@ -199,6 +231,18 @@ auto ASTArithmeticExpression::build_ir(
     }
     if (llvm_type->isIntegerTy()) {
       return bc->builder.CreateICmpSLE(lhs_llvm, rhs_llvm);
+    }
+  }
+  if (BinaryOperator == ":") {
+    if (!rhs->get_type()->subtypes.empty()) {
+      if (*(lhs->get_type()) == *(rhs->get_type()->subtypes[0])) {
+        return bc::build_internal_call(bc, "list_push", type::TypeName::List,
+                                       {lhs_llvm, rhs_llvm});
+      }
+      if (*(lhs->get_type()) == *(rhs->get_type())) {
+        return bc::build_internal_call(bc, "list_cona", type::TypeName::List,
+                                       {lhs_llvm, rhs_llvm});
+      }
     }
   }
   throw ast_error(ast, "Unimplemented Binary Operator.");

@@ -67,7 +67,7 @@ auto ASTExpression::create_expression(const std::shared_ptr<peg::Ast> &ast,
   const std::unordered_set<std::string> second_class_operator = {"+", "-",
                                                                  "||"};
   const std::unordered_set<std::string> third_class_operator = {
-      "!=", "==", ">=", "<=", ">", "<"};
+      "!=", "==", ">=", "<=", ">", "<", ":"};
 
   if (ast->nodes.size() == 1) {
     return std::make_shared<by::ast::ASTNoneArithmeticExpression>(ast->nodes[0],

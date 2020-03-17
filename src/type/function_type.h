@@ -23,13 +23,19 @@ class LLVMContext;
 
 namespace by::type {
 
-	struct FunctionType : public TypeName {
-  std::vector<TypeName> parameters;
-
-  FunctionType(const TypeName &);
-  FunctionType(const TypeName &, std::vector<TypeName> const &);
+struct FunctionType {
+  TypeName_ptr return_type;
+  std::vector<TypeName_ptr> parameters;
 
   FunctionType(const std::shared_ptr<peg::Ast> &ast);
+
+  FunctionType(const TypeName_ptr &);
+  FunctionType(const TypeName_ptr &, const TypeName_ptr &);
+  FunctionType(const TypeName_ptr &, const TypeName_ptr &, const TypeName_ptr &);
+  FunctionType(const TypeName_ptr &, std::vector<TypeName_ptr> const &);
+
+  TypeName_ptr lhs() const { return parameters[0];}
+  TypeName_ptr rhs() const { return parameters[1];}
 
   llvm::FunctionType *get_llvm_function_type(llvm::LLVMContext &) const;
 
@@ -39,23 +45,9 @@ namespace by::type {
 using FunctionType_ptr = std::shared_ptr<const FunctionType>;
 using function_map = std::unordered_map<std::string, FunctionType_ptr>;
 
-struct BinaryOperator : public TypeName {
-  TypeName lhs;
-  TypeName rhs;
-  BinaryOperator(const TypeName &, const TypeName &, const TypeName &);
-
-  llvm::FunctionType *get_llvm_function_type(llvm::LLVMContext &) const;
-
-  friend std::string to_string(by::type::BinaryOperator const &);
-};
-
-using BinaryOperator_ptr = std::shared_ptr<const BinaryOperator>;
-using binary_operator_map = std::unordered_map<std::string, BinaryOperator_ptr>;
-
 } // namespace by::type
 namespace std {
 std::string to_string(by::type::FunctionType const &);
-std::string to_string(by::type::BinaryOperator const &);
 } // namespace std
 
 #endif /* SRC_AST_FUNCTIONTYPE_HPP_ */

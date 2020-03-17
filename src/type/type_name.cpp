@@ -24,24 +24,19 @@ class LLVMContext;
 
 namespace by::type {
 
-const std::shared_ptr<const TypeName> TypeName::Void =
-    std::make_shared<const TypeName>("Void");
-const std::shared_ptr<const TypeName> TypeName::Null =
-    std::make_shared<const TypeName>("Null");
-const std::shared_ptr<const TypeName> TypeName::None =
-    std::make_shared<const TypeName>("None");
-const std::shared_ptr<const TypeName> TypeName::Bool =
-    std::make_shared<const TypeName>("Bool");
-const std::shared_ptr<const TypeName> TypeName::Int =
-    std::make_shared<const TypeName>("Int");
-const std::shared_ptr<const TypeName> TypeName::Float =
-    std::make_shared<const TypeName>("Float");
-const std::shared_ptr<const TypeName> TypeName::String =
-    std::make_shared<const TypeName>("String");
-const std::shared_ptr<const TypeName> TypeName::List =
-    std::make_shared<const TypeName>("List");
+const TypeName_ptr TypeName::Null = std::make_shared<const TypeName>("Null");
+const TypeName_ptr TypeName::Void = std::make_shared<const TypeName>("Void");
+const TypeName_ptr TypeName::None = std::make_shared<const TypeName>("None");
+const TypeName_ptr TypeName::Bool = std::make_shared<const TypeName>("Bool");
+const TypeName_ptr TypeName::Int = std::make_shared<const TypeName>("Int");
+const TypeName_ptr TypeName::Float = std::make_shared<const TypeName>("Float");
 
-const TypeName buildin[] = {{"Void"}, {"Bool"}, {"Int"}, {"Float"}};
+const TypeName_ptr TypeName::List = std::make_shared<const TypeName>("List");
+const TypeName_ptr TypeName::String =
+    std::make_shared<const TypeName>("String");
+
+const std::vector<TypeName_ptr> TypeName::native = {
+    TypeName::Void, TypeName::Bool, TypeName::Int, TypeName::Float};
 
 TypeName::TypeName(const std::shared_ptr<peg::Ast> &ast) {
   name = std::to_string(ast->nodes[0]);
@@ -87,6 +82,14 @@ auto TypeName::deduct_type(TypeName rhs_name) const -> TypeName {
       (rhs_name.name == "Int" || rhs_name.name == "Float")) {
     return TypeName("Float");
   }
+  if ((!this->is_native() && !rhs_name.is_native())) {
+    if (*this == *Null) {
+      return rhs_name;
+    }
+    if (rhs_name == *Null) {
+      return *this;
+    }
+  }
   throw std::runtime_error(
       "Type deduction failed with types: " + std::to_string(*this) + " and " +
       std::to_string(rhs_name));
@@ -125,15 +128,23 @@ bool TypeName::operator==(const TypeName &rhs) const {
 
 bool TypeName::operator!=(const TypeName &rhs) const { return !(*this == rhs); }
 
-auto TypeName::is_void() const -> bool { return *this == *Void; }
 TypeName::operator bool() const { return !(*this == *None || *this == *Void); }
+auto TypeName::is_void() const -> bool { return *this == *Void; }
+auto TypeName::is_native() const -> bool {
+  for (auto &type : TypeName::native) {
+    if (*type == *this) {
+      return true;
+    }
+  }
+  return false;
+}
 
 std::ostream &operator<<(std::ostream &os, const TypeName &type) {
   os << type.name;
   if (!type.subtypes.empty()) {
     os << "[";
     for (auto &subtype : type.subtypes) {
-      os << subtype << ", ";
+      os << *subtype << ", ";
     }
     os << "]";
   }

@@ -19,40 +19,37 @@ class Type;
 
 namespace by::type {
 
-FunctionType::FunctionType(const std::shared_ptr<peg::Ast> &ast)
-    : TypeName(ast->nodes.back()) {
+FunctionType::FunctionType(const std::shared_ptr<peg::Ast> &ast) {
+  return_type = std::make_shared<const TypeName>(ast->nodes.back());
   for (size_t i = 0; i < ast->nodes.size() - 1; ++i) {
-    parameters.emplace_back(ast->nodes[i]);
+    parameters.emplace_back(std::make_shared<const TypeName>(ast->nodes[i]));
   }
 }
 
-FunctionType::FunctionType(const TypeName &returntype) : TypeName(returntype) {}
+FunctionType::FunctionType(const TypeName_ptr &returntype)
+    : return_type(returntype) {}
 
-FunctionType::FunctionType(const TypeName &returntype,
-                           std::vector<TypeName> const &parameters)
-    : TypeName(returntype), parameters(parameters) {}
+FunctionType::FunctionType(const TypeName_ptr &returntype,
+                           const TypeName_ptr &lhs)
+    : return_type(returntype), parameters{lhs} {}
+FunctionType::FunctionType(const TypeName_ptr &returntype,
+                           const TypeName_ptr &lhs, const TypeName_ptr &rhs)
+    : return_type(returntype), parameters{lhs, rhs} {}
+
+FunctionType::FunctionType(const TypeName_ptr &return_type,
+                           std::vector<TypeName_ptr> const &parameters)
+    : return_type(return_type), parameters(parameters) {}
 
 llvm::FunctionType *
 FunctionType::get_llvm_function_type(llvm::LLVMContext &context) const {
   std::vector<llvm::Type *> llvm_parameters;
   for (auto &para : parameters) {
-    llvm_parameters.emplace_back(para.get_llvm_type(context));
+    llvm_parameters.emplace_back(para->get_llvm_type(context));
   }
-  llvm::Type *llvm_returntype = TypeName::get_llvm_type(context);
+  llvm::Type *llvm_returntype = return_type->get_llvm_type(context);
   return llvm::FunctionType::get(llvm_returntype, llvm_parameters, false);
 }
 
-BinaryOperator::BinaryOperator(const TypeName &type, const TypeName &lhs,
-                               const TypeName &rhs)
-    : TypeName(type), lhs(lhs), rhs(rhs) {}
-
-auto BinaryOperator::get_llvm_function_type(llvm::LLVMContext &context) const
-    -> llvm::FunctionType * {
-  std::vector<llvm::Type *> llvm_parameters{lhs.get_llvm_type(context),
-                                            rhs.get_llvm_type(context)};
-  llvm::Type *llvm_returntype = TypeName::get_llvm_type(context);
-  return llvm::FunctionType::get(llvm_returntype, llvm_parameters, false);
-}
 } // namespace by::type
 
 namespace std {
@@ -66,12 +63,6 @@ std::string to_string(by::type::FunctionType const &func) {
     }
   }
   str += ")";
-  return str;
-}
-
-std::string to_string(by::type::BinaryOperator const &func) {
-  std::string str = std::to_string(*(by::type::TypeName *)(&func)) + "(";
-  str += std::to_string(func.lhs) + "," + std::to_string(func.rhs) + ")";
   return str;
 }
 } // namespace std

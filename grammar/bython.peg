@@ -20,7 +20,6 @@ VariableExpression <- Identifier ('.' %ows VariableExpression)?
 # Nameing
 FunctionType <- (CommaSeparatedList(TypeName))? '->' %ows TypeName
 TypeName <- Identifier ('[' %ows CommaSeparatedList(TypeName) ']' %ows)?
-HeadTail <- Identifier ':' %ows Identifier
 Identifier <- < (NoneIdentifier [a-zA-Z0-9_]+) / (!NoneIdentifier [a-zA-Z_][a-zA-Z0-9_]*)  > %ows
 ~NoneIdentifier <- 'true' / 'false' / 'if' / 'else' / 'func' / 'new'
 
@@ -32,7 +31,7 @@ StringConstant <- (('"' < (!'"' .)*  > '"') / ("'" < (!"'" .)*  > "'")) %ows
 
 # Operators
 UnaryOperator <- < ('-' / '!') > %ows
-BinaryOperator <- < ( '/' / '*' / '%' / '+' / '-' / '&&' / '||' / '!=' / '==' / '!=' / '>=' / '<=' / '>' / '<' ) > %ows
+BinaryOperator <- < ( '/' / '*' / '%' / '+' / '-' / '&&' / '||' / '!=' / '==' / '!=' / '>=' / '<=' / '>' / '<' / ':' ) > %ows
 
 ~%ows <- [ \t\n\r]* Comment?
 ~Comment <- '//' (!"\n" .)* "\n" %ows

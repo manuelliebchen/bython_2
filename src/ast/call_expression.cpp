@@ -54,8 +54,7 @@ auto ASTCallExpression::build_ir(std::unique_ptr<bc::BuildContext> &bc) const
   bc->ast_stack.push(this);
   type::FunctionType_ptr functiontype;
   try {
-    functiontype = std::static_pointer_cast<const by::type::FunctionType>(
-        bc->symbols.at(name));
+    functiontype = bc->functions.at(name);
   } catch (std::out_of_range &oor) {
     throw ast_error(ast, "Function not found: " + name);
   }

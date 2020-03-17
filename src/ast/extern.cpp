@@ -26,7 +26,8 @@ namespace by::ast {
 ASTExtern::ASTExtern(const std::shared_ptr<peg::Ast> &ast)
     : ASTExpression(ast, nullptr) {
   name = std::to_string(ast->nodes[0]);
-  type = std::make_shared<const type::FunctionType>(ast->nodes[1]);
+  function_type = std::make_shared<const type::FunctionType>(ast->nodes[1]);
+  type = function_type->return_type;
 }
 
 void ASTExtern::get_dependencies(std::unordered_set<std::string> &functions,
@@ -50,8 +51,8 @@ auto ASTExtern::build_ir(std::unique_ptr<by::bc::BuildContext> &bc) const
 }
 
 auto operator<<(std::ostream &os, const ASTExtern &func) -> std::ostream & {
-  os << "func " << func.name << " = ";
-  os << "-> " << *func.type << " ";
+  os << "extern func " << func.name << " = ";
+  os << " -> " << *func.type << " ";
   return os;
 };
 

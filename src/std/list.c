@@ -13,19 +13,13 @@ struct node {
 
 typedef struct node *List;
 
-List list_push_alloc(void *data, size_t memory, List next);
-List list_push(void *data, List next);
-void *list_peek(List list);
-List list_pop(List list);
-bool list_has_next(List list);
-List list_concatenate(List list, List list2);
-
 bool is_null(void *ptr) { return ptr == NULL; }
 
-List list_push_alloc(void *data, size_t memory, List next) {
-  void *data_alloc = malloc(memory);
-  memcpy(data_alloc, data, memory);
-  return list_push(data_alloc, next);
+bool list_has_next(List list) {
+  if (list == NULL) {
+    return false;
+  }
+  return list->next != NULL;
 }
 
 List list_push(void *data, List next) {
@@ -35,19 +29,18 @@ List list_push(void *data, List next) {
   return new;
 }
 
+List list_push_alloc(void *data, size_t memory, List next) {
+  void *data_alloc = malloc(memory);
+  memcpy(data_alloc, data, memory);
+  return list_push(data_alloc, next);
+}
+
 void *list_peek(List list) {
   if (list == NULL) {
     puts("Error: List is Null, while list_peek!");
     exit(0);
   }
   return list->data;
-}
-
-bool list_has_next(List list) {
-  if (list == NULL) {
-    return false;
-  }
-  return list->next != NULL;
 }
 
 List list_pop(List list) {
@@ -97,3 +90,9 @@ List list_push_float(float a, List next) {
 }
 
 float list_peek_float(List list) { return *(float *)list_peek(list); }
+
+List list_push_string(char *a, List next) {
+  return list_push_alloc(&a, sizeof(a), next);
+}
+
+char *list_peek_string(List list) { return *(char **)list_peek(list); }

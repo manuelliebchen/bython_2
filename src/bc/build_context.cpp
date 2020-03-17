@@ -16,28 +16,25 @@ BuildContext::BuildContext(std::string name)
 
 }
 
+// {":", TypeName::List, {TypeName::List, TypeName::List},
+// [](std::vector<llvm::Value*> param)->llvm::Value*{//Stuff}};
+
 llvm::Value *build_internal_call(std::unique_ptr<by::bc::BuildContext> &bc,
                                  std::string name, type::TypeName_ptr type,
                                  std::vector<llvm::Value *> parameter) {
   std::vector<llvm::Type *> llvm_parameters;
   llvm::Type *llvm_returntype = nullptr;
-  if (name == "list_init_main") {
-    llvm_parameters.emplace_back(
-        type::TypeName::Int->get_llvm_type(bc->context));
-    llvm_parameters.emplace_back(
-        llvm::Type::getInt8PtrTy(bc->context)->getPointerTo());
-    llvm_returntype = type::TypeName::List->get_llvm_type(bc->context);
-  } else if (name == "list_peek") {
-    std::string type_name;
-    std::transform(type->name.begin(), type->name.end(), type_name.begin(),
+  if (name == "list_peek") {
+    std::string type_name = type->name;
+    std::transform(type_name.begin(), type_name.end(), type_name.begin(),
                    ::tolower);
     name += "_" + type_name;
     llvm_parameters.emplace_back(
         type::TypeName::List->get_llvm_type(bc->context));
     llvm_returntype = type->get_llvm_type(bc->context);
   } else if (name == "list_push") {
-    std::string type_name;
-    std::transform(type->name.begin(), type->name.end(), type_name.begin(),
+    std::string type_name = type->name;
+    std::transform(type_name.begin(), type_name.end(), type_name.begin(),
                    ::tolower);
     name += "_" + type_name;
     llvm_parameters.emplace_back(type->get_llvm_type(bc->context));
@@ -46,8 +43,14 @@ llvm::Value *build_internal_call(std::unique_ptr<by::bc::BuildContext> &bc,
     llvm_parameters.emplace_back(
         type::TypeName::List->get_llvm_type(bc->context));
     llvm_returntype = type::TypeName::List->get_llvm_type(bc->context);
+  } else if (name == "list_concatenate") {
+    llvm_parameters.emplace_back(
+        type::TypeName::List->get_llvm_type(bc->context));
+    llvm_parameters.emplace_back(
+        type::TypeName::List->get_llvm_type(bc->context));
+    llvm_returntype = type::TypeName::List->get_llvm_type(bc->context);
   } else {
-    throw std::runtime_error("Can not find build in functino: " + name);
+    throw std::runtime_error("Can not find build in function: " + name);
   }
 
   llvm::FunctionCallee function_callee = bc->module.getOrInsertFunction(

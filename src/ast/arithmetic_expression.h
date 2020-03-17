@@ -58,6 +58,7 @@ private:
    * type of the sub expression
    */
   type::TypeName_ptr operation_type;
+  type::FunctionType_ptr function_type;
 
 public:
   ASTArithmeticExpression(const std::shared_ptr<peg::Ast> &,
@@ -71,7 +72,7 @@ public:
   void get_dependencies(std::unordered_set<std::string> &functions,
                         std::unordered_set<std::string> &types) const;
 
-  static const std::multimap<std::string, type::BinaryOperator> operators;
+  static const std::multimap<std::string, type::FunctionType> operators;
 
   friend std::ostream &operator<<(std::ostream &,
                                   const ASTArithmeticExpression &);

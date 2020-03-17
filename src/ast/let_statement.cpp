@@ -42,14 +42,19 @@ auto ASTLetStatement::determine_type(type::variable_map &symbols)
     -> by::type::TypeName_ptr {
   if (tail != "") {
     tailtype = value->determine_type(symbols);
-    type = tailtype->subtypes[0];
-    if (tailtype->name != "List") {
-      throw type::type_deduction_exeption(ast, type::TypeName::List, tailtype);
+    if (tailtype && !tailtype->subtypes.empty()) {
+      type = tailtype->subtypes[0];
+      if (tailtype->name != "List") {
+        throw type::type_deduction_exeption(ast, type::TypeName::List,
+                                            tailtype);
+      }
+      symbols.emplace(tail, tailtype);
+      parent->register_variable(tail, tailtype);
+      symbols.emplace(var, type);
+      parent->register_variable(var, type);
+    } else {
+      throw ast_error(ast, "List has no Subtype.");
     }
-    symbols.emplace(tail, tailtype);
-    parent->register_variable(tail, tailtype);
-    symbols.emplace(var, type);
-    parent->register_variable(var, type);
   } else {
     type = value->determine_type(symbols);
     symbols.emplace(var, type);
@@ -66,11 +71,11 @@ auto ASTLetStatement::build_ir(std::unique_ptr<bc::BuildContext> &bc) const
       type->get_llvm_type(bc->context), nullptr, llvm::Twine(var));
   if (tail != "") {
     llvm::Value *head_ir =
-        bc::build_internal_call(bc, "list_peek", type->subtypes[0], {rhs_llvm});
-    head_ir = bc->builder.CreateLoad(head_ir);
+        bc::build_internal_call(bc, "list_peek", type, {rhs_llvm});
+    //    head_ir = bc->builder.CreateLoad(head_ir);
 
     llvm::Value *tail_ir =
-        bc::build_internal_call(bc, "list_pop", type, {rhs_llvm});
+        bc::build_internal_call(bc, "list_pop", tailtype, {rhs_llvm});
     llvm::AllocaInst *tail_value = bc->builder.CreateAlloca(
         tailtype->get_llvm_type(bc->context), nullptr, llvm::Twine(tail));
     bc->builder.CreateStore(tail_ir, tail_value);

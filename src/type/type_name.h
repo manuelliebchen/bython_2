@@ -46,7 +46,7 @@ struct TypeName {
 
   static const std::shared_ptr<const TypeName> None;
 
-  static const TypeName buildin[];
+  static const std::vector<std::shared_ptr<const TypeName>> native;
 
 
   TypeName(const std::shared_ptr<peg::Ast> &ast);
@@ -59,6 +59,7 @@ struct TypeName {
 
   operator bool() const;
   bool is_void() const;
+  bool is_native() const;
 
   llvm::Type *get_llvm_type(llvm::LLVMContext &) const;
 

@@ -37,6 +37,7 @@ struct BuildContext {
   std::stack<const ast::ASTExpression *> ast_stack;
 
   type::variable_map symbols;
+  type::function_map functions;
   std::unordered_set<type::TypeName> known_types;
 
   BuildContext(std::string);

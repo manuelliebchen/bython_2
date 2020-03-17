@@ -1,19 +1,20 @@
 func main = argv: List[String] -> Int {
-    printlist(argv);
+    let list = printlist(argv);
+    let list2 =printlist(list);
     0
 }
 
-func printlist = list: List[String] -> Void {
+func printlist = list: List[String] -> List[String] {
     let b = list_has_next(list);
     let head : tail = list;
     if b {
         printf("%s, ", head);
-        printlist(tail);
+        head : printlist(tail)
     } else {
         printf("%s;\n", head);
-    };
+        head : tail
+    }
 }
 
 extern func printf = String, String -> Void
 extern func list_has_next = List -> Bool
-extern func puts = String -> Void

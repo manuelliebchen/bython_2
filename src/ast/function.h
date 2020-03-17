@@ -48,6 +48,9 @@ protected:
    * name of the functino
    */
   std::string name;
+
+  type::FunctionType_ptr function_type;
+
   /**
    * parameters of the function
    */

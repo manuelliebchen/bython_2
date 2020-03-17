@@ -43,6 +43,7 @@ protected:
    * Name of the function
    */
   std::string name;
+  type::FunctionType_ptr function_type;
 
 public:
   ASTExtern(const std::shared_ptr<peg::Ast> &);
@@ -53,6 +54,8 @@ public:
    * returns name of the function
    */
   std::string get_name() const;
+  type::FunctionType_ptr get_function_type() const {return function_type;};
+
   void get_dependencies(std::unordered_set<std::string> &functions,
                         std::unordered_set<std::string> &types) const;
 

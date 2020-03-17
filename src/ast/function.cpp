@@ -40,25 +40,22 @@ ASTFunction::ASTFunction(const std::shared_ptr<peg::Ast> &ast)
     : ASTExpression(ast, nullptr) {
   size_t varscount = ast->nodes.size() - 2;
   name = std::to_string(ast->nodes[0]);
-  type::TypeName_ptr returntype;
   if (const std::shared_ptr<peg::Ast> &astreturntype = *(ast->nodes.end() - 2);
       astreturntype->original_name == "TypeName") {
-    returntype = std::make_shared<const type::TypeName>(astreturntype);
+    type = std::make_shared<const type::TypeName>(astreturntype);
     --varscount;
   } else {
-    returntype = type::TypeName::None;
+    type = type::TypeName::None;
   }
 
+  type::FunctionType function_type(type);
   for (size_t i = 0; i < varscount; ++i) {
     parameters.push_back(
         std::make_shared<ASTVariableDeclaration>(ast->nodes[1 + i], parent));
+    function_type.parameters.push_back(parameters.back()->get_type());
   }
-
-  type::FunctionType func_type(*returntype);
-  for (auto &para : parameters) {
-    func_type.parameters.emplace_back(type::TypeName(*para->get_type()));
-  }
-  type = std::make_shared<const type::FunctionType>(func_type);
+  this->function_type =
+      std::make_shared<const type::FunctionType>(function_type);
 
   blockexpression = std::make_shared<ASTBlockExpression>(
       parameters, ast->nodes.back(), parent);
@@ -91,8 +88,7 @@ auto ASTFunction::get_name() const -> std::string { return name; }
 void ASTFunction::insertFunction(
     std::unique_ptr<by::bc::BuildContext> &bc) const {
   llvm::FunctionType *function_type =
-      std::static_pointer_cast<const type::FunctionType>(type)
-          ->get_llvm_function_type(bc->context);
+      this->function_type->get_llvm_function_type(bc->context);
   if (name == "main") {
     std::vector<llvm::Type *> llvm_parameters;
     llvm_parameters.emplace_back(llvm::Type::getInt32Ty(bc->context));
@@ -104,6 +100,8 @@ void ASTFunction::insertFunction(
         llvm::FunctionType::get(llvm_returntype, llvm_parameters, false);
   }
   bc->module.getOrInsertFunction(name, function_type);
+  bc->symbols.emplace(name, this->function_type->return_type);
+  bc->functions.emplace(name, this->function_type);
 }
 
 auto ASTFunction::build_ir(std::unique_ptr<by::bc::BuildContext> &bc) const
@@ -131,9 +129,15 @@ auto ASTFunction::build_ir(std::unique_ptr<by::bc::BuildContext> &bc) const
       llvm_args.emplace_back(&arg);
     }
 
-    bc->builder.CreateStore(bc::build_internal_call(bc, "list_init_main",
-                                                    type::TypeName::List,
-                                                    llvm_args),
+    llvm::FunctionCallee function_callee = bc->module.getOrInsertFunction(
+        "list_init_main",
+        llvm::FunctionType::get(
+            type::TypeName::List->get_llvm_type(bc->context),
+            {type::TypeName::Int->get_llvm_type(bc->context),
+             llvm::Type::getInt8PtrTy(bc->context)->getPointerTo()},
+            false));
+
+    bc->builder.CreateStore(bc->builder.CreateCall(function_callee, llvm_args),
                             variable_value);
 
     bc->variables.back().emplace(arg_name, variable_value);

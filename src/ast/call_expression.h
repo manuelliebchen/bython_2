@@ -34,6 +34,10 @@ class Value;
 namespace by::ast {
 
 class ASTCallExpression : public ASTExpression {
+private:
+  std::string name;
+  std::vector<std::shared_ptr<ASTExpression>> arguments;
+
 public:
   ASTCallExpression(const std::shared_ptr<peg::Ast> &, ASTBlockExpression *);
 
@@ -43,10 +47,6 @@ public:
 
   void get_dependencies(std::unordered_set<std::string> &functions,
                         std::unordered_set<std::string> &types) const;
-
-private:
-  std::string name;
-  std::vector<std::shared_ptr<ASTExpression>> arguments;
   friend std::ostream &operator<<(std::ostream &, const ASTCallExpression &);
 };
 
