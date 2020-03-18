@@ -21,7 +21,7 @@
 
 namespace by {
 namespace bc {
-struct BuildContext;
+class BuildContext;
 } // namespace bc
 
 namespace ast {

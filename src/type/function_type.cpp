@@ -50,6 +50,26 @@ FunctionType::get_llvm_function_type(llvm::LLVMContext &context) const {
   return llvm::FunctionType::get(llvm_returntype, llvm_parameters, false);
 }
 
+bool FunctionType::operator==(const FunctionType &rhs) const {
+  if (return_type != rhs.return_type) {
+    return false;
+  }
+  if (parameters.size() != rhs.parameters.size()) {
+    return false;
+  }
+  for (size_t i = 0; i < parameters.size(); ++i) {
+    if (*parameters[i] != *rhs.parameters[i]) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+bool FunctionType::operator!=(const FunctionType &rhs) const {
+  return !(*this == rhs);
+}
+
 } // namespace by::type
 
 namespace std {

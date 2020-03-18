@@ -21,7 +21,7 @@ namespace ast {
 class ASTBlockExpression;
 } // namespace ast
 namespace bc {
-struct BuildContext;
+class BuildContext;
 } // namespace bc
 } // namespace by
 namespace llvm {

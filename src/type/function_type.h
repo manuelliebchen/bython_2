@@ -39,6 +39,9 @@ struct FunctionType {
 
   llvm::FunctionType *get_llvm_function_type(llvm::LLVMContext &) const;
 
+  bool operator== (const FunctionType&) const;
+  bool operator!= (const FunctionType&) const;
+
   friend std::string to_string(by::type::FunctionType const &);
 };
 

@@ -22,7 +22,7 @@ class ASTBlockExpression;
 } // namespace by
 namespace by {
 namespace bc {
-struct BuildContext;
+class BuildContext;
 }
 } // namespace by
 namespace llvm {

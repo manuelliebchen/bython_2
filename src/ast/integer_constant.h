@@ -20,7 +20,7 @@ namespace by::ast {
 class ASTBlockExpression;
 }
 namespace by::bc {
-struct BuildContext;
+	class BuildContext;
 }
 namespace llvm {
 class Value;

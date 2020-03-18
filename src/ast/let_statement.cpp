@@ -70,12 +70,13 @@ auto ASTLetStatement::build_ir(std::unique_ptr<bc::BuildContext> &bc) const
   llvm::AllocaInst *variable_value = bc->builder.CreateAlloca(
       type->get_llvm_type(bc->context), nullptr, llvm::Twine(var));
   if (tail != "") {
+    std::string type_name = type->name;
+    std::transform(type_name.begin(), type_name.end(), type_name.begin(),
+                   ::tolower);
     llvm::Value *head_ir =
-        bc::build_internal_call(bc, "list_peek", type, {rhs_llvm});
-    //    head_ir = bc->builder.CreateLoad(head_ir);
+        bc->find("list_peek_" + type_name).build_ir(bc, {rhs_llvm});
 
-    llvm::Value *tail_ir =
-        bc::build_internal_call(bc, "list_pop", tailtype, {rhs_llvm});
+    llvm::Value *tail_ir = bc->find("list_pop").build_ir(bc, {rhs_llvm});
     llvm::AllocaInst *tail_value = bc->builder.CreateAlloca(
         tailtype->get_llvm_type(bc->context), nullptr, llvm::Twine(tail));
     bc->builder.CreateStore(tail_ir, tail_value);

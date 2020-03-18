@@ -29,7 +29,7 @@ class ASTBlockExpression;
 class ASTVariableDeclaration;
 } // namespace ast
 namespace bc {
-struct BuildContext;
+class BuildContext;
 } // namespace bc
 } // namespace by
 namespace llvm {

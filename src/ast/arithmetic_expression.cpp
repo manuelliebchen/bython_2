@@ -122,7 +122,6 @@ auto ASTArithmeticExpression::determine_type(type::variable_map &symbols)
 auto ASTArithmeticExpression::build_ir(
     std::unique_ptr<bc::BuildContext> &bc) const -> llvm::Value * {
   bc->ast_stack.push(this);
-
   llvm::Value *lhs_llvm = lhs->build_ir(bc);
   llvm::Type *lhs_type = lhs_llvm->getType();
   llvm::Value *rhs_llvm = rhs->build_ir(bc);
@@ -185,22 +184,6 @@ auto ASTArithmeticExpression::build_ir(
   if (BinaryOperator == "||") {
     return bc->builder.CreateOr(lhs_llvm, rhs_llvm);
   }
-  if (BinaryOperator == "==") {
-    if (llvm_type->isFloatTy()) {
-      return bc->builder.CreateFCmpOEQ(lhs_llvm, rhs_llvm);
-    }
-    if (llvm_type->isIntegerTy()) {
-      return bc->builder.CreateICmpEQ(lhs_llvm, rhs_llvm);
-    }
-  }
-  if (BinaryOperator == "!=") {
-    if (llvm_type->isFloatTy()) {
-      return bc->builder.CreateFCmpONE(lhs_llvm, rhs_llvm);
-    }
-    if (llvm_type->isIntegerTy()) {
-      return bc->builder.CreateICmpNE(lhs_llvm, rhs_llvm);
-    }
-  }
   if (BinaryOperator == ">") {
     if (llvm_type->isFloatTy()) {
       return bc->builder.CreateFCmpOGT(lhs_llvm, rhs_llvm);
@@ -236,15 +219,18 @@ auto ASTArithmeticExpression::build_ir(
   if (BinaryOperator == ":") {
     if (!rhs->get_type()->subtypes.empty()) {
       if (*(lhs->get_type()) == *(rhs->get_type()->subtypes[0])) {
-        return bc::build_internal_call(bc, "list_push", type::TypeName::List,
+        return bc->build_internal_call(bc, "list_push", type::TypeName::List,
                                        {lhs_llvm, rhs_llvm});
       }
       if (*(lhs->get_type()) == *(rhs->get_type())) {
-        return bc::build_internal_call(bc, "list_cona", type::TypeName::List,
+        return bc->build_internal_call(bc, "list_concatenate", type::TypeName::List,
                                        {lhs_llvm, rhs_llvm});
       }
     }
   }
+  return bc->find(BinaryOperator, function_type)
+      .build_ir(bc, {lhs_llvm, rhs_llvm});
+
   throw ast_error(ast, "Unimplemented Binary Operator.");
 }
 
