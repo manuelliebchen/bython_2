@@ -52,14 +52,14 @@ ASTBlockExpression::ASTBlockExpression(
   }
 }
 
-auto ASTBlockExpression::determine_type(type::variable_map &symbols)
+auto ASTBlockExpression::determine_type(std::unique_ptr<bc::BuildContext> &bc)
     -> by::type::TypeName_ptr {
   for (auto &exp : expressions) {
-    exp->determine_type(symbols);
+    exp->determine_type(bc);
   }
 
   if (end_expression) {
-    type = end_expression->determine_type(symbols);
+    type = end_expression->determine_type(bc);
     return type;
   }
   return type::TypeName::Void;

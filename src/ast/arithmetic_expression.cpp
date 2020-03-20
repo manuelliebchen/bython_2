@@ -98,48 +98,40 @@ ASTArithmeticExpression::ASTArithmeticExpression(
     : ASTExpression(ast, parent), lhs(std::move(lhs)),
       BinaryOperator(std::move(BinaryOperator)), rhs(std::move(rhs)) {}
 
-auto ASTArithmeticExpression::determine_type(type::variable_map &symbols)
-    -> by::type::TypeName_ptr {
-
-  // TODO: rhs type and lhs type do not have to be the same
-  operation_type = std::make_shared<const type::TypeName>(
-      this->lhs->determine_type(symbols)->deduct_type(
-          *(this->rhs->determine_type(symbols))));
+auto ASTArithmeticExpression::determine_type(
+    std::unique_ptr<bc::BuildContext> &bc) -> by::type::TypeName_ptr {
+  lhs->determine_type(bc);
+  rhs->determine_type(bc);
 
   auto bin = operators.equal_range(BinaryOperator);
   for (auto it = bin.first; it != bin.second; ++it) {
     type::FunctionType binop = it->second;
-    if (*binop.lhs() == *operation_type) {
+    if (*binop.lhs() == *lhs->get_type() && *binop.rhs() == *rhs->get_type()) {
       function_type = std::make_shared<const type::FunctionType>(binop);
       type = function_type->return_type;
       return type;
     }
   }
-  throw type::type_deduction_exeption(ast, operation_type,
-                                      type::TypeName::None);
+  throw type::type_deduction_exeption(ast, lhs->get_type(), rhs->get_type());
 }
 
 auto ASTArithmeticExpression::build_ir(
     std::unique_ptr<bc::BuildContext> &bc) const -> llvm::Value * {
   bc->ast_stack.push(this);
   llvm::Value *lhs_llvm = lhs->build_ir(bc);
-  llvm::Type *lhs_type = lhs_llvm->getType();
   llvm::Value *rhs_llvm = rhs->build_ir(bc);
-  llvm::Type *rhs_type = rhs_llvm->getType();
 
-  if (lhs_type->getTypeID() != rhs_type->getTypeID()) {
-    if (lhs_type->isFloatTy() && rhs_type->isIntegerTy()) {
-      rhs_llvm = bc->builder.CreateSIToFP(rhs_llvm, lhs_type);
-    } else if (rhs_type->isFloatTy() && lhs_type->isIntegerTy()) {
-      lhs_llvm = bc->builder.CreateSIToFP(lhs_llvm, rhs_type);
-    } else {
-      throw by::type::type_deduction_exeption(ast, lhs->get_type(),
-                                              rhs->get_type());
-    }
+  if (*lhs->get_type() != *function_type->lhs()) {
+    lhs_llvm = bc->builder.CreateSIToFP(
+        lhs_llvm, function_type->lhs()->get_llvm_type(bc->context));
+  }
+  if (*rhs->get_type() != *function_type->rhs()) {
+    rhs_llvm = bc->builder.CreateSIToFP(
+        rhs_llvm, function_type->rhs()->get_llvm_type(bc->context));
   }
 
   bc->ast_stack.pop();
-  llvm::Type *llvm_type = operation_type->get_llvm_type(bc->context);
+  llvm::Type *llvm_type = lhs_llvm->getType();
 
   if (BinaryOperator == "+") {
     if (llvm_type->isFloatTy()) {
@@ -219,16 +211,14 @@ auto ASTArithmeticExpression::build_ir(
   if (BinaryOperator == ":") {
     if (!rhs->get_type()->subtypes.empty()) {
       if (*(lhs->get_type()) == *(rhs->get_type()->subtypes[0])) {
-        return bc->build_internal_call(bc, "list_push", type::TypeName::List,
-                                       {lhs_llvm, rhs_llvm});
+        return bc->find("list_push").build_ir(bc, {lhs_llvm, rhs_llvm});
       }
       if (*(lhs->get_type()) == *(rhs->get_type())) {
-        return bc->build_internal_call(bc, "list_concatenate", type::TypeName::List,
-                                       {lhs_llvm, rhs_llvm});
+        return bc->find("list_concatenate").build_ir(bc, {lhs_llvm, rhs_llvm});
       }
     }
   }
-  return bc->find(BinaryOperator, function_type)
+  return bc->find(BinaryOperator, function_type->parameters)
       .build_ir(bc, {lhs_llvm, rhs_llvm});
 
   throw ast_error(ast, "Unimplemented Binary Operator.");

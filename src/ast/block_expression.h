@@ -46,7 +46,7 @@ public:
       const std::vector<std::shared_ptr<by::ast::ASTVariableDeclaration>> &,
       const std::shared_ptr<peg::Ast> &ast, ASTBlockExpression *);
 
-  by::type::TypeName_ptr determine_type(type::variable_map &);
+  by::type::TypeName_ptr determine_type(std::unique_ptr<bc::BuildContext> &);
 
   llvm::Value *build_ir(std::unique_ptr<bc::BuildContext> &) const;
 

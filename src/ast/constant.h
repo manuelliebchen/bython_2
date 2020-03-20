@@ -28,7 +28,7 @@ protected:
               std::string);
 
 public:
-  by::type::TypeName_ptr determine_type(type::variable_map &);
+  by::type::TypeName_ptr determine_type(std::unique_ptr<bc::BuildContext> &);
 
   void get_dependencies(std::unordered_set<std::string> &functions,
                         std::unordered_set<std::string> &types) const;

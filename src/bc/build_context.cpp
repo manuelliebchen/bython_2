@@ -17,61 +17,16 @@ BuildContext::BuildContext(std::string name)
   build_buildin();
 }
 
-// {":", TypeName::List, {TypeName::List, TypeName::List},
-// [](std::vector<llvm::Value*> param)->llvm::Value*{//Stuff}};
-
-auto BuildContext::build_internal_call(std::unique_ptr<BuildContext> &bc,
-                                       std::string name,
-                                       type::TypeName_ptr type,
-                                       std::vector<llvm::Value *> parameter)
-    -> llvm::Value * {
-  //  std::vector<llvm::Type *> llvm_parameters;
-  //  llvm::Type *llvm_returntype = nullptr;
-  //  if (name == "list_peek") {
-  //    std::string type_name = type->name;
-  //    std::transform(type_name.begin(), type_name.end(), type_name.begin(),
-  //                   ::tolower);
-  //    name += "_" + type_name;
-  //    llvm_parameters.emplace_back(type::TypeName::List->get_llvm_type(context));
-  //    llvm_returntype = type->get_llvm_type(context);
-  //  } else if (name == "list_push") {
-  //    std::string type_name = type->name;
-  //    std::transform(type_name.begin(), type_name.end(), type_name.begin(),
-  //                   ::tolower);
-  //    name += "_" + type_name;
-  //    llvm_parameters.emplace_back(type->get_llvm_type(context));
-  //    llvm_returntype = type::TypeName::List->get_llvm_type(context);
-  //  } else if (name == "list_pop") {
-  //    llvm_parameters.emplace_back(type::TypeName::List->get_llvm_type(context));
-  //    llvm_returntype = type::TypeName::List->get_llvm_type(context);
-  //  } else if (name == "list_concatenate") {
-  //    llvm_parameters.emplace_back(type::TypeName::List->get_llvm_type(context));
-  //    llvm_parameters.emplace_back(type::TypeName::List->get_llvm_type(context));
-  //    llvm_returntype = type::TypeName::List->get_llvm_type(context);
-  //  } else {
-  //    throw std::runtime_error("Can not find build in function: " + name);
-  //  }
-  //
-  //  llvm::FunctionCallee function_callee = module.getOrInsertFunction(
-  //      name, llvm::FunctionType::get(llvm_returntype, llvm_parameters,
-  //      false));
-  //
-  //  return builder.CreateCall(function_callee, parameter);
-
-  auto &builder = find(name);
-  return builder.build_ir(bc, parameter);
-}
-
-auto BuildContext::find(std::string name, type::FunctionType_ptr type) const
+auto BuildContext::find(std::string name,
+                        const std::vector<type::TypeName_ptr> &type) const
     -> const FunctionBuilder & {
   auto func = find_if(begin(), end(), [&](const FunctionBuilder &func) -> bool {
-    return func.get_name() == name && *func.get_type() == *type;
+    return func.get_name() == name && func.get_type()->param_equal(type);
   });
   if (func != end()) {
     return *func;
   }
-  throw std::runtime_error("Could not find function: " + name + " with type " +
-                           std::to_string(*type));
+  throw std::runtime_error("Could not find function: " + name);
 }
 
 auto BuildContext::find(std::string name) const -> const FunctionBuilder & {
@@ -161,19 +116,28 @@ void BuildContext::build_buildin() {
                                                         type::TypeName::List});
 }
 
-void BuildContext::push_back_call(std::string name, type::FunctionType type) {
+void BuildContext::push_back_call(std::string name,
+                                  type::FunctionType_ptr type) {
+
+  symbols.emplace(name, type->return_type);
+  module.getOrInsertFunction(name, type->get_llvm_function_type(context));
+
   std::vector<llvm::Type *> llvm_parameters;
-  for (auto &para_type : type.parameters) {
+  for (auto &para_type : type->parameters) {
     llvm_parameters.emplace_back(para_type->get_llvm_type(context));
   }
   llvm::FunctionCallee function_callee = module.getOrInsertFunction(
-      name, llvm::FunctionType::get(type.return_type->get_llvm_type(context),
+      name, llvm::FunctionType::get(type->return_type->get_llvm_type(context),
                                     llvm_parameters, false));
   emplace_back(name, type,
                [=](std::unique_ptr<BuildContext> &bc,
                    std::vector<llvm::Value *> parameters) -> llvm::Value * {
                  return bc->builder.CreateCall(function_callee, parameters);
                });
+}
+
+void BuildContext::push_back_call(std::string name, type::FunctionType type) {
+  push_back_call(name, std::make_shared<const type::FunctionType>(type));
 }
 
 } // namespace by::bc

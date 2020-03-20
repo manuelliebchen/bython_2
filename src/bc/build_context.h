@@ -14,6 +14,7 @@
 #include "llvm/IR/Module.h"
 
 #include <stack>
+#include <vector>
 #include <memory>
 #include <unordered_map>
 #include <unordered_set>
@@ -30,7 +31,7 @@ class ASTExpression;
 namespace bc {
 class FunctionBuilder;
 
-class BuildContext : std::vector<FunctionBuilder> {
+class BuildContext : public std::vector<FunctionBuilder> {
 public:
   llvm::LLVMContext context;
   llvm::IRBuilder<> builder;
@@ -41,18 +42,16 @@ public:
   std::stack<const ast::ASTExpression *> ast_stack;
 
   type::variable_map symbols;
-  type::function_map functions;
 
   BuildContext(std::string);
 
-  llvm::Value* build_internal_call( std::unique_ptr<BuildContext> &, std::string, type::TypeName_ptr, std::vector<llvm::Value*>);
-
-  const FunctionBuilder& find(std::string, type::FunctionType_ptr) const;
+  const FunctionBuilder& find(std::string, const std::vector<type::TypeName_ptr>& ) const;
   const FunctionBuilder& find(std::string) const;
 
-  void push_back_call(std::string, type::FunctionType);
+  void push_back_call(std::string, type::FunctionType_ptr);
 
 private:
+  void push_back_call(std::string, type::FunctionType);
   void build_buildin();
 };
 

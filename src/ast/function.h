@@ -64,7 +64,7 @@ protected:
 public:
   ASTFunction(const std::shared_ptr<peg::Ast> &);
 
-  type::TypeName_ptr determine_type(type::variable_map &);
+  type::TypeName_ptr determine_type(std::unique_ptr<bc::BuildContext> &);
 
   std::string get_name() const;
   void get_dependencies(std::unordered_set<std::string> &,

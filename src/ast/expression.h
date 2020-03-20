@@ -72,7 +72,7 @@ public:
   /**
    * Function to determine type of this expression and all child expressions
    */
-  virtual type::TypeName_ptr determine_type(type::variable_map &) = 0;
+  virtual type::TypeName_ptr determine_type(std::unique_ptr<bc::BuildContext> &) = 0;
 
   /**
    * Builds ir code and returns llvm::Value* for further use in parent

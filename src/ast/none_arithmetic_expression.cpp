@@ -70,9 +70,9 @@ ASTNoneArithmeticExpression::ASTNoneArithmeticExpression(
   }
 }
 
-auto ASTNoneArithmeticExpression::determine_type(type::variable_map &symbols)
-    -> by::type::TypeName_ptr {
-  type = rhs->determine_type(symbols);
+auto ASTNoneArithmeticExpression::determine_type(
+    std::unique_ptr<bc::BuildContext> &bc) -> by::type::TypeName_ptr {
+  type = rhs->determine_type(bc);
   return type;
 }
 

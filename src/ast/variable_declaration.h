@@ -52,7 +52,7 @@ public:
 
   const std::string &get_name() const;
 
-  by::type::TypeName_ptr determine_type(type::variable_map &);
+  by::type::TypeName_ptr determine_type(std::unique_ptr<bc::BuildContext> &);
 
   friend std::ostream &operator<<(std::ostream &,
                                   const ASTVariableDeclaration &);

@@ -39,9 +39,9 @@ void ASTExtern::get_dependencies(std::unordered_set<std::string> &functions,
 
 auto ASTExtern::get_name() const -> std::string { return name; }
 
-auto ASTExtern::determine_type(type::variable_map &symbol)
+auto ASTExtern::determine_type(std::unique_ptr<bc::BuildContext> &bc)
     -> type::TypeName_ptr {
-  symbol.emplace(name, type);
+  bc->symbols.emplace(name, type);
   return type;
 }
 

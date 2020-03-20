@@ -38,10 +38,8 @@ void ASTRoot::compile(std::ostream &out) {
   try {
     auto build_context = std::make_unique<by::bc::BuildContext>(file);
     for (const auto &func : externs) {
-      build_context->functions.emplace(func->get_name(),
-                                       func->get_function_type());
-      build_context->symbols.emplace(func->get_name(),
-                                     func->get_function_type()->return_type);
+      build_context->push_back_call(func->get_name(),
+                                    func->get_function_type());
     }
     last_op = "Declaring Functions";
     for (const auto &func : functions) {
@@ -50,7 +48,7 @@ void ASTRoot::compile(std::ostream &out) {
 
     last_op = "Determiining return types";
     for (const auto &func : functions) {
-      func->determine_type(build_context->symbols);
+      func->determine_type(build_context);
     }
     build_context->module.setTargetTriple("x86_64-pc-linux-gnu");
 

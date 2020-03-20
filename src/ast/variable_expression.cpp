@@ -31,8 +31,8 @@ ASTVariableExpression::ASTVariableExpression(
   }
 }
 
-auto ASTVariableExpression::determine_type(type::variable_map &known_functions)
-    -> by::type::TypeName_ptr {
+auto ASTVariableExpression::determine_type(
+    std::unique_ptr<bc::BuildContext> &bc) -> by::type::TypeName_ptr {
   if (name != "Null") {
     type = parent->find_variable_type(name);
   } else {

@@ -39,8 +39,8 @@ void ASTVariableDeclaration::get_dependencies(
   types.insert(std::to_string(*type));
 }
 
-auto ASTVariableDeclaration::determine_type(type::variable_map &known_functions)
-    -> by::type::TypeName_ptr {
+auto ASTVariableDeclaration::determine_type(
+    std::unique_ptr<bc::BuildContext> &bc) -> by::type::TypeName_ptr {
   return type;
 }
 

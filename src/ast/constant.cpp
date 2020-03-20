@@ -24,7 +24,7 @@ ASTConstant::ASTConstant(const std::shared_ptr<peg::Ast> &ast,
                          ASTBlockExpression *parent, std::string const_string)
     : ASTExpression(ast, parent), const_string(std::move(const_string)) {}
 
-auto ASTConstant::determine_type(type::variable_map &symbols)
+auto ASTConstant::determine_type(std::unique_ptr<bc::BuildContext> &bc)
     -> by::type::TypeName_ptr {
   type = std::make_shared<const type::TypeName>(type::TypeName(const_string));
   return type;

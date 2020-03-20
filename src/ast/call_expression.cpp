@@ -36,13 +36,13 @@ ASTCallExpression::ASTCallExpression(const std::shared_ptr<peg::Ast> &ast,
   }
 }
 
-auto ASTCallExpression::determine_type(type::variable_map &symbols)
+auto ASTCallExpression::determine_type(std::unique_ptr<bc::BuildContext> &bc)
     -> by::type::TypeName_ptr {
   for (auto &arg : arguments) {
-    arg->determine_type(symbols);
+    arg->determine_type(bc);
   }
   try {
-    type = symbols.at(name);
+    type = bc->find(name).get_type()->return_type;
   } catch (std::out_of_range &oor) {
     throw ast_error(ast, "Function not found: " + name);
   }
@@ -52,18 +52,18 @@ auto ASTCallExpression::determine_type(type::variable_map &symbols)
 auto ASTCallExpression::build_ir(std::unique_ptr<bc::BuildContext> &bc) const
     -> llvm::Value * {
   bc->ast_stack.push(this);
-  type::FunctionType_ptr functiontype;
-  try {
-    functiontype = bc->functions.at(name);
-  } catch (std::out_of_range &oor) {
-    throw ast_error(ast, "Function not found: " + name);
-  }
-
-  llvm::FunctionType *llvm_functype =
-      functiontype->get_llvm_function_type(bc->context);
-
-  llvm::FunctionCallee function_callee =
-      bc->module.getOrInsertFunction(name, llvm_functype);
+  //  type::FunctionType_ptr functiontype;
+  //  try {
+  //    functiontype = bc->functions.at(name);
+  //  } catch (std::out_of_range &oor) {
+  //    throw ast_error(ast, "Function not found: " + name);
+  //  }
+  //
+  //  llvm::FunctionType *llvm_functype =
+  //      functiontype->get_llvm_function_type(bc->context);
+  //
+  //  llvm::FunctionCallee function_callee =
+  //      bc->module.getOrInsertFunction(name, llvm_functype);
 
   std::vector<llvm::Value *> llvm_args;
   for (const auto &arg : arguments) {
@@ -71,7 +71,10 @@ auto ASTCallExpression::build_ir(std::unique_ptr<bc::BuildContext> &bc) const
   }
 
   bc->ast_stack.pop();
-  return bc->builder.CreateCall(function_callee, llvm_args);
+  return bc->find(name).build_ir(bc, llvm_args);
+  //
+  //  bc->ast_stack.pop();
+  //  return bc->builder.CreateCall(function_callee, llvm_args);
 }
 
 void ASTCallExpression::get_dependencies(

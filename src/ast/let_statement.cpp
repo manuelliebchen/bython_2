@@ -38,26 +38,26 @@ ASTLetStatement::ASTLetStatement(const std::shared_ptr<peg::Ast> &ast,
   }
 }
 
-auto ASTLetStatement::determine_type(type::variable_map &symbols)
+auto ASTLetStatement::determine_type(std::unique_ptr<bc::BuildContext> &bc)
     -> by::type::TypeName_ptr {
   if (tail != "") {
-    tailtype = value->determine_type(symbols);
+    tailtype = value->determine_type(bc);
     if (tailtype && !tailtype->subtypes.empty()) {
       type = tailtype->subtypes[0];
       if (tailtype->name != "List") {
         throw type::type_deduction_exeption(ast, type::TypeName::List,
                                             tailtype);
       }
-      symbols.emplace(tail, tailtype);
+      bc->symbols.emplace(tail, tailtype);
       parent->register_variable(tail, tailtype);
-      symbols.emplace(var, type);
+      bc->symbols.emplace(var, type);
       parent->register_variable(var, type);
     } else {
       throw ast_error(ast, "List has no Subtype.");
     }
   } else {
-    type = value->determine_type(symbols);
-    symbols.emplace(var, type);
+    type = value->determine_type(bc);
+    bc->symbols.emplace(var, type);
     parent->register_variable(var, type);
   }
   return type;

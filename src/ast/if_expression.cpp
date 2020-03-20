@@ -37,17 +37,17 @@ ASTIfExpression::ASTIfExpression(const std::shared_ptr<peg::Ast> &ast,
   }
 }
 
-auto ASTIfExpression::determine_type(type::variable_map &symbols)
+auto ASTIfExpression::determine_type(std::unique_ptr<bc::BuildContext> &bc)
     -> by::type::TypeName_ptr {
-  type::TypeName_ptr condition_type = condition->determine_type(symbols);
+  type::TypeName_ptr condition_type = condition->determine_type(bc);
   if (*condition_type != type::TypeName("Bool")) {
     throw type::type_deduction_exeption(
         ast, std::make_shared<const type::TypeName>("Bool"), condition_type);
   }
-  type = block->determine_type(symbols);
+  type = block->determine_type(bc);
   if (alternativ) {
     type = std::make_shared<const by::type::TypeName>(
-        type->deduct_type(*alternativ->determine_type(symbols)));
+        type->deduct_type(*alternativ->determine_type(bc)));
   }
   return type;
 }

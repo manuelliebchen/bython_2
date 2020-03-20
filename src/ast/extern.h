@@ -48,7 +48,7 @@ protected:
 public:
   ASTExtern(const std::shared_ptr<peg::Ast> &);
 
-  type::TypeName_ptr determine_type(type::variable_map &);
+  type::TypeName_ptr determine_type(std::unique_ptr<bc::BuildContext> &);
 
   /**
    * returns name of the function

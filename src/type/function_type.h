@@ -39,6 +39,7 @@ struct FunctionType {
 
   llvm::FunctionType *get_llvm_function_type(llvm::LLVMContext &) const;
 
+  bool param_equal(const std::vector<TypeName_ptr>&) const;
   bool operator== (const FunctionType&) const;
   bool operator!= (const FunctionType&) const;
 
