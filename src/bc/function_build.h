@@ -19,7 +19,8 @@
 namespace by::bc {
 	class BuildContext;
 
-using build_functional =std::function<llvm::Value*( std::unique_ptr<BuildContext> &, std::vector<llvm::Value*>)>;
+using build_functional =std::function<llvm::Value*( std::unique_ptr<BuildContext>&, std::vector<llvm::Value*>)>;
+
 class FunctionBuilder {
 protected:
 	std::string name;

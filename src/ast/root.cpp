@@ -36,7 +36,8 @@ ASTRoot::ASTRoot(std::string file, const std::shared_ptr<peg::Ast> &ast)
 void ASTRoot::compile(std::ostream &out) {
   std::string last_op = "";
   try {
-    auto build_context = std::make_unique<by::bc::BuildContext>(file);
+    bc::BuildContext_ptr build_context =
+        std::make_unique<by::bc::BuildContext>(file);
     for (const auto &func : externs) {
       build_context->push_back_call(func->get_name(),
                                     func->get_function_type());

@@ -71,8 +71,6 @@ public:
   void get_dependencies(std::unordered_set<std::string> &functions,
                         std::unordered_set<std::string> &types) const;
 
-  static const std::multimap<std::string, type::FunctionType> operators;
-
   friend std::ostream &operator<<(std::ostream &,
                                   const ASTArithmeticExpression &);
 };

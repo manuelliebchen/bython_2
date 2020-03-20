@@ -51,30 +51,12 @@ auto ASTCallExpression::determine_type(std::unique_ptr<bc::BuildContext> &bc)
 
 auto ASTCallExpression::build_ir(std::unique_ptr<bc::BuildContext> &bc) const
     -> llvm::Value * {
-  bc->ast_stack.push(this);
-  //  type::FunctionType_ptr functiontype;
-  //  try {
-  //    functiontype = bc->functions.at(name);
-  //  } catch (std::out_of_range &oor) {
-  //    throw ast_error(ast, "Function not found: " + name);
-  //  }
-  //
-  //  llvm::FunctionType *llvm_functype =
-  //      functiontype->get_llvm_function_type(bc->context);
-  //
-  //  llvm::FunctionCallee function_callee =
-  //      bc->module.getOrInsertFunction(name, llvm_functype);
-
   std::vector<llvm::Value *> llvm_args;
   for (const auto &arg : arguments) {
     llvm_args.emplace_back(arg->build_ir(bc));
   }
 
-  bc->ast_stack.pop();
   return bc->find(name).build_ir(bc, llvm_args);
-  //
-  //  bc->ast_stack.pop();
-  //  return bc->builder.CreateCall(function_callee, llvm_args);
 }
 
 void ASTCallExpression::get_dependencies(

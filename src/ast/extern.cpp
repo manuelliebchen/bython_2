@@ -41,7 +41,7 @@ auto ASTExtern::get_name() const -> std::string { return name; }
 
 auto ASTExtern::determine_type(std::unique_ptr<bc::BuildContext> &bc)
     -> type::TypeName_ptr {
-  bc->symbols.emplace(name, type);
+  bc->push_back_call(name, function_type);
   return type;
 }
 

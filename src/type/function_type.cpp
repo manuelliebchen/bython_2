@@ -7,7 +7,8 @@
 
 #include "function_type.h"
 
-#include <cstddef>                // for size_t
+#include <cstddef> // for size_t
+
 #include <llvm/IR/DerivedTypes.h> // for FunctionType
 
 #include "type_name.h"
@@ -26,22 +27,26 @@ FunctionType::FunctionType(const std::shared_ptr<peg::Ast> &ast) {
   }
 }
 
-FunctionType::FunctionType(const TypeName_ptr &returntype)
-    : return_type(returntype) {}
+FunctionType::FunctionType(TypeName_ptr returntype)
+    : return_type(std::move(returntype)) {}
 
-FunctionType::FunctionType(const TypeName_ptr &returntype,
-                           const TypeName_ptr &lhs)
-    : return_type(returntype), parameters{lhs} {}
-FunctionType::FunctionType(const TypeName_ptr &returntype,
-                           const TypeName_ptr &lhs, const TypeName_ptr &rhs)
-    : return_type(returntype), parameters{lhs, rhs} {}
+FunctionType::FunctionType(TypeName_ptr returntype, TypeName_ptr lhs)
+    : return_type(std::move(returntype)) {
+  parameters.push_back(std::move(lhs));
+}
+FunctionType::FunctionType(TypeName_ptr returntype, TypeName_ptr lhs,
+                           TypeName_ptr rhs)
+    : return_type(std::move(returntype)) {
+  parameters.push_back(std::move(lhs));
+  parameters.push_back(std::move(rhs));
+}
 
-FunctionType::FunctionType(const TypeName_ptr &return_type,
-                           std::vector<TypeName_ptr> const &parameters)
-    : return_type(return_type), parameters(parameters) {}
+FunctionType::FunctionType(TypeName_ptr return_type,
+                           std::vector<TypeName_ptr> parameters)
+    : return_type(std::move(return_type)), parameters(std::move(parameters)) {}
 
-llvm::FunctionType *
-FunctionType::get_llvm_function_type(llvm::LLVMContext &context) const {
+auto FunctionType::get_llvm_function_type(llvm::LLVMContext &context) const
+    -> llvm::FunctionType * {
   std::vector<llvm::Type *> llvm_parameters;
   for (auto &para : parameters) {
     llvm_parameters.emplace_back(para->get_llvm_type(context));
@@ -73,11 +78,13 @@ bool FunctionType::operator!=(const FunctionType &rhs) const {
   return !(*this == rhs);
 }
 
+FunctionType::operator const TypeName &() const { return *return_type; }
+
 } // namespace by::type
 
 namespace std {
 
-std::string to_string(by::type::FunctionType const &func) {
+auto to_string(by::type::FunctionType const &func) -> std::string {
   std::string str = std::to_string(*(by::type::TypeName *)(&func)) + "(";
   if (!func.parameters.empty()) {
     str += std::to_string(func.parameters[0]);

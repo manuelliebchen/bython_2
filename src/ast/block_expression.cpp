@@ -102,8 +102,6 @@ void ASTBlockExpression::get_dependencies(identifier_set &functions,
 
 auto ASTBlockExpression::build_ir(std::unique_ptr<bc::BuildContext> &bc) const
     -> llvm::Value * {
-  bc->ast_stack.push(this);
-  bc->variables.emplace_back(std::unordered_map<std::string, llvm::Value *>());
 
   llvm::Value *ret = nullptr;
   for (const auto &exp : expressions) {
@@ -114,8 +112,6 @@ auto ASTBlockExpression::build_ir(std::unique_ptr<bc::BuildContext> &bc) const
     ret = end_expression->build_ir(bc);
   }
 
-  bc->variables.pop_back();
-  bc->ast_stack.pop();
   return ret;
 }
 

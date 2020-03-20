@@ -48,16 +48,15 @@ auto ASTLetStatement::determine_type(std::unique_ptr<bc::BuildContext> &bc)
         throw type::type_deduction_exeption(ast, type::TypeName::List,
                                             tailtype);
       }
-      bc->symbols.emplace(tail, tailtype);
+      bc->push_back_load(tail, tailtype);
       parent->register_variable(tail, tailtype);
-      bc->symbols.emplace(var, type);
+      bc->push_back_load(var, type);
       parent->register_variable(var, type);
     } else {
       throw ast_error(ast, "List has no Subtype.");
     }
   } else {
     type = value->determine_type(bc);
-    bc->symbols.emplace(var, type);
     parent->register_variable(var, type);
   }
   return type;
@@ -65,7 +64,6 @@ auto ASTLetStatement::determine_type(std::unique_ptr<bc::BuildContext> &bc)
 
 auto ASTLetStatement::build_ir(std::unique_ptr<bc::BuildContext> &bc) const
     -> llvm::Value * {
-  bc->ast_stack.push(this);
   llvm::Value *rhs_llvm = value->build_ir(bc);
   llvm::AllocaInst *variable_value = bc->builder.CreateAlloca(
       type->get_llvm_type(bc->context), nullptr, llvm::Twine(var));
@@ -80,15 +78,14 @@ auto ASTLetStatement::build_ir(std::unique_ptr<bc::BuildContext> &bc) const
     llvm::AllocaInst *tail_value = bc->builder.CreateAlloca(
         tailtype->get_llvm_type(bc->context), nullptr, llvm::Twine(tail));
     bc->builder.CreateStore(tail_ir, tail_value);
-    bc->variables.back().emplace(tail, tail_value);
+    bc->push_back_load(tail, tailtype);
 
     rhs_llvm = head_ir;
   }
 
   bc->builder.CreateStore(rhs_llvm, variable_value);
-  bc->variables.back().emplace(var, variable_value);
+  bc->push_back_load(var, type);
 
-  bc->ast_stack.pop();
   return variable_value;
 }
 

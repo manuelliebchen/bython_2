@@ -12,6 +12,7 @@
 #include "llvm/IR/IRBuilder.h"
 #include "llvm/IR/LLVMContext.h"
 #include "llvm/IR/Module.h"
+#include "llvm/IR/ValueSymbolTable.h"
 
 #include <stack>
 #include <vector>
@@ -25,9 +26,6 @@
 #include "function_build.h"
 
 namespace by {
-namespace ast {
-class ASTExpression;
-}
 namespace bc {
 class FunctionBuilder;
 
@@ -38,23 +36,21 @@ public:
   llvm::Module module;
   llvm::DataLayout data_layout;
 
-  std::vector<std::unordered_map<std::string, llvm::Value *>> variables;
-  std::stack<const ast::ASTExpression *> ast_stack;
-
-  type::variable_map symbols;
-
   BuildContext(std::string);
 
   const FunctionBuilder& find(std::string, const std::vector<type::TypeName_ptr>& ) const;
   const FunctionBuilder& find(std::string) const;
 
   void push_back_call(std::string, type::FunctionType_ptr);
+  void push_back_call(std::string, const type::FunctionType&);
+  void push_back_load(std::string, type::TypeName_ptr);
+  void remove(std::string);
 
 private:
-  void push_back_call(std::string, type::FunctionType);
   void build_buildin();
 };
 
+using BuildContext_ptr = std::unique_ptr<BuildContext>;
 
 } // namespace bc
 } // namespace by

@@ -9,6 +9,13 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
+set( CMAKE_CXX_FLAGS "-O2 -Wall -pthread")
+
+OPTION(CLANG_TIDY "Use clang-tidy warnings" ON)
+if(CLANG_TIDY)
+	set( CMAKE_CXX_CLANG_TIDY "clang-tidy;-checks=*,-fuchsia-trailing-return")
+endif()
+
 add_subdirectory(src)
 
 FILE(GLOB_RECURSE ALL_BYTHON_SOURCE_FILES ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp ${CMAKE_CURRENT_SOURCE_DIR}/src/*.c ${CMAKE_CURRENT_SOURCE_DIR}/src/*.hpp)

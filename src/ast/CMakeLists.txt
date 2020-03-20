@@ -12,8 +12,5 @@ target_include_directories(${BYTHON_AST_LIB} PRIVATE
     ${LLVM_INCLUDE_DIRS}
 )
 
-target_compile_definitions(${BYTHON_AST_LIB} PRIVATE ${LLVM_DEFINITIONS} -DGRAMMAR_PATH="${GRAMMAR_PATH}")
-
-set( CMAKE_CXX_FLAGS "-O2 -Wall -pthread")
-target_link_libraries(${BYTHON_AST_LIB} PRIVATE bython-type bython-bc)
-set(CMAKE_CXX_CLANG_TIDY "clang-tidy;-checks=*")
+target_compile_definitions(${BYTHON_AST_LIB} PUBLIC ${LLVM_DEFINITIONS} -DGRAMMAR_PATH="${GRAMMAR_PATH}")
+target_link_libraries(${BYTHON_AST_LIB} PUBLIC bython-type bython-bc)

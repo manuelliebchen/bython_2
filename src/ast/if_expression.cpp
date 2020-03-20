@@ -54,7 +54,6 @@ auto ASTIfExpression::determine_type(std::unique_ptr<bc::BuildContext> &bc)
 
 auto ASTIfExpression::build_ir(std::unique_ptr<bc::BuildContext> &bc) const
     -> llvm::Value * {
-  bc->ast_stack.push(this);
 
   // Generate Condition
   llvm::Value *condition_llvm = condition->build_ir(bc);
@@ -113,7 +112,6 @@ auto ASTIfExpression::build_ir(std::unique_ptr<bc::BuildContext> &bc) const
   the_function->getBasicBlockList().push_back(merge_block);
   bc->builder.SetInsertPoint(merge_block);
 
-  bc->ast_stack.pop();
   return phi_node;
 } // namespace by::ast
 

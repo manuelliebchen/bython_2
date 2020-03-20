@@ -102,7 +102,6 @@ void ASTFunction::insertFunction(
 
 auto ASTFunction::build_ir(std::unique_ptr<by::bc::BuildContext> &bc) const
     -> llvm::Value * {
-  bc->ast_stack.push(this);
 
   llvm::Function *function = bc->module.getFunction(name);
 
@@ -110,10 +109,6 @@ auto ASTFunction::build_ir(std::unique_ptr<by::bc::BuildContext> &bc) const
   function->getBasicBlockList().push_back(entry_block);
   bc->builder.SetInsertPoint(entry_block);
   if (name == "main") {
-
-    bc->variables.emplace_back(
-        std::unordered_map<std::string, llvm::Value *>());
-
     std::string arg_name = parameters[0]->get_name();
 
     llvm::AllocaInst *variable_value = bc->builder.CreateAlloca(
@@ -135,19 +130,17 @@ auto ASTFunction::build_ir(std::unique_ptr<by::bc::BuildContext> &bc) const
 
     bc->builder.CreateStore(bc->builder.CreateCall(function_callee, llvm_args),
                             variable_value);
-
-    bc->variables.back().emplace(arg_name, variable_value);
+    bc->push_back_load(arg_name, type::TypeName::List);
 
   } else {
-    bc->variables.emplace_back(
-        std::unordered_map<std::string, llvm::Value *>());
     unsigned idx = 0;
     for (auto &arg : function->args()) {
-      std::string arg_name = parameters[idx++]->get_name();
+      auto &par = parameters[idx++];
+      std::string arg_name = par->get_name();
       llvm::AllocaInst *variable_value = bc->builder.CreateAlloca(
           arg.getType(), nullptr, llvm::Twine(arg_name));
       bc->builder.CreateStore(&arg, variable_value);
-      bc->variables.back().emplace(arg_name, variable_value);
+      bc->push_back_load(arg_name, par->get_type());
     }
   }
 
@@ -158,8 +151,6 @@ auto ASTFunction::build_ir(std::unique_ptr<by::bc::BuildContext> &bc) const
     bc->builder.CreateRetVoid();
   }
 
-  bc->variables.pop_back();
-  bc->ast_stack.pop();
   return return_value;
 }
 

@@ -10,7 +10,5 @@ target_include_directories(bython-bc PRIVATE
     ${LLVM_INCLUDE_DIRS}
 )
 
-target_compile_definitions(bython-bc PRIVATE ${LLVM_DEFINITIONS})
-
-target_link_libraries(bython-bc PRIVATE ${llvm_libs})
-set(CMAKE_CXX_CLANG_TIDY "clang-tidy;-checks=*")
+target_compile_definitions(bython-bc PUBLIC ${LLVM_DEFINITIONS})
+#target_link_libraries(bython-bc PUBLIC ${llvm_libs})

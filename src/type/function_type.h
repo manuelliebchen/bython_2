@@ -29,10 +29,10 @@ struct FunctionType {
 
   FunctionType(const std::shared_ptr<peg::Ast> &ast);
 
-  FunctionType(const TypeName_ptr &);
-  FunctionType(const TypeName_ptr &, const TypeName_ptr &);
-  FunctionType(const TypeName_ptr &, const TypeName_ptr &, const TypeName_ptr &);
-  FunctionType(const TypeName_ptr &, std::vector<TypeName_ptr> const &);
+  FunctionType(TypeName_ptr);
+  FunctionType(TypeName_ptr, TypeName_ptr);
+  FunctionType(TypeName_ptr, TypeName_ptr, TypeName_ptr);
+  FunctionType(TypeName_ptr, std::vector<TypeName_ptr>);
 
   TypeName_ptr lhs() const { return parameters[0];}
   TypeName_ptr rhs() const { return parameters[1];}
@@ -42,6 +42,8 @@ struct FunctionType {
   bool param_equal(const std::vector<TypeName_ptr>&) const;
   bool operator== (const FunctionType&) const;
   bool operator!= (const FunctionType&) const;
+
+  operator const TypeName&() const;
 
   friend std::string to_string(by::type::FunctionType const &);
 };

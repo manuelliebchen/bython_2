@@ -6,21 +6,22 @@
  */
 #include "type_name.h"
 
-#include <algorithm>              // for max
-#include <ext/alloc_traits.h>     // for __alloc_traits<>::value_type
+#include <algorithm>          // for max
+#include <cstddef>            // for size_t
+#include <ext/alloc_traits.h> // for __alloc_traits<>::value_type
+#include <ostream>            // for operator<<, ostream, size_t
+#include <stdexcept>          // for runtime_error
+#include <string>             // for allocator, operator+, string, oper...
+#include <utility>            // for move
+
 #include <llvm/IR/DerivedTypes.h> // for PointerType, IntegerType
 #include <llvm/IR/Type.h>         // for Type
-#include <ostream>                // for operator<<, ostream, size_t
-#include <stddef.h>               // for size_t
-#include <stdexcept>              // for runtime_error
-#include <string>                 // for allocator, operator+, string, oper...
-#include <utility>                // for move
 
 #include "../ast/expression.h"
 
 namespace llvm {
 class LLVMContext;
-}
+} // namespace llvm
 
 namespace by::type {
 
@@ -36,7 +37,7 @@ const TypeName_ptr TypeName::String =
     std::make_shared<const TypeName>("String");
 
 const std::vector<TypeName_ptr> TypeName::native = {
-    TypeName::Void, TypeName::Bool, TypeName::Int, TypeName::Float};
+    TypeName::Bool, TypeName::Int, TypeName::Float, TypeName::String};
 
 TypeName::TypeName(const std::shared_ptr<peg::Ast> &ast) {
   name = std::to_string(ast->nodes[0]);
@@ -64,6 +65,10 @@ TypeName::TypeName(TypeName const &type) : name(type.name) {
   for (const auto &subtype : type.subtypes) {
     subtypes.push_back(std::make_shared<const TypeName>(*subtype));
   }
+}
+
+std::shared_ptr<const TypeName> TypeName::make(const TypeName &type) {
+  return std::make_shared<const TypeName>(type);
 }
 
 TypeName TypeName::operator=(TypeName type) {

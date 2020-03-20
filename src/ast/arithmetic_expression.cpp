@@ -26,70 +26,6 @@ class ASTBlockExpression;
 } // namespace by
 
 namespace by::ast {
-const std::multimap<std::string, type::FunctionType>
-    ASTArithmeticExpression::operators = {
-        {"==",
-         {type::TypeName::Bool, type::TypeName::Int, type::TypeName::Int}},
-        {"==",
-         {type::TypeName::Bool, type::TypeName::Float, type::TypeName::Float}},
-        {"==",
-         {type::TypeName::Bool, type::TypeName::Bool, type::TypeName::Bool}},
-
-        {"!=",
-         {type::TypeName::Bool, type::TypeName::Int, type::TypeName::Int}},
-        {"!=",
-         {type::TypeName::Bool, type::TypeName::Float, type::TypeName::Float}},
-        {"!=",
-         {type::TypeName::Bool, type::TypeName::Bool, type::TypeName::Bool}},
-
-        {">", {type::TypeName::Bool, type::TypeName::Int, type::TypeName::Int}},
-        {">",
-         {type::TypeName::Bool, type::TypeName::Float, type::TypeName::Float}},
-        {">=",
-         {type::TypeName::Bool, type::TypeName::Int, type::TypeName::Int}},
-        {">=",
-         {type::TypeName::Bool, type::TypeName::Float, type::TypeName::Float}},
-
-        {"<", {type::TypeName::Bool, type::TypeName::Int, type::TypeName::Int}},
-        {"<",
-         {type::TypeName::Bool, type::TypeName::Float, type::TypeName::Float}},
-        {"<=",
-         {type::TypeName::Bool, type::TypeName::Int, type::TypeName::Int}},
-        {"<=",
-         {type::TypeName::Bool, type::TypeName::Float, type::TypeName::Float}},
-
-        {"+", {type::TypeName::Int, type::TypeName::Int, type::TypeName::Int}},
-        {"+",
-         {type::TypeName::Float, type::TypeName::Float, type::TypeName::Float}},
-        {"-", {type::TypeName::Int, type::TypeName::Int, type::TypeName::Int}},
-        {"-",
-         {type::TypeName::Float, type::TypeName::Float, type::TypeName::Float}},
-
-        {"*", {type::TypeName::Int, type::TypeName::Int, type::TypeName::Int}},
-        {"*",
-         {type::TypeName::Float, type::TypeName::Float, type::TypeName::Float}},
-        {"/", {type::TypeName::Int, type::TypeName::Int, type::TypeName::Int}},
-        {"/",
-         {type::TypeName::Float, type::TypeName::Float, type::TypeName::Float}},
-        {"%", {type::TypeName::Int, type::TypeName::Int, type::TypeName::Int}},
-
-        {"&&",
-         {type::TypeName::Bool, type::TypeName::Bool, type::TypeName::Bool}},
-        {"||",
-         {type::TypeName::Bool, type::TypeName::Bool, type::TypeName::Bool}},
-
-        {":",
-         {type::TypeName::List, type::TypeName::Bool, type::TypeName::List}},
-        {":",
-         {type::TypeName::List, type::TypeName::Int, type::TypeName::List}},
-        {":",
-         {type::TypeName::List, type::TypeName::Float, type::TypeName::List}},
-        {":",
-         {type::TypeName::List, type::TypeName::String, type::TypeName::List}},
-
-        {":",
-         {type::TypeName::List, type::TypeName::List, type::TypeName::List}},
-};
 
 ASTArithmeticExpression::ASTArithmeticExpression(
     const std::shared_ptr<peg::Ast> &ast, ASTBlockExpression *parent,
@@ -100,24 +36,16 @@ ASTArithmeticExpression::ASTArithmeticExpression(
 
 auto ASTArithmeticExpression::determine_type(
     std::unique_ptr<bc::BuildContext> &bc) -> by::type::TypeName_ptr {
-  lhs->determine_type(bc);
-  rhs->determine_type(bc);
 
-  auto bin = operators.equal_range(BinaryOperator);
-  for (auto it = bin.first; it != bin.second; ++it) {
-    type::FunctionType binop = it->second;
-    if (*binop.lhs() == *lhs->get_type() && *binop.rhs() == *rhs->get_type()) {
-      function_type = std::make_shared<const type::FunctionType>(binop);
-      type = function_type->return_type;
-      return type;
-    }
-  }
-  throw type::type_deduction_exeption(ast, lhs->get_type(), rhs->get_type());
+  auto &funk_builder = bc->find(
+      BinaryOperator, {lhs->determine_type(bc), rhs->determine_type(bc)});
+  function_type = funk_builder.get_type();
+  type = function_type->return_type;
+  return type;
 }
 
 auto ASTArithmeticExpression::build_ir(
     std::unique_ptr<bc::BuildContext> &bc) const -> llvm::Value * {
-  bc->ast_stack.push(this);
   llvm::Value *lhs_llvm = lhs->build_ir(bc);
   llvm::Value *rhs_llvm = rhs->build_ir(bc);
 
@@ -130,98 +58,8 @@ auto ASTArithmeticExpression::build_ir(
         rhs_llvm, function_type->rhs()->get_llvm_type(bc->context));
   }
 
-  bc->ast_stack.pop();
-  llvm::Type *llvm_type = lhs_llvm->getType();
-
-  if (BinaryOperator == "+") {
-    if (llvm_type->isFloatTy()) {
-      return bc->builder.CreateFAdd(lhs_llvm, rhs_llvm);
-    }
-    if (llvm_type->isIntegerTy()) {
-      return bc->builder.CreateAdd(lhs_llvm, rhs_llvm);
-    }
-  }
-  if (BinaryOperator == "-") {
-    if (llvm_type->isFloatTy()) {
-      return bc->builder.CreateFSub(lhs_llvm, rhs_llvm);
-    }
-    if (llvm_type->isIntegerTy()) {
-      return bc->builder.CreateSub(lhs_llvm, rhs_llvm);
-    }
-  }
-  if (BinaryOperator == "*") {
-    if (llvm_type->isFloatTy()) {
-      return bc->builder.CreateFMul(lhs_llvm, rhs_llvm);
-    }
-    if (llvm_type->isIntegerTy()) {
-      return bc->builder.CreateMul(lhs_llvm, rhs_llvm);
-    }
-  }
-  if (BinaryOperator == "/") {
-    if (llvm_type->isFloatTy()) {
-      return bc->builder.CreateFDiv(lhs_llvm, rhs_llvm);
-    }
-    if (llvm_type->isIntegerTy()) {
-      return bc->builder.CreateSDiv(lhs_llvm, rhs_llvm);
-    }
-  }
-  if (BinaryOperator == "%") {
-    if (llvm_type->isIntegerTy()) {
-      return bc->builder.CreateSRem(lhs_llvm, rhs_llvm);
-    }
-  }
-  if (BinaryOperator == "&&") {
-    return bc->builder.CreateAnd(lhs_llvm, rhs_llvm);
-  }
-  if (BinaryOperator == "||") {
-    return bc->builder.CreateOr(lhs_llvm, rhs_llvm);
-  }
-  if (BinaryOperator == ">") {
-    if (llvm_type->isFloatTy()) {
-      return bc->builder.CreateFCmpOGT(lhs_llvm, rhs_llvm);
-    }
-    if (llvm_type->isIntegerTy()) {
-      return bc->builder.CreateICmpSGT(lhs_llvm, rhs_llvm);
-    }
-  }
-  if (BinaryOperator == ">=") {
-    if (llvm_type->isFloatTy()) {
-      return bc->builder.CreateFCmpOGE(lhs_llvm, rhs_llvm);
-    }
-    if (llvm_type->isIntegerTy()) {
-      return bc->builder.CreateICmpSGE(lhs_llvm, rhs_llvm);
-    }
-  }
-  if (BinaryOperator == "<") {
-    if (llvm_type->isFloatTy()) {
-      return bc->builder.CreateFCmpOLT(lhs_llvm, rhs_llvm);
-    }
-    if (llvm_type->isIntegerTy()) {
-      return bc->builder.CreateICmpSLT(lhs_llvm, rhs_llvm);
-    }
-  }
-  if (BinaryOperator == "<=") {
-    if (llvm_type->isFloatTy()) {
-      return bc->builder.CreateFCmpOLE(lhs_llvm, rhs_llvm);
-    }
-    if (llvm_type->isIntegerTy()) {
-      return bc->builder.CreateICmpSLE(lhs_llvm, rhs_llvm);
-    }
-  }
-  if (BinaryOperator == ":") {
-    if (!rhs->get_type()->subtypes.empty()) {
-      if (*(lhs->get_type()) == *(rhs->get_type()->subtypes[0])) {
-        return bc->find("list_push").build_ir(bc, {lhs_llvm, rhs_llvm});
-      }
-      if (*(lhs->get_type()) == *(rhs->get_type())) {
-        return bc->find("list_concatenate").build_ir(bc, {lhs_llvm, rhs_llvm});
-      }
-    }
-  }
   return bc->find(BinaryOperator, function_type->parameters)
       .build_ir(bc, {lhs_llvm, rhs_llvm});
-
-  throw ast_error(ast, "Unimplemented Binary Operator.");
 }
 
 void ASTArithmeticExpression::get_dependencies(

@@ -36,6 +36,9 @@ struct TypeName {
   TypeName(std::string);
   TypeName(TypeName const &);
 
+  static std::shared_ptr<const TypeName> make(const TypeName&);
+
+
   static const std::shared_ptr<const TypeName> Null;
   static const std::shared_ptr<const TypeName> Void;
   static const std::shared_ptr<const TypeName> Bool;
