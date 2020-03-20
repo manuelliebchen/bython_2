@@ -91,8 +91,8 @@ List list_push_float(float a, List next) {
 
 float list_peek_float(List list) { return *(float *)list_peek(list); }
 
-List list_push_string(char *a, List next) {
+List list_push_record(void *a, List next) {
   return list_push_alloc(&a, sizeof(a), next);
 }
 
-char *list_peek_string(List list) { return *(char **)list_peek(list); }
+char *list_peek_record(List list) { return *(void **)list_peek(list); }

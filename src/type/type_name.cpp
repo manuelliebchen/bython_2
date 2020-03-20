@@ -37,7 +37,7 @@ const TypeName_ptr TypeName::String =
     std::make_shared<const TypeName>("String");
 
 const std::vector<TypeName_ptr> TypeName::native = {
-    TypeName::Bool, TypeName::Int, TypeName::Float, TypeName::String};
+    TypeName::Bool, TypeName::Int, TypeName::Float};
 
 TypeName::TypeName(const std::shared_ptr<peg::Ast> &ast) {
   name = std::to_string(ast->nodes[0]);

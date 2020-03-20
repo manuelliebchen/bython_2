@@ -1,64 +1,59 @@
-extern func list_push_int = Int, List[Int] -> List[Int]
+extern func rand = -> Int
 extern func puts = String -> Void
+extern func printf = String, Int -> Void
+extern func list_has_next = List[Int] -> Bool
+extern func is_null = List[Int] -> Bool
 
 func main = args: List[String] -> Int {
-    let list = build_list(20);
+    let list = build_list(20, 128);
     let list4 = printlist(list);
     let sorted = quickSort(list4);
     printlist(sorted);
     0
 }
 
-extern func rand = -> Int
-
-func build_list = n: Int -> List[Int] {
+func build_list = n: Int, max: Int -> List[Int] {
     if n == 0 { 
-        list_push_int(rand(), Null)
+        rand() % max : Null
     } else {
-        rand() : build_list(n-1)
+        rand() % max : build_list(n-1, max)
     }
 }
 
-extern func list_has_next = List[Int] -> Bool
-extern func is_null = List[Int] -> Bool
 
 func quickSort = list: List[Int] -> List[Int] {
     if !list_has_next(list) {
-        list
+        list : Null
     }
     else {
-        let pivot : tail = list;
+	    let pivot : tail = list;
         sortedHelper(tail, Null, Null, pivot)
     }
 }
 
-extern func list_concatenate = List[Int], List[Int] -> List[Int]
 
 func sortedHelper = list: List[Int], lower: List[Int], heigher: List[Int], pivot: Int -> List[Int] {
     if is_null(list) {
-        list_concatenate(quickSort(lower), list_push_int( pivot,quickSort( heigher)))
+        quickSort(lower) : (pivot : quickSort( heigher))
     }
     else {
         let value : tail = list;
         if value >= pivot {
-            sortedHelper(tail, lower, list_push_int(value, heigher), pivot)
+            sortedHelper(tail, lower, (value : heigher), pivot)
         } else {
-            sortedHelper(tail, list_push_int(value, lower), heigher, pivot)
+            sortedHelper(tail, (value : lower), heigher, pivot)
         }
     }
 }
 
-extern func printf = String, Int -> Void
-extern func puts = String -> Void
 
 func printlist = list: List[Int] -> List[Int] {
     if is_null(list) {
         puts(";");
         list
     } else {
-        let b = list_has_next(list);
         let head :tail = list;
         printf("%d, ", head);
-        list_push_int(head, printlist(tail))
+        head : printlist(tail)
     }
 }

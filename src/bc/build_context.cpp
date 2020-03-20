@@ -259,48 +259,55 @@ void BuildContext::build_buildin() {
                  return bc->builder.CreateOr(parameters[0], parameters[1]);
                });
   for (auto &type : type::TypeName::native) {
-    std::string type_name = type->name;
+    build_all_list_operator(type);
+  }
+  build_all_list_operator(type::TypeName::String);
+}
+
+void BuildContext::build_all_list_operator(type::TypeName_ptr type) {
+  std::string type_name = "record";
+  if (type->is_native()) {
+    type_name = type->name;
     std::transform(type_name.begin(), type_name.end(), type_name.begin(),
                    ::tolower);
-    auto list_type = type::TypeName::make({"List", {type}});
-
-    push_back_call("list_peek_" + type_name,
-                   type::FunctionType{type, list_type});
-    push_back_call("list_push_" + type_name,
-                   type::FunctionType{list_type, type, list_type});
-    push_back_call("list_push_" + type_name,
-                   type::FunctionType{list_type, type, type::TypeName::Null});
-    push_back_call("list_concatenate",
-                   type::FunctionType{list_type, list_type, list_type});
-    push_back_call(
-        "list_concatenate",
-        type::FunctionType{list_type, list_type, type::TypeName::Null});
-
-    push_back_call("list_pop", type::FunctionType{list_type, list_type});
-    emplace_back(
-        ":", type::FunctionType{list_type, type, list_type},
-        [=](BuildContext_ptr &bc,
-            std::vector<llvm::Value *> parameters) -> llvm::Value * {
-          return bc->find("list_push_" + type_name).build_ir(bc, parameters);
-        });
-    emplace_back(
-        ":", type::FunctionType{list_type, type, type::TypeName::Null},
-        [=](BuildContext_ptr &bc,
-            std::vector<llvm::Value *> parameters) -> llvm::Value * {
-          return bc->find("list_push_" + type_name).build_ir(bc, parameters);
-        });
-    emplace_back(":", type::FunctionType{list_type, list_type, list_type},
-                 [=](BuildContext_ptr &bc,
-                     std::vector<llvm::Value *> parameters) -> llvm::Value * {
-                   return bc->find("list_concatenate").build_ir(bc, parameters);
-                 });
-    emplace_back(":",
-                 type::FunctionType{list_type, list_type, type::TypeName::Null},
-                 [=](BuildContext_ptr &bc,
-                     std::vector<llvm::Value *> parameters) -> llvm::Value * {
-                   return bc->find("list_concatenate").build_ir(bc, parameters);
-                 });
   }
+
+  auto list_type = type::TypeName::make({"List", {type}});
+
+  push_back_call("list_peek_" + type_name, type::FunctionType{type, list_type});
+  push_back_call("list_push_" + type_name,
+                 type::FunctionType{list_type, type, list_type});
+  push_back_call("list_push_" + type_name,
+                 type::FunctionType{list_type, type, type::TypeName::Null});
+  push_back_call("list_concatenate",
+                 type::FunctionType{list_type, list_type, list_type});
+  push_back_call("list_concatenate", type::FunctionType{list_type, list_type,
+                                                        type::TypeName::Null});
+
+  push_back_call("list_pop", type::FunctionType{list_type, list_type});
+  emplace_back(
+      ":", type::FunctionType{list_type, type, list_type},
+      [=](BuildContext_ptr &bc,
+          std::vector<llvm::Value *> parameters) -> llvm::Value * {
+        return bc->find("list_push_" + type_name).build_ir(bc, parameters);
+      });
+  emplace_back(
+      ":", type::FunctionType{list_type, type, type::TypeName::Null},
+      [=](BuildContext_ptr &bc,
+          std::vector<llvm::Value *> parameters) -> llvm::Value * {
+        return bc->find("list_push_" + type_name).build_ir(bc, parameters);
+      });
+  emplace_back(":", type::FunctionType{list_type, list_type, list_type},
+               [=](BuildContext_ptr &bc,
+                   std::vector<llvm::Value *> parameters) -> llvm::Value * {
+                 return bc->find("list_concatenate").build_ir(bc, parameters);
+               });
+  emplace_back(":",
+               type::FunctionType{list_type, list_type, type::TypeName::Null},
+               [=](BuildContext_ptr &bc,
+                   std::vector<llvm::Value *> parameters) -> llvm::Value * {
+                 return bc->find("list_concatenate").build_ir(bc, parameters);
+               });
 }
 
 } // namespace by::bc

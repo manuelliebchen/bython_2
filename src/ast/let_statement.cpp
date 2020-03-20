@@ -68,9 +68,13 @@ auto ASTLetStatement::build_ir(std::unique_ptr<bc::BuildContext> &bc) const
   llvm::AllocaInst *variable_value = bc->builder.CreateAlloca(
       type->get_llvm_type(bc->context), nullptr, llvm::Twine(var));
   if (tail != "") {
-    std::string type_name = type->name;
-    std::transform(type_name.begin(), type_name.end(), type_name.begin(),
-                   ::tolower);
+    std::string type_name = "record";
+    if (type->is_native()) {
+      type_name = type->name;
+      std::transform(type_name.begin(), type_name.end(), type_name.begin(),
+                     ::tolower);
+    }
+
     llvm::Value *head_ir =
         bc->find("list_peek_" + type_name).build_ir(bc, {rhs_llvm});
 

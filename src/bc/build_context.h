@@ -48,6 +48,7 @@ public:
 
 private:
   void build_buildin();
+  void build_all_list_operator(type::TypeName_ptr);
 };
 
 using BuildContext_ptr = std::unique_ptr<BuildContext>;
