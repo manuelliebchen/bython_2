@@ -262,6 +262,9 @@ void BuildContext::build_buildin() {
     build_all_list_operator(type);
   }
   build_all_list_operator(type::TypeName::String);
+
+  push_back_call("b_init", type::FunctionType{type::TypeName::Void});
+  push_back_call("b_deinit", type::FunctionType{type::TypeName::Void});
 }
 
 void BuildContext::build_all_list_operator(type::TypeName_ptr type) {

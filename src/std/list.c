@@ -6,9 +6,59 @@
 #include <stdlib.h>
 #include <string.h>
 
-struct node {
+#define growth_factor 1.5f
+
+struct data {
   void *data;
+  size_t refs;
+};
+
+size_t count = 0;
+size_t capacity = 16;
+
+struct data *data;
+
+void *b_malloc(size_t bytes) {
+  if (count + 1 > capacity) {
+    capacity *= growth_factor;
+    data = realloc(data, capacity * sizeof(struct data));
+  }
+  void *memory = malloc(bytes);
+  data[count].refs = 1;
+  data[count].data = memory;
+  count++;
+  return memory;
+}
+
+void b_free(void *memory) {
+  for (size_t i = 0; i < count; ++i) {
+    if (memory == data[i].data) {
+      data[i].refs--;
+      if (data[i].refs == 0) {
+        free(data[i].data);
+        data[i].data = NULL;
+      }
+      return;
+    }
+  }
+}
+
+void b_init() { data = malloc(capacity * sizeof(struct data)); }
+
+void b_deinit() {
+  for (size_t i = 0; i < count; ++i) {
+    if (data[i].refs > 0) {
+      free(data[i].data);
+      data[i].refs = 0;
+      data[i].data = NULL;
+    }
+  }
+  free(data);
+}
+
+struct node {
   struct node *next;
+  void *data;
 };
 
 typedef struct node *List;
@@ -22,17 +72,13 @@ bool list_has_next(List list) {
   return list->next != NULL;
 }
 
-List list_push(void *data, List next) {
-  List new = (List)malloc(sizeof(struct node));
-  new->data = data;
+List list_push_alloc(void *data, size_t memory, List next) {
+  void *data_alloc = b_malloc(memory + sizeof(struct node));
+  memcpy(data_alloc + sizeof(struct node), data, memory);
+  List new = data_alloc;
+  new->data = data_alloc + sizeof(struct node);
   new->next = next;
   return new;
-}
-
-List list_push_alloc(void *data, size_t memory, List next) {
-  void *data_alloc = malloc(memory);
-  memcpy(data_alloc, data, memory);
-  return list_push(data_alloc, next);
 }
 
 void *list_peek(List list) {
@@ -48,9 +94,14 @@ List list_pop(List list) {
     return list;
   }
   List next = list->next;
-  free(list->data);
-  free(list);
+  b_free(list);
   return next;
+}
+
+void list_free(List list) {
+  while (list != NULL) {
+    list = list_pop(list);
+  }
 }
 
 List list_concatenate(List list, List list2) {

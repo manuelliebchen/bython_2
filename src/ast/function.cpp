@@ -109,6 +109,8 @@ auto ASTFunction::build_ir(std::unique_ptr<by::bc::BuildContext> &bc) const
   function->getBasicBlockList().push_back(entry_block);
   bc->builder.SetInsertPoint(entry_block);
   if (name == "main") {
+    bc->find("b_init").build_ir(bc, {});
+
     std::string arg_name = parameters[0]->get_name();
 
     llvm::AllocaInst *variable_value = bc->builder.CreateAlloca(
@@ -145,12 +147,15 @@ auto ASTFunction::build_ir(std::unique_ptr<by::bc::BuildContext> &bc) const
   }
 
   llvm::Value *return_value = blockexpression->build_ir(bc);
+
+  if (name == "main") {
+    bc->find("b_deinit").build_ir(bc, {});
+  }
   if (*type) {
     bc->builder.CreateRet(return_value);
   } else {
     bc->builder.CreateRetVoid();
   }
-
   return return_value;
 }
 
