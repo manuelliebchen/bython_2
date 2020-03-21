@@ -8,14 +8,16 @@
 #include "function_build.h"
 namespace by::bc {
 
-FunctionBuilder::FunctionBuilder(std::string name, type::FunctionType_ptr type,
+FunctionBuilder::FunctionBuilder(std::string name, int priority,
+                                 type::FunctionType_ptr type,
                                  build_functional functional)
-    : name(name), type(type), functional(functional) {}
+    : name(name), priority(priority), type(type), functional(functional) {}
 
-FunctionBuilder::FunctionBuilder(std::string name,
+FunctionBuilder::FunctionBuilder(std::string name, int priority,
                                  const type::FunctionType &type,
                                  build_functional functional)
-    : name(name), type(std::make_shared<const type::FunctionType>(type)),
+    : name(name), priority(priority),
+      type(std::make_shared<const type::FunctionType>(type)),
       functional(functional) {}
 
 auto FunctionBuilder::build_ir(std::unique_ptr<BuildContext> &bc,

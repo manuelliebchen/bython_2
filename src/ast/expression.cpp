@@ -24,6 +24,7 @@
 #include "none_arithmetic_expression.h"
 #include "peglib.h"
 
+#include "expression_chain.h"
 #include "variable_expression.h"
 
 namespace by::ast {
@@ -62,13 +63,6 @@ auto operator<<(std::ostream &os, const by::ast::ASTExpression &exp)
 auto ASTExpression::create_expression(const std::shared_ptr<peg::Ast> &ast,
                                       ASTBlockExpression *parent)
     -> std::shared_ptr<by::ast::ASTExpression> {
-  const std::unordered_set<std::string> first_class_operator = {"*", "/", "%",
-                                                                "&&"};
-  const std::unordered_set<std::string> second_class_operator = {"+", "-",
-                                                                 "||"};
-  const std::unordered_set<std::string> third_class_operator = {
-      "!=", "==", ">=", "<=", ">", "<", ":"};
-
   if (ast->nodes.size() == 1) {
     return std::make_shared<by::ast::ASTNoneArithmeticExpression>(ast->nodes[0],
                                                                   parent);
@@ -78,64 +72,20 @@ auto ASTExpression::create_expression(const std::shared_ptr<peg::Ast> &ast,
   std::vector<std::string> operators;
   std::vector<std::shared_ptr<ASTExpression>> expressions;
 
-  operators.emplace_back(ast_ptr->nodes[1]->token);
-  expressions.emplace_back(
-      std::make_shared<by::ast::ASTNoneArithmeticExpression>(ast_ptr->nodes[0],
-                                                             parent));
-  ast_ptr = ast_ptr->nodes[2];
-
   while (ast_ptr->nodes.size() > 1) {
-    std::string bin_operator = ast_ptr->nodes[1]->token;
-    if (first_class_operator.find(operators.back()) !=
-        first_class_operator.end()) {
-      expressions.back() = std::make_shared<ASTArithmeticExpression>(
-          ast, parent, expressions.back(), operators.back(),
-          std::make_shared<by::ast::ASTNoneArithmeticExpression>(
-              ast_ptr->nodes[0], parent));
-      operators.back() = bin_operator;
-    } else {
-      operators.emplace_back(ast_ptr->nodes[1]->token);
-      expressions.emplace_back(
-          std::make_shared<by::ast::ASTNoneArithmeticExpression>(
-              ast_ptr->nodes[0], parent));
-    }
-    ast_ptr = ast_ptr->nodes[2];
-  }
-
-  if (first_class_operator.find(operators.back()) !=
-      first_class_operator.end()) {
-    expressions.back() = std::make_shared<ASTArithmeticExpression>(
-        ast, parent, expressions.back(), operators.back(),
-        std::make_shared<by::ast::ASTNoneArithmeticExpression>(
-            ast_ptr->nodes[0], parent));
-  } else {
     expressions.emplace_back(
         std::make_shared<by::ast::ASTNoneArithmeticExpression>(
             ast_ptr->nodes[0], parent));
+    operators.emplace_back(ast_ptr->nodes[1]->token);
+
+    ast_ptr = ast_ptr->nodes[2];
   }
 
-  for (size_t i = 0; i < operators.size(); ++i) {
-    if (second_class_operator.find(operators[i]) !=
-        second_class_operator.end()) {
-      expressions[i] = std::make_shared<ASTArithmeticExpression>(
-          ast, parent, expressions[i], operators[i], expressions[i + 1]);
-      operators.erase(operators.begin() + i);
-      expressions.erase(expressions.begin() + i + 1);
-      i--;
-    }
-  }
+  expressions.emplace_back(
+      std::make_shared<by::ast::ASTNoneArithmeticExpression>(ast_ptr->nodes[0],
+                                                             parent));
 
-  for (size_t i = 0; i < operators.size(); ++i) {
-    if (third_class_operator.find(operators[i]) != third_class_operator.end()) {
-      expressions[i] = std::make_shared<ASTArithmeticExpression>(
-          ast, parent, expressions[i], operators[i], expressions[i + 1]);
-      operators.erase(operators.begin() + i);
-      expressions.erase(expressions.begin() + i + 1);
-      i--;
-    }
-  }
-
-  return expressions.back();
+  return std::make_shared<ExpressionChain>(ast, parent, expressions, operators);
 }
 
 } // namespace by::ast

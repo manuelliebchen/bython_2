@@ -65,7 +65,7 @@ void BuildContext::push_back_call(std::string name,
   llvm::FunctionCallee function_callee = module.getOrInsertFunction(
       name, llvm::FunctionType::get(type->return_type->get_llvm_type(context),
                                     llvm_parameters, false));
-  emplace_back(name, type,
+  emplace_back(name, 5, type,
                [=](BuildContext_ptr &bc,
                    std::vector<llvm::Value *> parameters) -> llvm::Value * {
                  return bc->builder.CreateCall(function_callee, parameters);
@@ -80,7 +80,7 @@ void BuildContext::push_back_call(std::string name,
 void BuildContext::push_back_load(std::string name, type::TypeName_ptr type) {
 
   emplace_back(
-      name, type,
+      name, -1, type,
       [=](BuildContext_ptr &bc,
           std::vector<llvm::Value *> parameters) -> llvm::Value * {
         return bc->builder.CreateLoad(
@@ -91,167 +91,167 @@ void BuildContext::push_back_load(std::string name, type::TypeName_ptr type) {
 
 void BuildContext::build_buildin() {
   emplace_back(
-      "", type::FunctionType{type::TypeName::Float, type::TypeName::Int},
+      "", 0, type::FunctionType{type::TypeName::Float, type::TypeName::Int},
       [&](BuildContext_ptr &bc,
           std::vector<llvm::Value *> parameters) -> llvm::Value * {
         return bc->builder.CreateSIToFP(
             parameters[0], type::TypeName::Float->get_llvm_type(bc->context));
       });
-  emplace_back("==",
+  emplace_back("==", 3,
                type::FunctionType{type::TypeName::Bool, type::TypeName::Int,
                                   type::TypeName::Int},
                [&](BuildContext_ptr &bc,
                    std::vector<llvm::Value *> parameters) -> llvm::Value * {
                  return bc->builder.CreateICmpEQ(parameters[0], parameters[1]);
                });
-  emplace_back("==",
+  emplace_back("==", 3,
                type::FunctionType{type::TypeName::Bool, type::TypeName::Float,
                                   type::TypeName::Float},
                [&](BuildContext_ptr &bc,
                    std::vector<llvm::Value *> parameters) -> llvm::Value * {
                  return bc->builder.CreateFCmpOEQ(parameters[0], parameters[1]);
                });
-  emplace_back("!=",
+  emplace_back("!=", 3,
                type::FunctionType{type::TypeName::Bool, type::TypeName::Int,
                                   type::TypeName::Int},
                [&](BuildContext_ptr &bc,
                    std::vector<llvm::Value *> parameters) -> llvm::Value * {
                  return bc->builder.CreateICmpNE(parameters[0], parameters[1]);
                });
-  emplace_back("!=",
+  emplace_back("!=", 3,
                type::FunctionType{type::TypeName::Bool, type::TypeName::Float,
                                   type::TypeName::Float},
                [&](BuildContext_ptr &bc,
                    std::vector<llvm::Value *> parameters) -> llvm::Value * {
                  return bc->builder.CreateFCmpONE(parameters[0], parameters[1]);
                });
-  emplace_back(">",
+  emplace_back(">", 3,
                type::FunctionType{type::TypeName::Bool, type::TypeName::Int,
                                   type::TypeName::Int},
                [&](BuildContext_ptr &bc,
                    std::vector<llvm::Value *> parameters) -> llvm::Value * {
                  return bc->builder.CreateICmpSGT(parameters[0], parameters[1]);
                });
-  emplace_back(">",
+  emplace_back(">", 3,
                type::FunctionType{type::TypeName::Bool, type::TypeName::Float,
                                   type::TypeName::Float},
                [&](BuildContext_ptr &bc,
                    std::vector<llvm::Value *> parameters) -> llvm::Value * {
                  return bc->builder.CreateFCmpOGT(parameters[0], parameters[1]);
                });
-  emplace_back(">=",
+  emplace_back(">=", 3,
                type::FunctionType{type::TypeName::Bool, type::TypeName::Int,
                                   type::TypeName::Int},
                [&](BuildContext_ptr &bc,
                    std::vector<llvm::Value *> parameters) -> llvm::Value * {
                  return bc->builder.CreateICmpSGE(parameters[0], parameters[1]);
                });
-  emplace_back(">=",
+  emplace_back(">=", 3,
                type::FunctionType{type::TypeName::Bool, type::TypeName::Float,
                                   type::TypeName::Float},
                [&](BuildContext_ptr &bc,
                    std::vector<llvm::Value *> parameters) -> llvm::Value * {
                  return bc->builder.CreateFCmpOGE(parameters[0], parameters[1]);
                });
-  emplace_back("<",
+  emplace_back("<", 3,
                type::FunctionType{type::TypeName::Bool, type::TypeName::Int,
                                   type::TypeName::Int},
                [&](BuildContext_ptr &bc,
                    std::vector<llvm::Value *> parameters) -> llvm::Value * {
                  return bc->builder.CreateICmpSLT(parameters[0], parameters[1]);
                });
-  emplace_back("<",
+  emplace_back("<", 3,
                type::FunctionType{type::TypeName::Bool, type::TypeName::Float,
                                   type::TypeName::Float},
                [&](BuildContext_ptr &bc,
                    std::vector<llvm::Value *> parameters) -> llvm::Value * {
                  return bc->builder.CreateFCmpOLT(parameters[0], parameters[1]);
                });
-  emplace_back("<=",
+  emplace_back("<=", 3,
                type::FunctionType{type::TypeName::Bool, type::TypeName::Int,
                                   type::TypeName::Int},
                [&](BuildContext_ptr &bc,
                    std::vector<llvm::Value *> parameters) -> llvm::Value * {
                  return bc->builder.CreateICmpSLE(parameters[0], parameters[1]);
                });
-  emplace_back("<=",
+  emplace_back("<=", 3,
                type::FunctionType{type::TypeName::Bool, type::TypeName::Float,
                                   type::TypeName::Float},
                [&](BuildContext_ptr &bc,
                    std::vector<llvm::Value *> parameters) -> llvm::Value * {
                  return bc->builder.CreateFCmpOLE(parameters[0], parameters[1]);
                });
-  emplace_back("+",
+  emplace_back("+", 2,
                type::FunctionType{type::TypeName::Int, type::TypeName::Int,
                                   type::TypeName::Int},
                [&](BuildContext_ptr &bc,
                    std::vector<llvm::Value *> parameters) -> llvm::Value * {
                  return bc->builder.CreateAdd(parameters[0], parameters[1]);
                });
-  emplace_back("+",
+  emplace_back("+", 2,
                type::FunctionType{type::TypeName::Float, type::TypeName::Float,
                                   type::TypeName::Float},
                [&](BuildContext_ptr &bc,
                    std::vector<llvm::Value *> parameters) -> llvm::Value * {
                  return bc->builder.CreateFAdd(parameters[0], parameters[1]);
                });
-  emplace_back("-",
+  emplace_back("-", 2,
                type::FunctionType{type::TypeName::Int, type::TypeName::Int,
                                   type::TypeName::Int},
                [&](BuildContext_ptr &bc,
                    std::vector<llvm::Value *> parameters) -> llvm::Value * {
                  return bc->builder.CreateSub(parameters[0], parameters[1]);
                });
-  emplace_back("-",
+  emplace_back("-", 2,
                type::FunctionType{type::TypeName::Float, type::TypeName::Float,
                                   type::TypeName::Float},
                [&](BuildContext_ptr &bc,
                    std::vector<llvm::Value *> parameters) -> llvm::Value * {
                  return bc->builder.CreateFSub(parameters[0], parameters[1]);
                });
-  emplace_back("*",
+  emplace_back("*", 1,
                type::FunctionType{type::TypeName::Int, type::TypeName::Int,
                                   type::TypeName::Int},
                [&](BuildContext_ptr &bc,
                    std::vector<llvm::Value *> parameters) -> llvm::Value * {
                  return bc->builder.CreateMul(parameters[0], parameters[1]);
                });
-  emplace_back("*",
+  emplace_back("*", 1,
                type::FunctionType{type::TypeName::Float, type::TypeName::Float,
                                   type::TypeName::Float},
                [&](BuildContext_ptr &bc,
                    std::vector<llvm::Value *> parameters) -> llvm::Value * {
                  return bc->builder.CreateFMul(parameters[0], parameters[1]);
                });
-  emplace_back("/",
+  emplace_back("/", 1,
                type::FunctionType{type::TypeName::Int, type::TypeName::Int,
                                   type::TypeName::Int},
                [&](BuildContext_ptr &bc,
                    std::vector<llvm::Value *> parameters) -> llvm::Value * {
                  return bc->builder.CreateSDiv(parameters[0], parameters[1]);
                });
-  emplace_back("/",
+  emplace_back("/", 1,
                type::FunctionType{type::TypeName::Float, type::TypeName::Float,
                                   type::TypeName::Float},
                [&](BuildContext_ptr &bc,
                    std::vector<llvm::Value *> parameters) -> llvm::Value * {
                  return bc->builder.CreateFDiv(parameters[0], parameters[1]);
                });
-  emplace_back("%",
+  emplace_back("%", 1,
                type::FunctionType{type::TypeName::Int, type::TypeName::Int,
                                   type::TypeName::Int},
                [&](BuildContext_ptr &bc,
                    std::vector<llvm::Value *> parameters) -> llvm::Value * {
                  return bc->builder.CreateSRem(parameters[0], parameters[1]);
                });
-  emplace_back("&&",
+  emplace_back("&&", 1,
                type::FunctionType{type::TypeName::Bool, type::TypeName::Bool,
                                   type::TypeName::Bool},
                [&](BuildContext_ptr &bc,
                    std::vector<llvm::Value *> parameters) -> llvm::Value * {
                  return bc->builder.CreateAnd(parameters[0], parameters[1]);
                });
-  emplace_back("||",
+  emplace_back("||", 2,
                type::FunctionType{type::TypeName::Bool, type::TypeName::Bool,
                                   type::TypeName::Bool},
                [&](BuildContext_ptr &bc,
@@ -289,23 +289,23 @@ void BuildContext::build_all_list_operator(type::TypeName_ptr type) {
 
   push_back_call("list_pop", type::FunctionType{list_type, list_type});
   emplace_back(
-      ":", type::FunctionType{list_type, type, list_type},
+      ":", 4, type::FunctionType{list_type, type, list_type},
       [=](BuildContext_ptr &bc,
           std::vector<llvm::Value *> parameters) -> llvm::Value * {
         return bc->find("list_push_" + type_name).build_ir(bc, parameters);
       });
   emplace_back(
-      ":", type::FunctionType{list_type, type, type::TypeName::Null},
+      ":", 4, type::FunctionType{list_type, type, type::TypeName::Null},
       [=](BuildContext_ptr &bc,
           std::vector<llvm::Value *> parameters) -> llvm::Value * {
         return bc->find("list_push_" + type_name).build_ir(bc, parameters);
       });
-  emplace_back(":", type::FunctionType{list_type, list_type, list_type},
+  emplace_back(":", 4, type::FunctionType{list_type, list_type, list_type},
                [=](BuildContext_ptr &bc,
                    std::vector<llvm::Value *> parameters) -> llvm::Value * {
                  return bc->find("list_concatenate").build_ir(bc, parameters);
                });
-  emplace_back(":",
+  emplace_back(":", 4,
                type::FunctionType{list_type, list_type, type::TypeName::Null},
                [=](BuildContext_ptr &bc,
                    std::vector<llvm::Value *> parameters) -> llvm::Value * {

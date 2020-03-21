@@ -24,14 +24,16 @@ using build_functional =std::function<llvm::Value*( std::unique_ptr<BuildContext
 class FunctionBuilder {
 protected:
 	std::string name;
+	int priority;
 	type::FunctionType_ptr type;
 	build_functional functional;
 
 public:
-	FunctionBuilder(std::string, type::FunctionType_ptr, build_functional);
-	FunctionBuilder(std::string, const type::FunctionType&, build_functional);
+	FunctionBuilder(std::string, int, type::FunctionType_ptr, build_functional);
+	FunctionBuilder(std::string, int, const type::FunctionType&, build_functional);
 
 	std::string get_name() const {return name;};
+	int get_priority() const { return priority;};
 	type::FunctionType_ptr get_type() const {
 		  return type;};
 
