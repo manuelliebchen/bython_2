@@ -8,8 +8,8 @@ Function <- 'func' %ows Identifier ('=' %ows CommaSeparatedList(VariableDeclarat
 VariableDeclaration <- Identifier ':' %ows TypeName
 
 # Function insides
-Expression <- NoneArithmeticExpression (BinaryOperator Expression)?
-NoneArithmeticExpression <- UnaryOperator?  ( '(' %ows Expression ')' %ows / BlockExpression / CallExpression / LetStatement / IfExpression / BooleanConstant / VariableExpression / FloatConstant / IntegerConstant / StringConstant)
+Expression <- NoneArithmeticExpression (Operator Expression)?
+NoneArithmeticExpression <- Operator?  ( '(' %ows Expression ')' %ows / BlockExpression / CallExpression / LetStatement / IfExpression / BooleanConstant / VariableExpression / FloatConstant / IntegerConstant / StringConstant)
 BlockExpression <- '{' %ows (Expression ';' %ows)* EndExpression? '}' %ows
 EndExpression <- Expression
 LetStatement <- 'let' %ows Identifier (':' %ows Identifier)? '=' %ows Expression
@@ -30,8 +30,7 @@ BooleanConstant <- < ( 'false' / 'true' ) > %ows
 StringConstant <- (('"' < (!'"' .)*  > '"') / ("'" < (!"'" .)*  > "'")) %ows
 
 # Operators
-UnaryOperator <- < ('-' / '!') > %ows
-BinaryOperator <- < ( '/' / '*' / '%' / '+' / '-' / '&&' / '||' / '!=' / '==' / '!=' / '>=' / '<=' / '>' / '<' / ':' ) > %ows
+Operator <- < [-!#-&*+/<-@\\^|~`:]+> %ows
 
 ~%ows <- [ \t\n\r]* Comment?
 ~Comment <- '//' (!"\n" .)* "\n" %ows

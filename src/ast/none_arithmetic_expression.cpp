@@ -36,7 +36,7 @@ ASTNoneArithmeticExpression::ASTNoneArithmeticExpression(
     : ASTExpression(ast, parent) {
 
   size_t expression_node = 0;
-  if (ast->nodes[0]->original_name == "UnaryOperator") {
+  if (ast->nodes[0]->original_name == "Operator") {
     UnaryOperator = ast->nodes[0]->token;
     expression_node++;
   } else {
