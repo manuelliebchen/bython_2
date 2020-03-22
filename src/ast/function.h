@@ -67,8 +67,7 @@ public:
   type::TypeName_ptr determine_type(std::unique_ptr<bc::BuildContext> &);
 
   std::string get_name() const;
-  void get_dependencies(std::unordered_set<std::string> &,
-                        std::unordered_set<std::string> &) const;
+
   void insertFunction(std::unique_ptr<by::bc::BuildContext> &) const;
   llvm::Value *build_ir(std::unique_ptr<by::bc::BuildContext> &) const;
 

@@ -30,9 +30,6 @@ protected:
 public:
   by::type::TypeName_ptr determine_type(std::unique_ptr<bc::BuildContext> &);
 
-  void get_dependencies(std::unordered_set<std::string> &functions,
-                        std::unordered_set<std::string> &types) const;
-
   friend std::ostream &operator<<(std::ostream &, const ASTConstant &);
 };
 

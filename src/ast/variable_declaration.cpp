@@ -33,12 +33,6 @@ ASTVariableDeclaration::ASTVariableDeclaration(
   }
 }
 
-void ASTVariableDeclaration::get_dependencies(
-    std::unordered_set<std::string> &functions,
-    std::unordered_set<std::string> &types) const {
-  types.insert(std::to_string(*type));
-}
-
 auto ASTVariableDeclaration::determine_type(
     std::unique_ptr<bc::BuildContext> &bc) -> by::type::TypeName_ptr {
   return type;

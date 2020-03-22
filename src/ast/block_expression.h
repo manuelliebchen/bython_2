@@ -50,9 +50,6 @@ public:
 
   llvm::Value *build_ir(std::unique_ptr<bc::BuildContext> &) const;
 
-  void get_dependencies(std::unordered_set<std::string> &functions,
-                        std::unordered_set<std::string> &types) const;
-
   by::type::TypeName_ptr find_variable_type(const std::string &) const;
 
   /**

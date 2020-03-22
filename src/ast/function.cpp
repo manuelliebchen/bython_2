@@ -71,18 +71,6 @@ auto ASTFunction::determine_type(std::unique_ptr<bc::BuildContext> &bc)
   return type;
 }
 
-void ASTFunction::get_dependencies(
-    std::unordered_set<std::string> &functions,
-    std::unordered_set<std::string> &types) const {
-  for (const auto &parameter : parameters) {
-    parameter->get_dependencies(functions, types);
-  }
-  if (*type) {
-    types.insert(std::to_string(*type));
-  }
-  blockexpression->get_dependencies(functions, types);
-}
-
 auto ASTFunction::get_name() const -> std::string { return name; }
 
 void ASTFunction::insertFunction(

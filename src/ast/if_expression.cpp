@@ -113,16 +113,6 @@ auto ASTIfExpression::build_ir(std::unique_ptr<bc::BuildContext> &bc) const
   bc->builder.SetInsertPoint(merge_block);
 
   return phi_node;
-} // namespace by::ast
-
-void ASTIfExpression::get_dependencies(
-    std::unordered_set<std::string> &functions,
-    std::unordered_set<std::string> &types) const {
-  condition->get_dependencies(functions, types);
-  block->get_dependencies(functions, types);
-  if (alternativ != nullptr) {
-    alternativ->get_dependencies(functions, types);
-  }
 }
 
 } /* namespace by::ast */

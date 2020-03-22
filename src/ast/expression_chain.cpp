@@ -66,13 +66,5 @@ auto ExpressionChain::build_ir(std::unique_ptr<bc::BuildContext> &bc) const
     -> llvm::Value * {
   return expressions.back()->build_ir(bc);
 }
-
-void ExpressionChain::get_dependencies(
-    std::unordered_set<std::string> &functions,
-    std::unordered_set<std::string> &types) const {
-  for (auto exp : expressions) {
-    exp->get_dependencies(functions, types);
-  }
-}
 } /* namespace by::ast */
 // namespace std

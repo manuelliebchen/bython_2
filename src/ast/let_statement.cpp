@@ -93,10 +93,4 @@ auto ASTLetStatement::build_ir(std::unique_ptr<bc::BuildContext> &bc) const
   return variable_value;
 }
 
-void ASTLetStatement::get_dependencies(
-    std::unordered_set<std::string> &functions,
-    std::unordered_set<std::string> &types) const {
-  value->get_dependencies(functions, types);
-}
-
 } /* namespace by::ast */

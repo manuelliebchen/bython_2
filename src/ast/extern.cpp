@@ -30,13 +30,6 @@ ASTExtern::ASTExtern(const std::shared_ptr<peg::Ast> &ast)
   type = function_type->return_type;
 }
 
-void ASTExtern::get_dependencies(std::unordered_set<std::string> &functions,
-                                 std::unordered_set<std::string> &types) const {
-  if (*type) {
-    types.insert(std::to_string(*type));
-  }
-}
-
 auto ASTExtern::get_name() const -> std::string { return name; }
 
 auto ASTExtern::determine_type(std::unique_ptr<bc::BuildContext> &bc)

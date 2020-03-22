@@ -96,10 +96,4 @@ auto ASTNoneArithmeticExpression::build_ir(
   throw ast_error(ast, "Unimplemented Unary Operator: " + UnaryOperator);
 }
 
-void ASTNoneArithmeticExpression::get_dependencies(
-    std::unordered_set<std::string> &functions,
-    std::unordered_set<std::string> &types) const {
-  rhs->get_dependencies(functions, types);
-}
-
 } /* namespace by::ast */

@@ -30,12 +30,6 @@ auto ASTConstant::determine_type(std::unique_ptr<bc::BuildContext> &bc)
   return type;
 }
 
-void ASTConstant::get_dependencies(
-    std::unordered_set<std::string> &functions,
-    std::unordered_set<std::string> &types) const {
-  types.insert(const_string);
-}
-
 auto operator<<(std::ostream &os, const ASTConstant &constant)
     -> std::ostream & {
   if (const auto *dyn = dynamic_cast<const ASTIntegerConstant *>(&constant)) {

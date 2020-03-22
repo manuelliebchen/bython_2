@@ -79,11 +79,6 @@ public:
    * expression.
    */
   virtual llvm::Value *build_ir(std::unique_ptr<bc::BuildContext> &) const = 0;
-  /**
-   * Saves dependencies to functions and types
-   */
-  virtual void get_dependencies(identifier_set &functions,
-                                identifier_set &types) const = 0;
 
   /**
    * returns peg::Ast pointer of this node

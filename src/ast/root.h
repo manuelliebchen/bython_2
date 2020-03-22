@@ -49,13 +49,6 @@ private:
    * Extern declarations
    */
   std::vector<std::shared_ptr<by::ast::ASTExtern>> externs;
-  /**
-   * Sorts functions by dependencies
-   */
-  void reorder_functions();
-
-  void get_dependencies(std::unordered_set<std::string> &functions,
-                        std::unordered_set<std::string> &types) const;
 
 public:
   ASTRoot(std::string, const std::shared_ptr<peg::Ast> &);

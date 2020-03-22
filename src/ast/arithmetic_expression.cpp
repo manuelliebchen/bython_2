@@ -62,11 +62,5 @@ auto ASTArithmeticExpression::build_ir(
       .build_ir(bc, {lhs_llvm, rhs_llvm});
 }
 
-void ASTArithmeticExpression::get_dependencies(
-    std::unordered_set<std::string> &functions,
-    std::unordered_set<std::string> &types) const {
-  rhs->get_dependencies(functions, types);
-  lhs->get_dependencies(functions, types);
-}
 } /* namespace by::ast */
 // namespace std

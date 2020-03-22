@@ -90,16 +90,6 @@ auto ASTBlockExpression::register_variable(const std::string &name,
   return false;
 }
 
-void ASTBlockExpression::get_dependencies(identifier_set &functions,
-                                          identifier_set &types) const {
-  for (const auto &exp : expressions) {
-    exp->get_dependencies(functions, types);
-  }
-  if (end_expression) {
-    end_expression->get_dependencies(functions, types);
-  }
-}
-
 auto ASTBlockExpression::build_ir(std::unique_ptr<bc::BuildContext> &bc) const
     -> llvm::Value * {
 

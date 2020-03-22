@@ -59,13 +59,4 @@ auto ASTCallExpression::build_ir(std::unique_ptr<bc::BuildContext> &bc) const
   return bc->find(name).build_ir(bc, llvm_args);
 }
 
-void ASTCallExpression::get_dependencies(
-    std::unordered_set<std::string> &functions,
-    std::unordered_set<std::string> &types) const {
-  functions.insert(name);
-  for (const auto &arg : arguments) {
-    arg->get_dependencies(functions, types);
-  }
-}
-
 } /* namespace by::ast */

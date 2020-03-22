@@ -45,9 +45,6 @@ public:
   ASTVariableDeclaration(const std::shared_ptr<peg::Ast> &,
                          ASTBlockExpression *);
 
-  void get_dependencies(std::unordered_set<std::string> &functions,
-                        std::unordered_set<std::string> &types) const;
-
   llvm::Value *build_ir(std::unique_ptr<bc::BuildContext> &) const;
 
   const std::string &get_name() const;

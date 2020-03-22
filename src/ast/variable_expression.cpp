@@ -51,8 +51,4 @@ auto ASTVariableExpression::build_ir(
   }
 }
 
-void ASTVariableExpression::get_dependencies(
-    std::unordered_set<std::string> &functions,
-    std::unordered_set<std::string> &types) const {}
-
 } /* namespace by::ast */

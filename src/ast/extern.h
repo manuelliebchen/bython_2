@@ -56,9 +56,6 @@ public:
   std::string get_name() const;
   type::FunctionType_ptr get_function_type() const {return function_type;};
 
-  void get_dependencies(std::unordered_set<std::string> &functions,
-                        std::unordered_set<std::string> &types) const;
-
   llvm::Value *build_ir(std::unique_ptr<by::bc::BuildContext> &) const;
 
   friend std::ostream &operator<<(std::ostream &, const ASTExtern &);

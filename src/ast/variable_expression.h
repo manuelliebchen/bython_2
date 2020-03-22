@@ -47,9 +47,6 @@ public:
 
   llvm::Value *build_ir(std::unique_ptr<bc::BuildContext> &) const;
 
-  void get_dependencies(std::unordered_set<std::string> &functions,
-                        std::unordered_set<std::string> &types) const;
-
   std::string get_name() const {
     return name;
   }

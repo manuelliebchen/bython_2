@@ -68,9 +68,6 @@ public:
 
   llvm::Value *build_ir(std::unique_ptr<bc::BuildContext> &) const;
 
-  void get_dependencies(std::unordered_set<std::string> &functions,
-                        std::unordered_set<std::string> &types) const;
-
   friend std::ostream &operator<<(std::ostream &,
                                   const ASTArithmeticExpression &);
 };

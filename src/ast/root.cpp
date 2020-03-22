@@ -68,17 +68,6 @@ void ASTRoot::compile(std::ostream &out) {
   }
 }
 
-void ASTRoot::get_dependencies(std::unordered_set<std::string> &functions,
-                               std::unordered_set<std::string> &types) const {
-
-  //  for (const auto &func : this->externs) {
-  //    func->get_dependencies(functions, types);
-  //  }
-  for (const auto &func : this->functions) {
-    func->get_dependencies(functions, types);
-  }
-}
-
 auto operator<<(std::ostream &os, const ASTRoot &root) -> std::ostream & {
   for (auto &function : root.functions) {
     os << *function << std::endl;
