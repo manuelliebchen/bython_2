@@ -7,18 +7,15 @@
 
 #include "variable_expression.h"
 
-#include <algorithm>
-#include <llvm/IR/IRBuilder.h>
-#include <llvm/IR/Instructions.h>
-#include <stack>
-#include <stddef.h>
-#include <unordered_map>
-#include <utility>
+#include <llvm/IR/Constants.h>
+#include <llvm/IR/DerivedTypes.h>
 #include <vector>
 
 #include "../bc/build_context.h"
+#include "bc/function_build.h"
 #include "block_expression.h"
 #include "expression.h"
+#include "type/type_name.h"
 
 namespace by::ast {
 

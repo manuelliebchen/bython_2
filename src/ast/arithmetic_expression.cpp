@@ -7,17 +7,16 @@
 
 #include "arithmetic_expression.h"
 
-#include <algorithm>
 #include <llvm/IR/IRBuilder.h>
-#include <llvm/IR/Type.h>
 #include <llvm/IR/Value.h>
-#include <stack>
 #include <utility>
 
 #include "../bc/build_context.h"
 #include "../type/function_type.h"
+#include "bc/function_build.h"
 #include "expression.h"
 #include "peglib.h"
+#include "type/type_name.h"
 
 namespace by {
 namespace ast {

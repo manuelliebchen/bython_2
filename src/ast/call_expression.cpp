@@ -7,17 +7,15 @@
 
 #include "call_expression.h"
 
-#include <algorithm>
-#include <llvm/IR/DerivedTypes.h>
-#include <llvm/IR/IRBuilder.h>
-#include <llvm/IR/Instructions.h>
-#include <llvm/IR/Module.h>
-#include <stack>
 #include <stddef.h>
+#include <stdexcept>
 
 #include "../bc/build_context.h"
 #include "../type/function_type.h"
+#include "ast/ast_error.h"
+#include "bc/function_build.h"
 #include "expression.h"
+#include "type/type_name.h"
 
 namespace by {
 namespace ast {

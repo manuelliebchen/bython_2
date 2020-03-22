@@ -8,8 +8,8 @@
 #ifndef SRC_AST_ASTINTEGERCONSTANT_HPP_
 #define SRC_AST_ASTINTEGERCONSTANT_HPP_
 
-#include <iosfwd> // for ostream
 #include <llvm/IR/Value.h>
+#include <iosfwd> // for ostream
 #include <memory> // for shared_ptr, unique_ptr
 #include <string> // for operator<<, to_string
 

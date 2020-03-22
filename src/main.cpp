@@ -1,5 +1,4 @@
 
-#include "ast/root.h"
 #include <bits/exception.h>
 #include <cxxopts.hpp>
 #include <fstream>
@@ -11,6 +10,8 @@
 #include <stdlib.h>
 #include <string>
 #include <vector>
+
+#include "ast/root.h"
 
 auto read_file(const std::string &filepath) -> std::string {
   std::ifstream ifs;

@@ -12,14 +12,9 @@
 
 #include "../type/function_type.h"
 #include "../type/type_name.h"
+#include "bc/build_context.h"
 #include "expression.h"
 #include "peglib.h"
-
-namespace by {
-namespace bc {
-class BuildContext;
-} // namespace bc
-} // namespace by
 
 namespace by::ast {
 

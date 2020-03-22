@@ -8,12 +8,11 @@
 #include "root.h"
 
 #include <algorithm>
+#include <bits/exception.h>
 #include <iostream>
 #include <llvm/IR/Module.h>
 #include <llvm/Support/raw_os_ostream.h>
-#include <stdexcept>
-#include <unordered_map>
-#include <utility>
+#include <stdlib.h>
 
 #include "../bc/build_context.h"
 #include "extern.h"

@@ -6,18 +6,19 @@
  */
 #include "type_name.h"
 
-#include <algorithm>          // for max
-#include <cstddef>            // for size_t
+#include <cstddef>   // for size_t
+#include <ostream>   // for operator<<, ostream, size_t
+#include <stdexcept> // for runtime_error
+#include <string>    // for allocator, operator+, string, oper...
+#include <utility>   // for move
+
 #include <ext/alloc_traits.h> // for __alloc_traits<>::value_type
-#include <ostream>            // for operator<<, ostream, size_t
-#include <stdexcept>          // for runtime_error
-#include <string>             // for allocator, operator+, string, oper...
-#include <utility>            // for move
 
 #include <llvm/IR/DerivedTypes.h> // for PointerType, IntegerType
 #include <llvm/IR/Type.h>         // for Type
 
 #include "../ast/expression.h"
+#include "ast/ast_error.h"
 
 namespace llvm {
 class LLVMContext;
@@ -55,8 +56,8 @@ TypeName::TypeName(const std::shared_ptr<peg::Ast> &ast) {
 TypeName::TypeName(std::string name, std::vector<TypeName_ptr> subtypes)
     : name(std::move(name)), subtypes(std::move(subtypes)) {}
 
-TypeName::TypeName(std::string name) : name(std::move(name)), subtypes() {
-  if (this->name == "") {
+TypeName::TypeName(std::string name) : name(std::move(name)) {
+  if (this->name.empty()) {
     this->name = "None";
   }
 }
@@ -67,11 +68,11 @@ TypeName::TypeName(TypeName const &type) : name(type.name) {
   }
 }
 
-std::shared_ptr<const TypeName> TypeName::make(const TypeName &type) {
+auto TypeName::make(const TypeName &type) -> std::shared_ptr<const TypeName> {
   return std::make_shared<const TypeName>(type);
 }
 
-TypeName TypeName::operator=(TypeName type) {
+auto TypeName::operator=(const TypeName &type) -> TypeName & {
   name = type.name;
   for (const auto &subtype : type.subtypes) {
     subtypes.push_back(std::make_shared<const TypeName>(*subtype));
@@ -79,7 +80,7 @@ TypeName TypeName::operator=(TypeName type) {
   return *this;
 }
 
-auto TypeName::deduct_type(TypeName rhs_name) const -> TypeName {
+auto TypeName::deduct_type(const TypeName &rhs_name) const -> TypeName {
   if (*this == rhs_name) {
     return TypeName(*this);
   }
@@ -100,22 +101,26 @@ auto TypeName::deduct_type(TypeName rhs_name) const -> TypeName {
       std::to_string(rhs_name));
 }
 
-llvm::Type *TypeName::get_llvm_type(llvm::LLVMContext &context) const {
+auto TypeName::get_llvm_type(llvm::LLVMContext &context) const -> llvm::Type * {
   if (name == "Void") {
     return llvm::Type::getVoidTy(context);
-  } else if (name == "Bool") {
+  }
+  if (name == "Bool") {
     return llvm::Type::getInt1Ty(context);
-  } else if (name == "Int") {
+  }
+  if (name == "Int") {
     return llvm::Type::getInt32Ty(context);
-  } else if (name == "Float") {
+  }
+  if (name == "Float") {
     return llvm::Type::getFloatTy(context);
-  } else if (name == "None") {
+  }
+  if (name == "None") {
     throw std::runtime_error("Could not determin type!");
   }
   return llvm::Type::getInt8PtrTy(context);
 }
 
-bool TypeName::operator==(const TypeName &rhs) const {
+auto TypeName::operator==(const TypeName &rhs) const -> bool {
   if (name != rhs.name) {
     return false;
   }
@@ -131,7 +136,9 @@ bool TypeName::operator==(const TypeName &rhs) const {
   return true;
 }
 
-bool TypeName::operator!=(const TypeName &rhs) const { return !(*this == rhs); }
+auto TypeName::operator!=(const TypeName &rhs) const -> bool {
+  return !(*this == rhs);
+}
 
 TypeName::operator bool() const { return !(*this == *None || *this == *Void); }
 auto TypeName::is_void() const -> bool { return *this == *Void; }
@@ -144,7 +151,7 @@ auto TypeName::is_native() const -> bool {
   return false;
 }
 
-std::ostream &operator<<(std::ostream &os, const TypeName &type) {
+auto operator<<(std::ostream &os, const TypeName &type) -> std::ostream & {
   os << type.name;
   if (!type.subtypes.empty()) {
     os << "[";
@@ -157,8 +164,8 @@ std::ostream &operator<<(std::ostream &os, const TypeName &type) {
 }
 
 type_deduction_exeption::type_deduction_exeption(
-    const std::shared_ptr<peg::Ast> ast, TypeName_ptr expected,
-    TypeName_ptr got)
+    const std::shared_ptr<peg::Ast> &ast, const TypeName_ptr &expected,
+    const TypeName_ptr &got)
     : ast_error(
           ast, " error: type missmatch of types: " + std::to_string(*expected) +
                    " and " + std::to_string(*got)) {}
@@ -167,7 +174,7 @@ type_deduction_exeption::type_deduction_exeption(
 
 namespace std {
 
-std::string to_string(by::type::TypeName const &val) {
+auto to_string(by::type::TypeName const &val) -> std::string {
   std::string str = val.name;
   if (!val.subtypes.empty()) {
     str += "[";

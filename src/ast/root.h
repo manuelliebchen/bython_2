@@ -8,9 +8,9 @@
 #ifndef SRC_ASTROOT_HPP_
 #define SRC_ASTROOT_HPP_
 
+#include <peglib.h>
 #include <iosfwd>
 #include <memory>
-#include <peglib.h>
 #include <string>
 #include <unordered_set>
 #include <vector>

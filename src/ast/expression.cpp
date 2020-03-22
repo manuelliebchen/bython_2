@@ -9,9 +9,7 @@
 
 #include <algorithm>
 #include <ext/alloc_traits.h>
-#include <stddef.h>
 #include <string>
-#include <unordered_set>
 #include <vector>
 
 #include "../type/type_name.h"
@@ -19,12 +17,11 @@
 #include "block_expression.h"
 #include "call_expression.h"
 #include "constant.h"
+#include "expression_chain.h"
 #include "if_expression.h"
 #include "let_statement.h"
 #include "none_arithmetic_expression.h"
 #include "peglib.h"
-
-#include "expression_chain.h"
 #include "variable_expression.h"
 
 namespace by::ast {

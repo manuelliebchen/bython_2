@@ -7,12 +7,10 @@
 
 #include "none_arithmetic_expression.h"
 
-#include <algorithm>
 #include <ext/alloc_traits.h>
 #include <llvm/IR/IRBuilder.h>
 #include <llvm/IR/Type.h>
 #include <llvm/IR/Value.h>
-#include <stack>
 #include <stddef.h>
 #include <vector>
 
@@ -27,6 +25,7 @@
 #include "integer_constant.h"
 #include "let_statement.h"
 #include "string_constant.h"
+#include "type/type_name.h"
 #include "variable_expression.h"
 
 namespace by::ast {

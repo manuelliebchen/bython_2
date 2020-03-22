@@ -7,16 +7,14 @@
 
 #include "block_expression.h"
 
-#include <algorithm>
 #include <ext/alloc_traits.h>
-#include <stack>
-#include <stddef.h>
 #include <stdexcept>
 #include <unordered_map>
+#include <unordered_set>
 #include <utility>
 
-#include "../bc/build_context.h"
 #include "expression.h"
+#include "type/type_name.h"
 #include "variable_declaration.h"
 
 namespace by::ast {

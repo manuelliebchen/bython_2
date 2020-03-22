@@ -7,18 +7,18 @@
 
 #include "if_expression.h"
 
-#include <algorithm>
 #include <ext/alloc_traits.h>
 #include <llvm/IR/BasicBlock.h>
 #include <llvm/IR/Function.h>
 #include <llvm/IR/IRBuilder.h>
 #include <llvm/IR/Instructions.h>
-#include <stack>
+#include <string>
 #include <vector>
 
 #include "../bc/build_context.h"
 #include "block_expression.h"
 #include "expression.h"
+#include "type/type_name.h"
 
 namespace by::ast {
 

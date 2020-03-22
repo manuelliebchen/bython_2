@@ -8,17 +8,19 @@
 #ifndef SRC_AST_BUILDCONTEXT_HPP_
 #define SRC_AST_BUILDCONTEXT_HPP_
 
-#include "llvm/IR/Function.h"
-#include "llvm/IR/IRBuilder.h"
-#include "llvm/IR/LLVMContext.h"
-#include "llvm/IR/Module.h"
-#include "llvm/IR/ValueSymbolTable.h"
-
 #include <stack>
 #include <vector>
 #include <memory>
 #include <unordered_map>
 #include <unordered_set>
+#include <string>
+
+#include <llvm/IR/DataLayout.h>
+#include "llvm/IR/Function.h"
+#include "llvm/IR/IRBuilder.h"
+#include "llvm/IR/LLVMContext.h"
+#include "llvm/IR/Module.h"
+#include "llvm/IR/ValueSymbolTable.h"
 
 #include "../ast/expression.h"
 #include "../type/function_type.h"
@@ -32,23 +34,23 @@ class FunctionBuilder;
 class BuildContext : public std::vector<FunctionBuilder> {
 public:
   llvm::LLVMContext context;
-  llvm::IRBuilder<> builder;
+  llvm::IRBuilder<> builder{context};
   llvm::Module module;
   llvm::DataLayout data_layout;
 
-  BuildContext(std::string);
+  BuildContext(const std::string&);
 
-  const FunctionBuilder& find(std::string, const std::vector<type::TypeName_ptr>& ) const;
-  const FunctionBuilder& find(std::string) const;
+  const FunctionBuilder& find(const std::string&, const std::vector<type::TypeName_ptr>& ) const;
+  const FunctionBuilder& find(const std::string&) const;
 
-  void push_back_call(std::string, type::FunctionType_ptr);
-  void push_back_call(std::string, const type::FunctionType&);
-  void push_back_load(std::string, type::TypeName_ptr);
-  void remove(std::string);
+  void push_back_call(const std::string&, const type::FunctionType_ptr&);
+  void push_back_call(const std::string&, const type::FunctionType&);
+  void push_back_load(const std::string&, const type::TypeName_ptr&);
+  void remove(const std::string&);
 
 private:
   void build_buildin();
-  void build_all_list_operator(type::TypeName_ptr);
+  void build_all_list_operator(const type::TypeName_ptr&);
 };
 
 using BuildContext_ptr = std::unique_ptr<BuildContext>;

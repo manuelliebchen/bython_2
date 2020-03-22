@@ -6,23 +6,31 @@
  */
 
 #include "function_build.h"
+
+#include "type/function_type.h"
+
+namespace llvm {
+class Value;
+} // namespace llvm
+
 namespace by::bc {
 
 FunctionBuilder::FunctionBuilder(std::string name, int priority,
                                  type::FunctionType_ptr type,
                                  build_functional functional)
-    : name(name), priority(priority), type(type), functional(functional) {}
+    : name(std::move(name)), priority(priority), type(std::move(type)),
+      functional(std::move(functional)) {}
 
 FunctionBuilder::FunctionBuilder(std::string name, int priority,
                                  const type::FunctionType &type,
                                  build_functional functional)
-    : name(name), priority(priority),
+    : name(std::move(name)), priority(priority),
       type(std::make_shared<const type::FunctionType>(type)),
-      functional(functional) {}
+      functional(std::move(functional)) {}
 
 auto FunctionBuilder::build_ir(std::unique_ptr<BuildContext> &bc,
                                std::vector<llvm::Value *> parameter) const
     -> llvm::Value * {
-  return functional(bc, parameter);
+  return functional(bc, std::move(parameter));
 }
 } // namespace by::bc

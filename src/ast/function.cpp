@@ -14,25 +14,22 @@
 #include <llvm/ADT/iterator_range.h>
 #include <llvm/IR/Argument.h>
 #include <llvm/IR/BasicBlock.h>
+#include <llvm/IR/DerivedTypes.h>
 #include <llvm/IR/Function.h>
-#include <llvm/IR/GlobalValue.h>
 #include <llvm/IR/IRBuilder.h>
 #include <llvm/IR/Instructions.h>
-#include <stack>
+#include <llvm/IR/Module.h>
+#include <llvm/IR/Type.h>
 #include <stddef.h>
-#include <unordered_map>
 
 #include "../bc/build_context.h"
 #include "../type/function_type.h"
 #include "../type/type_name.h"
+#include "bc/function_build.h"
 #include "block_expression.h"
 #include "expression.h"
 #include "peglib.h"
 #include "variable_declaration.h"
-
-namespace llvm {
-class Type;
-} // namespace llvm
 
 namespace by::ast {
 

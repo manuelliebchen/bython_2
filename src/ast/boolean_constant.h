@@ -9,9 +9,9 @@
 #define SRC_AST_BOOLEAN_CONSTANT_H_
 
 #include <llvm/IR/Value.h>
+#include <peglib.h> // for Ast
 #include <memory>   // for shared_ptr, unique_ptr
 #include <ostream>  // for operator<<, ostream
-#include <peglib.h> // for Ast
 
 #include "constant.h" // for ASTConstant
 

@@ -9,14 +9,13 @@
 
 #include <llvm/IR/Constant.h>
 #include <llvm/IR/Constants.h>
-#include <llvm/IR/DerivedTypes.h>
 #include <llvm/IR/GlobalVariable.h>
 #include <llvm/IR/Module.h>
-#include <llvm/IR/Type.h>
 #include <llvm/Support/Casting.h>
 
 #include "../bc/build_context.h"
 #include "constant.h"
+#include "type/type_name.h"
 
 namespace by {
 namespace ast {

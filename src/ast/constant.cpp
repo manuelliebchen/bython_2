@@ -14,6 +14,14 @@
 #include "float_constant.h"   // for operator<<, ASTFloatConstant
 #include "integer_constant.h" // for operator<<, ASTIntegerConstant
 #include "string_constant.h"  // for operator<<, ASTStringConstant
+#include "type/type_name.h"
+
+namespace by {
+namespace bc {
+class BuildContext;
+} // namespace bc
+} // namespace by
+
 namespace by::ast {
 class ASTBlockExpression;
 }

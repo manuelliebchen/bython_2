@@ -38,7 +38,6 @@ struct TypeName {
 
   static std::shared_ptr<const TypeName> make(const TypeName&);
 
-
   static const std::shared_ptr<const TypeName> Null;
   static const std::shared_ptr<const TypeName> Void;
   static const std::shared_ptr<const TypeName> Bool;
@@ -53,9 +52,9 @@ struct TypeName {
 
 
   TypeName(const std::shared_ptr<peg::Ast> &ast);
-  TypeName operator=(TypeName);
+  TypeName& operator=(const TypeName&);
 
-  TypeName deduct_type(TypeName) const;
+  TypeName deduct_type(const TypeName&) const;
 
   bool operator==(const TypeName &) const;
   bool operator!=(const TypeName &) const;
@@ -77,8 +76,8 @@ using type_set = std::unordered_set<TypeName_ptr>;
 std::ostream &operator<<(std::ostream &, const TypeName &);
 
 struct type_deduction_exeption : public by::ast::ast_error {
-  type_deduction_exeption(const std::shared_ptr<peg::Ast> ast,
-                          TypeName_ptr expected, TypeName_ptr got);
+  type_deduction_exeption(const std::shared_ptr<peg::Ast>& ast,
+                          const TypeName_ptr& expected, const TypeName_ptr& got);
 };
 } // namespace by::type
 

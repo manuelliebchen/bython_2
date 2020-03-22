@@ -2,20 +2,21 @@
 
 #include <ext/alloc_traits.h>
 #include <memory>
+#include <stddef.h>
 #include <utility>
 #include <vector>
 
 #include "arithmetic_expression.h"
+#include "ast/ast_error.h"
 #include "ast/expression.h"
+#include "bc/build_context.h"
+#include "bc/function_build.h"
 #include "peglib.h"
 
 namespace by {
 namespace ast {
 class ASTBlockExpression;
 } // namespace ast
-namespace bc {
-class BuildContext;
-} // namespace bc
 } // namespace by
 
 namespace by::ast {

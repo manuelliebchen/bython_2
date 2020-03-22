@@ -8,13 +8,18 @@
 #ifndef SRC_BC_FUNCTION_BUILD_H_
 #define SRC_BC_FUNCTION_BUILD_H_
 
+#include <llvm/IR/Value.h>
+#include <type/function_type.h>
 #include <memory>
 #include <functional>
-#include <llvm/IR/Value.h>
-
-#include <type/function_type.h>
+#include <string>
+#include <vector>
 
 #include "build_context.h"
+
+namespace llvm {
+class Value;
+}  // namespace llvm
 
 namespace by::bc {
 	class BuildContext;

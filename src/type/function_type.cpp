@@ -8,6 +8,9 @@
 #include "function_type.h"
 
 #include <cstddef> // for size_t
+#include <utility>
+
+#include <ext/alloc_traits.h>
 
 #include <llvm/IR/DerivedTypes.h> // for FunctionType
 
@@ -55,7 +58,8 @@ auto FunctionType::get_llvm_function_type(llvm::LLVMContext &context) const
   return llvm::FunctionType::get(llvm_returntype, llvm_parameters, false);
 }
 
-bool FunctionType::param_equal(const std::vector<TypeName_ptr> &rhs) const {
+auto FunctionType::param_equal(const std::vector<TypeName_ptr> &rhs) const
+    -> bool {
   if (parameters.size() != rhs.size()) {
     return false;
   }
@@ -67,14 +71,14 @@ bool FunctionType::param_equal(const std::vector<TypeName_ptr> &rhs) const {
   return true;
 }
 
-bool FunctionType::operator==(const FunctionType &rhs) const {
+auto FunctionType::operator==(const FunctionType &rhs) const -> bool {
   if (return_type != rhs.return_type) {
     return false;
   }
   return param_equal(rhs.parameters);
 }
 
-bool FunctionType::operator!=(const FunctionType &rhs) const {
+auto FunctionType::operator!=(const FunctionType &rhs) const -> bool {
   return !(*this == rhs);
 }
 
@@ -85,7 +89,7 @@ FunctionType::operator const TypeName &() const { return *return_type; }
 namespace std {
 
 auto to_string(by::type::FunctionType const &func) -> std::string {
-  std::string str = std::to_string(*(by::type::TypeName *)(&func)) + "(";
+  std::string str = std::to_string(*func.return_type) + "(";
   if (!func.parameters.empty()) {
     str += std::to_string(func.parameters[0]);
     for (size_t i = 1; i < func.parameters.size(); ++i) {

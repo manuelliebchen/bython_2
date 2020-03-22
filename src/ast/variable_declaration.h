@@ -9,9 +9,9 @@
 #define SRC_AST_VARIABLE_DECLARATION_H_
 
 #include <llvm/IR/Value.h>
+#include <peglib.h>
 #include <memory>
 #include <ostream>
-#include <peglib.h>
 #include <string>
 #include <unordered_set>
 
