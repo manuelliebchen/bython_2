@@ -23,6 +23,14 @@ void *b_malloc(size_t bytes) {
     capacity *= growth_factor;
     data = realloc(data, capacity * sizeof(struct data));
   }
+  for (size_t i = 0; i < count; ++i) {
+    if (data[i].refs <= 0) {
+      void *memory = malloc(bytes);
+      data[i].refs = 1;
+      data[i].data = memory;
+      return memory;
+    }
+  }
   void *memory = malloc(bytes);
   data[count].refs = 1;
   data[count].data = memory;
@@ -54,6 +62,7 @@ void b_deinit() {
     }
   }
   free(data);
+  printf("Count: %d\n", count);
 }
 
 struct node {
@@ -65,12 +74,7 @@ typedef struct node *List;
 
 bool is_null(void *ptr) { return ptr == NULL; }
 
-bool list_has_next(List list) {
-  if (list == NULL) {
-    return false;
-  }
-  return list->next != NULL;
-}
+bool list_has_next(List list) { return list != NULL && list->next != NULL; }
 
 List list_push_alloc(void *data, size_t memory, List next) {
   void *data_alloc = b_malloc(memory + sizeof(struct node));
