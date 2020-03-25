@@ -35,4 +35,4 @@ auto ASTBooleanConstant::build_ir(std::unique_ptr<bc::BuildContext> &bc) const
                : llvm::ConstantInt::getFalse(bc->context);
 }
 
-} // namespace by::ast
+} /* namespace by::ast */

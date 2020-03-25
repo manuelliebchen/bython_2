@@ -35,43 +35,37 @@ auto read_file(const std::string &filepath) -> std::string {
 
 namespace by::ast {
 
-ASTImport::ASTImport(const std::shared_ptr<peg::Ast> &ast)
-    : ASTExpression(ast, nullptr) {
+ASTImport::ASTImport(
+    const std::shared_ptr<peg::Ast> &ast,
+    std::shared_ptr<std::unordered_set<std::string>> file_list) {
   file = ASTStringConstant(ast->nodes[0], nullptr).get_value();
-  type = type::TypeName::Void;
 
-  const std::string bython_grammar = read_file(GRAMMAR_PATH);
-  peg::parser parser;
-  parser.load_grammar(bython_grammar.c_str());
-  const std::string bython_code = read_file(file);
-  parser.enable_ast();
-  std::shared_ptr<peg::Ast> root_ast;
-  if (!parser.parse(bython_code.c_str(), root_ast, file.c_str())) {
-    peg::Log log = parser.log;
-    throw std::runtime_error("Unable to Parse file: Syntax Error in import: " +
-                             file);
+  if (file_list->find(file) == file_list->end()) {
+    const std::string bython_grammar = read_file(GRAMMAR_PATH);
+    peg::parser parser;
+    parser.load_grammar(bython_grammar.c_str());
+    const std::string bython_code = read_file(file);
+    parser.enable_ast();
+    std::shared_ptr<peg::Ast> root_ast;
+    if (!parser.parse(bython_code.c_str(), root_ast, file.c_str())) {
+      peg::Log log = parser.log;
+      throw std::runtime_error(
+          "Unable to Parse file: Syntax Error in import: " + file);
+    }
+
+    // Building internal AST
+    root = std::make_shared<ASTRoot>(file, root_ast, file_list);
   }
-
-  // Building internal AST
-  root = std::make_shared<ASTRoot>(file, root_ast);
 }
 
-auto ASTImport::get_name() const -> std::string { return file; }
+auto ASTImport::get_file_name() const -> std::string { return file; }
 
 void ASTImport::insert_functions(
     std::unique_ptr<by::bc::BuildContext> &bc) const {
-  root->insert_functions(bc);
+  if (root != nullptr) {
+    root->insert_functions(bc);
+  }
 };
-
-auto ASTImport::determine_type(std::unique_ptr<bc::BuildContext> &bc)
-    -> type::TypeName_ptr {
-  return type::TypeName::Void;
-}
-
-auto ASTImport::build_ir(std::unique_ptr<by::bc::BuildContext> &bc) const
-    -> llvm::Value * {
-  return nullptr;
-}
 
 auto operator<<(std::ostream &os, const ASTImport &func) -> std::ostream & {
   os << "import \"" << func.file << "\"";

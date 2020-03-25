@@ -36,7 +36,7 @@ class ASTRoot;
 /**
  * AST node for extern declarations of functions
  */
-class ASTImport : public ASTExpression {
+class ASTImport {
 protected:
   /**
    * Name of the function
@@ -45,20 +45,15 @@ protected:
   std::shared_ptr<by::ast::ASTRoot> root;
 
 public:
-  ASTImport(const std::shared_ptr<peg::Ast> &);
+  ASTImport(const std::shared_ptr<peg::Ast> &, std::shared_ptr<std::unordered_set<std::string>>);
 
   void insert_functions(
       std::unique_ptr<by::bc::BuildContext> &) const;
 
-  type::TypeName_ptr determine_type(std::unique_ptr<bc::BuildContext> &);
-
   /**
    * returns name of the function
    */
-  std::string get_name() const;
-  type::FunctionType_ptr get_function_type() const {return std::make_shared<type::FunctionType>(type::TypeName::Void);};
-
-  llvm::Value *build_ir(std::unique_ptr<by::bc::BuildContext> &) const;
+  std::string get_file_name() const;
 
   friend std::ostream &operator<<(std::ostream &, const ASTImport &);
 };

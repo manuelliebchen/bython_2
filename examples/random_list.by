@@ -1,0 +1,5 @@
+extern func rand = -> Int
+
+func build_list = n: Int, max: Int -> List[Int] {
+	rand() % max : if n > 0 { build_list(n-1, max) } else { Null }
+}

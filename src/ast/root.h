@@ -56,8 +56,11 @@ private:
    */
   std::vector<std::shared_ptr<by::ast::ASTImport>> imports;
 
+  std::shared_ptr<std::unordered_set<std::string>> file_list;
+
 public:
   ASTRoot(std::string, const std::shared_ptr<peg::Ast> &);
+  ASTRoot(std::string, const std::shared_ptr<peg::Ast> &, std::shared_ptr<std::unordered_set<std::string>>);
 
   void insert_functions(
       std::unique_ptr<by::bc::BuildContext> &) const;

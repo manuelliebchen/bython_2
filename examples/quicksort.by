@@ -1,8 +1,8 @@
-extern func rand = -> Int
+import "printlist.by"
+import "random_list.by"
+
 extern func list_has_next = List[Int] -> Bool
 extern func is_null = List[Int] -> Bool
-
-import "../examples/printlist.by"
 
 func main = args: List[String] -> Int {
     let list = build_list(20, 128);
@@ -11,15 +11,6 @@ func main = args: List[String] -> Int {
     printlist_int(sorted);
     0
 }
-
-func build_list = n: Int, max: Int -> List[Int] {
-    if n == 0 { 
-        rand() % max : Null
-    } else {
-        rand() % max : build_list(n-1, max)
-    }
-}
-
 
 func quickSort = list: List[Int] -> List[Int] {
     if !list_has_next(list) {
@@ -30,7 +21,6 @@ func quickSort = list: List[Int] -> List[Int] {
         sortedHelper(tail, Null, Null, pivot)
     }
 }
-
 
 func sortedHelper = list: List[Int], lower: List[Int], heigher: List[Int], pivot: Int -> List[Int] {
     if is_null(list) {

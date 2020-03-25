@@ -1,3 +1,6 @@
+extern func printf = String, Int -> Void
+extern func list_has_next = List[Int] -> Bool
+
 func printlist_int = list: List[Int] -> List[Int] {
     let b = list_has_next(list);
     let head : tail = list;
@@ -9,6 +12,3 @@ func printlist_int = list: List[Int] -> List[Int] {
         head : Null
     }
 }
-
-extern func printf = String, Int -> Void
-extern func list_has_next = List[Int] -> Bool

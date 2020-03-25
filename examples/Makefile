@@ -3,20 +3,18 @@
 
 .PHONY = all clean
 
+CXX = clang++
 BYTHON = ../bin/bython
 
 LIBS = ../lib/libbython-std.so
 
 all: quicksort
 
-quicksort: quicksort.by.ll printlist.by.ll
-	${CXX} -o $@ ${LIBS} quicksort.by.ll printlist.by.ll
-
-quicksort.by.ll: quicksort.by
-	${BYTHON} $< 1> $<.ll
+quicksort: quicksort.ll printlist.ll random_list.ll
+	${CXX} -o $@ ${LIBS} *.ll
 	
-printlist.by.ll: printlist.by
-	${BYTHON} $< 1> $<.ll
+%.ll: %.by
+	${BYTHON} $< 1> $@
 
 clean:
 	rm -rf *.ll

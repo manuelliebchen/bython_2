@@ -22,14 +22,19 @@
 namespace by::ast {
 
 ASTRoot::ASTRoot(std::string file, const std::shared_ptr<peg::Ast> &ast)
-    : file(file), ast(ast) {
+    : ASTRoot(file, ast, std::make_shared<std::unordered_set<std::string>>()) {}
+
+ASTRoot::ASTRoot(std::string file, const std::shared_ptr<peg::Ast> &ast,
+                 std::shared_ptr<std::unordered_set<std::string>> file_list)
+    : file(file), ast(ast), file_list(file_list) {
+  file_list->emplace(file);
   for (const auto &node : ast->nodes) {
     if (node->original_name == "Function") {
       functions.push_back(std::make_shared<ASTFunction>(node));
     } else if (node->original_name == "Extern") {
       externs.push_back(std::make_shared<ASTExtern>(node));
     } else if (node->original_name == "Import") {
-      imports.push_back(std::make_shared<ASTImport>(node));
+      imports.push_back(std::make_shared<ASTImport>(node, file_list));
     }
   }
 }
