@@ -8,10 +8,22 @@ BYTHON = ../bin/bython
 
 LIBS = ../lib/libbython-std.so
 
-all: quicksort
+all: quicksort prime ggt simple_math hello_world
 
 quicksort: quicksort.ll printlist.ll random_list.ll
-	${CXX} -o $@ ${LIBS} *.ll
+	${CXX} -o $@ ${LIBS} $^
+
+prime: prime.ll
+	${CXX} -o $@ ${LIBS} $^
+	
+ggt: ggt.ll
+	${CXX} -o $@ ${LIBS} $^
+	
+simple_math: simple_math.ll
+	${CXX} -o $@ ${LIBS} $^
+
+hello_world: hello_world.ll
+	${CXX} -o $@ ${LIBS} $^
 	
 %.ll: %.by
 	${BYTHON} $< 1> $@
