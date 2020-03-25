@@ -23,18 +23,19 @@ void *b_malloc(size_t bytes) {
     capacity *= growth_factor;
     data = realloc(data, capacity * sizeof(struct data));
   }
+  int position = count;
   for (size_t i = 0; i < count; ++i) {
-    if (data[i].refs <= 0) {
-      void *memory = malloc(bytes);
-      data[i].refs = 1;
-      data[i].data = memory;
-      return memory;
+    if (data[i].refs <= 0 && data[i].data == NULL) {
+      position = i;
+      break;
     }
   }
+  if (position == count) {
+    count++;
+  }
   void *memory = malloc(bytes);
-  data[count].refs = 1;
-  data[count].data = memory;
-  count++;
+  data[position].refs = 1;
+  data[position].data = memory;
   return memory;
 }
 
@@ -55,14 +56,9 @@ void b_init() { data = malloc(capacity * sizeof(struct data)); }
 
 void b_deinit() {
   for (size_t i = 0; i < count; ++i) {
-    if (data[i].refs > 0) {
-      free(data[i].data);
-      data[i].refs = 0;
-      data[i].data = NULL;
-    }
+    free(data[i].data);
   }
   free(data);
-  printf("Count: %d\n", count);
 }
 
 struct node {

@@ -1,14 +1,14 @@
 extern func rand = -> Int
-extern func puts = String -> Void
-extern func printf = String, Int -> Void
 extern func list_has_next = List[Int] -> Bool
 extern func is_null = List[Int] -> Bool
 
+import "../examples/printlist.by"
+
 func main = args: List[String] -> Int {
     let list = build_list(20, 128);
-    let list4 = printlist(list);
+    let list4 = printlist_int(list);
     let sorted = quickSort(list4);
-    printlist(sorted);
+    printlist_int(sorted);
     0
 }
 
@@ -43,17 +43,5 @@ func sortedHelper = list: List[Int], lower: List[Int], heigher: List[Int], pivot
         } else {
             sortedHelper(tail, (value : lower), heigher, pivot)
         }
-    }
-}
-
-
-func printlist = list: List[Int] -> List[Int] {
-    if is_null(list) {
-        puts(";");
-        list
-    } else {
-        let head :tail = list;
-        printf("%d, ", head);
-        head : printlist(tail)
     }
 }

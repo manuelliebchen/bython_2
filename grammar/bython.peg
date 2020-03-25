@@ -1,4 +1,6 @@
-Program <- %ows (Extern / Function)*
+Program <- %ows (Extern / Function / Import)*
+
+Import <- 'import' %ows StringConstant
 
 # Extern Function
 Extern <- 'extern' %ows 'func' %ows Identifier '=' %ows FunctionType

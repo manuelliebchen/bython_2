@@ -26,9 +26,24 @@ ASTRoot::ASTRoot(std::string file, const std::shared_ptr<peg::Ast> &ast)
   for (const auto &node : ast->nodes) {
     if (node->original_name == "Function") {
       functions.push_back(std::make_shared<ASTFunction>(node));
-    } else {
+    } else if (node->original_name == "Extern") {
       externs.push_back(std::make_shared<ASTExtern>(node));
+    } else if (node->original_name == "Import") {
+      imports.push_back(std::make_shared<ASTImport>(node));
     }
+  }
+}
+
+void ASTRoot::insert_functions(
+    std::unique_ptr<by::bc::BuildContext> &build_context) const {
+  for (const auto &import : imports) {
+    import->insert_functions(build_context);
+  }
+  for (const auto &func : externs) {
+    build_context->push_back_call(func->get_name(), func->get_function_type());
+  }
+  for (const auto &func : functions) {
+    func->insertFunction(build_context);
   }
 }
 
@@ -37,14 +52,8 @@ void ASTRoot::compile(std::ostream &out) {
   try {
     bc::BuildContext_ptr build_context =
         std::make_unique<by::bc::BuildContext>(file);
-    for (const auto &func : externs) {
-      build_context->push_back_call(func->get_name(),
-                                    func->get_function_type());
-    }
     last_op = "Declaring Functions";
-    for (const auto &func : functions) {
-      func->insertFunction(build_context);
-    }
+    insert_functions(build_context);
 
     last_op = "Determiining return types";
     for (const auto &func : functions) {

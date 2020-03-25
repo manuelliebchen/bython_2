@@ -53,4 +53,6 @@ auto ASTStringConstant::build_ir(std::unique_ptr<bc::BuildContext> &bc) const
   return llvm::ConstantExpr::getBitCast(
       gdata_loc, type::TypeName::String->get_llvm_type(bc->context));
 }
+
+std::string ASTStringConstant::get_value() const { return value; }
 } /* namespace by::ast */

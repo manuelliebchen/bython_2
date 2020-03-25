@@ -18,6 +18,7 @@
 #include "../type/type_name.h"
 #include "extern.h"
 #include "function.h"
+#include "import.h"
 
 namespace by {
 namespace bc {
@@ -29,6 +30,7 @@ namespace by::ast {
 
 class ASTFunction;
 class ASTExtern;
+class ASTImport;
 
 /**
  * Top most AST node of tree. Containg all functions and externs
@@ -49,9 +51,16 @@ private:
    * Extern declarations
    */
   std::vector<std::shared_ptr<by::ast::ASTExtern>> externs;
+  /**
+   * Imports declarations
+   */
+  std::vector<std::shared_ptr<by::ast::ASTImport>> imports;
 
 public:
   ASTRoot(std::string, const std::shared_ptr<peg::Ast> &);
+
+  void insert_functions(
+      std::unique_ptr<by::bc::BuildContext> &) const;
 
   /**
    * Function for compiling to ir code.

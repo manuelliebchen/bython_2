@@ -1,0 +1,14 @@
+func printlist_int = list: List[Int] -> List[Int] {
+    let b = list_has_next(list);
+    let head : tail = list;
+    if b {
+        printf("%d, ", head);
+        head : printlist_int(tail)
+    } else {
+        printf("%d;\n", head);
+        head : Null
+    }
+}
+
+extern func printf = String, Int -> Void
+extern func list_has_next = List[Int] -> Bool

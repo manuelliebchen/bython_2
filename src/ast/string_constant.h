@@ -34,6 +34,8 @@ class ASTStringConstant : public ASTConstant {
 public:
   ASTStringConstant(const std::shared_ptr<peg::Ast> &, ASTBlockExpression *);
 
+  std::string get_value() const;
+
   llvm::Value *build_ir(std::unique_ptr<bc::BuildContext> &) const;
 
 private:

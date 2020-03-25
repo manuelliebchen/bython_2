@@ -18,6 +18,8 @@ endif()
 
 add_subdirectory(src)
 
+file( COPY ${CMAKE_CURRENT_SOURCE_DIR}/examples DESTINATION ${CMAKE_BINARY_DIR})
+
 FILE(GLOB_RECURSE ALL_BYTHON_SOURCE_FILES ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp ${CMAKE_CURRENT_SOURCE_DIR}/src/*.c ${CMAKE_CURRENT_SOURCE_DIR}/src/*.hpp)
 
 # Adding clang-format target if executable is found
