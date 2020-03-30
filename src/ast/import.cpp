@@ -37,7 +37,7 @@ namespace by::ast {
 
 ASTImport::ASTImport(
     const std::shared_ptr<peg::Ast> &ast,
-    std::shared_ptr<std::unordered_set<std::string>> file_list) {
+    const std::shared_ptr<std::unordered_set<std::string>> &file_list) {
   file = ASTStringConstant(ast->nodes[0], nullptr).get_value();
 
   if (file_list->find(file) == file_list->end()) {

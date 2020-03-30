@@ -32,6 +32,9 @@ auto ASTVariableExpression::determine_type(
     std::unique_ptr<bc::BuildContext> &bc) -> by::type::TypeName_ptr {
   if (name != "Null") {
     type = parent->find_variable_type(name);
+    if (*type == *type::TypeName::None) {
+      type = bc->find(name, {}).get_type()->return_type;
+    }
   } else {
     type = type::TypeName::Null;
   }
@@ -40,12 +43,7 @@ auto ASTVariableExpression::determine_type(
 
 auto ASTVariableExpression::build_ir(
     std::unique_ptr<bc::BuildContext> &bc) const -> llvm::Value * {
-  if (name != "Null") {
-    return bc->find(name).build_ir(bc, {});
-  } else {
-    return llvm::ConstantPointerNull::get(
-        (llvm::PointerType *)type::TypeName::Null->get_llvm_type(bc->context));
-  }
+  return bc->find(name, {}).build_ir(bc, {});
 }
 
 } /* namespace by::ast */

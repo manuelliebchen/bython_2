@@ -8,13 +8,14 @@
 #include "let_statement.h"
 
 #include <algorithm>
-#include <ctype.h>
+#include <cctype>
+#include <vector>
+
 #include <llvm/ADT/Twine.h>
 #include <llvm/IR/IRBuilder.h>
 #include <llvm/IR/Instructions.h>
 #include <llvm/IR/Value.h>
 #include <type/type_name.h>
-#include <vector>
 
 #include "../bc/build_context.h"
 #include "ast/ast_error.h"
@@ -38,14 +39,14 @@ ASTLetStatement::ASTLetStatement(const std::shared_ptr<peg::Ast> &ast,
 
 auto ASTLetStatement::determine_type(std::unique_ptr<bc::BuildContext> &bc)
     -> by::type::TypeName_ptr {
-  if (tail != "") {
+  if (!tail.empty()) {
     tailtype = value->determine_type(bc);
     if (tailtype && !tailtype->subtypes.empty()) {
-      type = tailtype->subtypes[0];
       if (tailtype->name != "List") {
         throw type::type_deduction_exeption(ast, type::TypeName::List,
                                             tailtype);
       }
+      type = tailtype->subtypes[0];
       bc->push_back_load(tail, tailtype);
       parent->register_variable(tail, tailtype);
       bc->push_back_load(var, type);
@@ -65,7 +66,7 @@ auto ASTLetStatement::build_ir(std::unique_ptr<bc::BuildContext> &bc) const
   llvm::Value *rhs_llvm = value->build_ir(bc);
   llvm::AllocaInst *variable_value = bc->builder.CreateAlloca(
       type->get_llvm_type(bc->context), nullptr, llvm::Twine(var));
-  if (tail != "") {
+  if (!tail.empty()) {
     std::string type_name = "record";
     if (type->is_native()) {
       type_name = type->name;
@@ -74,9 +75,10 @@ auto ASTLetStatement::build_ir(std::unique_ptr<bc::BuildContext> &bc) const
     }
 
     llvm::Value *head_ir =
-        bc->find("list_peek_" + type_name).build_ir(bc, {rhs_llvm});
+        bc->find("list_peek_" + type_name, {tailtype}).build_ir(bc, {rhs_llvm});
 
-    llvm::Value *tail_ir = bc->find("list_pop").build_ir(bc, {rhs_llvm});
+    llvm::Value *tail_ir =
+        bc->find("list_pop", {tailtype}).build_ir(bc, {rhs_llvm});
     llvm::AllocaInst *tail_value = bc->builder.CreateAlloca(
         tailtype->get_llvm_type(bc->context), nullptr, llvm::Twine(tail));
     bc->builder.CreateStore(tail_ir, tail_value);

@@ -15,9 +15,6 @@
 
 namespace by::ast {
 class ASTBlockExpression;
-}
-
-namespace by::ast {
 
 ASTFloatConstant::ASTFloatConstant(const std::shared_ptr<peg::Ast> &ast,
                                    ASTBlockExpression *parent)

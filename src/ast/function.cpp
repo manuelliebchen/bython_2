@@ -8,8 +8,10 @@
 #include "function.h"
 
 #include <algorithm>
+#include <cstddef>
 #include <ext/alloc_traits.h>
 #include <iostream>
+
 #include <llvm/ADT/Twine.h>
 #include <llvm/ADT/iterator_range.h>
 #include <llvm/IR/Argument.h>
@@ -20,7 +22,6 @@
 #include <llvm/IR/Instructions.h>
 #include <llvm/IR/Module.h>
 #include <llvm/IR/Type.h>
-#include <stddef.h>
 
 #include "../bc/build_context.h"
 #include "../type/function_type.h"
@@ -94,7 +95,7 @@ auto ASTFunction::build_ir(std::unique_ptr<by::bc::BuildContext> &bc) const
   function->getBasicBlockList().push_back(entry_block);
   bc->builder.SetInsertPoint(entry_block);
   if (name == "main") {
-    bc->find("b_init").build_ir(bc, {});
+    bc->find("b_init", {}).build_ir(bc, {});
 
     std::string arg_name = parameters[0]->get_name();
 
@@ -134,7 +135,7 @@ auto ASTFunction::build_ir(std::unique_ptr<by::bc::BuildContext> &bc) const
   llvm::Value *return_value = blockexpression->build_ir(bc);
 
   if (name == "main") {
-    bc->find("b_deinit").build_ir(bc, {});
+    bc->find("b_deinit", {}).build_ir(bc, {});
   }
   if (*type) {
     bc->builder.CreateRet(return_value);

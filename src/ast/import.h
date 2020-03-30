@@ -45,7 +45,7 @@ protected:
   std::shared_ptr<by::ast::ASTRoot> root;
 
 public:
-  ASTImport(const std::shared_ptr<peg::Ast> &, std::shared_ptr<std::unordered_set<std::string>>);
+  ASTImport(const std::shared_ptr<peg::Ast> &,const std::shared_ptr<std::unordered_set<std::string>>&);
 
   void insert_functions(
       std::unique_ptr<by::bc::BuildContext> &) const;

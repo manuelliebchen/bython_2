@@ -8,7 +8,7 @@ BYTHON = ../bin/bython
 
 LIBS = ../lib/libbython-std.so
 
-all: quicksort prime ggt simple_math hello_world
+all: hello_world prime ggt simple_math quicksort 
 
 quicksort: quicksort.ll printlist.ll random_list.ll
 	${CXX} -o $@ ${LIBS} $^

@@ -1,8 +1,8 @@
 #include "expression_chain.h"
 
+#include <cstddef>
 #include <ext/alloc_traits.h>
 #include <memory>
-#include <stddef.h>
 #include <utility>
 #include <vector>
 
@@ -13,13 +13,8 @@
 #include "bc/function_build.h"
 #include "peglib.h"
 
-namespace by {
-namespace ast {
-class ASTBlockExpression;
-} // namespace ast
-} // namespace by
-
 namespace by::ast {
+class ASTBlockExpression;
 
 ExpressionChain::ExpressionChain(
     const std::shared_ptr<peg::Ast> &ast, ASTBlockExpression *parent,

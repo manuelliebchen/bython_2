@@ -43,7 +43,10 @@ public:
 		  return type;};
 
 	llvm::Value *build_ir(std::unique_ptr<BuildContext> &,  std::vector<llvm::Value*>) const;
+  friend std::ostream &operator<<(std::ostream &, const FunctionBuilder &);
 };
+
+std::ostream &operator<<(std::ostream &, const FunctionBuilder &);
 }
 
 

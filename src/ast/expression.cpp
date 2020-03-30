@@ -25,9 +25,9 @@
 #include "variable_expression.h"
 
 namespace by::ast {
-ASTExpression::ASTExpression(const std::shared_ptr<peg::Ast> &ast,
+ASTExpression::ASTExpression(std::shared_ptr<peg::Ast> ast,
                              ASTBlockExpression *parent)
-    : ast(ast), parent(parent), type(type::TypeName::None) {}
+    : ast(std::move(ast)), parent(parent), type(type::TypeName::None) {}
 
 auto ASTExpression::get_type() const -> by::type::TypeName_ptr { return type; }
 

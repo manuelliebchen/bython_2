@@ -74,7 +74,7 @@ auto ASTBlockExpression::find_variable_type(const std::string &name) const
   } else if (parent != nullptr) {
     return parent->find_variable_type(name);
   }
-  throw std::runtime_error("Could not determen type of variable: " + name);
+  return by::type::TypeName::None;
 }
 
 auto ASTBlockExpression::register_variable(const std::string &name,

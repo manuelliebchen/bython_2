@@ -20,19 +20,15 @@ namespace by {
 namespace bc {
 class BuildContext;
 } // namespace bc
-} // namespace by
 
-namespace by::ast {
+namespace ast {
 class ASTBlockExpression;
-}
-
-namespace by::ast {
 
 ASTConstant::ASTConstant(const std::shared_ptr<peg::Ast> &ast,
                          ASTBlockExpression *parent, std::string const_string)
     : ASTExpression(ast, parent), const_string(std::move(const_string)) {}
 
-auto ASTConstant::determine_type(std::unique_ptr<bc::BuildContext> &bc)
+auto ASTConstant::determine_type(std::unique_ptr<bc::BuildContext> & /*bc*/)
     -> by::type::TypeName_ptr {
   type = std::make_shared<const type::TypeName>(type::TypeName(const_string));
   return type;
@@ -57,4 +53,5 @@ auto operator<<(std::ostream &os, const ASTConstant &constant)
   return os;
 }
 
-} /* namespace by::ast */
+} /* namespace ast */
+} /* namespace by */

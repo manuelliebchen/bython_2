@@ -59,8 +59,8 @@ private:
   std::shared_ptr<std::unordered_set<std::string>> file_list;
 
 public:
-  ASTRoot(std::string, const std::shared_ptr<peg::Ast> &);
-  ASTRoot(std::string, const std::shared_ptr<peg::Ast> &, std::shared_ptr<std::unordered_set<std::string>>);
+  ASTRoot(const std::string&, const std::shared_ptr<peg::Ast> &);
+  ASTRoot(const std::string&, const std::shared_ptr<peg::Ast> &, const std::shared_ptr<std::unordered_set<std::string>>&);
 
   void insert_functions(
       std::unique_ptr<by::bc::BuildContext> &) const;

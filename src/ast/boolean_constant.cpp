@@ -16,8 +16,6 @@
 
 namespace by::ast {
 class ASTBlockExpression;
-}
-namespace by::ast {
 
 ASTBooleanConstant::ASTBooleanConstant(const std::shared_ptr<peg::Ast> &ast,
                                        ASTBlockExpression *parent)

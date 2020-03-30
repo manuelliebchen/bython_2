@@ -9,10 +9,11 @@
 
 #include <algorithm>
 #include <bits/exception.h>
+#include <cstdlib>
 #include <iostream>
+
 #include <llvm/IR/Module.h>
 #include <llvm/Support/raw_os_ostream.h>
-#include <stdlib.h>
 
 #include "../bc/build_context.h"
 #include "extern.h"
@@ -21,11 +22,12 @@
 
 namespace by::ast {
 
-ASTRoot::ASTRoot(std::string file, const std::shared_ptr<peg::Ast> &ast)
+ASTRoot::ASTRoot(const std::string &file, const std::shared_ptr<peg::Ast> &ast)
     : ASTRoot(file, ast, std::make_shared<std::unordered_set<std::string>>()) {}
 
-ASTRoot::ASTRoot(std::string file, const std::shared_ptr<peg::Ast> &ast,
-                 std::shared_ptr<std::unordered_set<std::string>> file_list)
+ASTRoot::ASTRoot(
+    const std::string &file, const std::shared_ptr<peg::Ast> &ast,
+    const std::shared_ptr<std::unordered_set<std::string>> &file_list)
     : file(file), ast(ast), file_list(file_list) {
   file_list->emplace(file);
   for (const auto &node : ast->nodes) {
@@ -53,10 +55,10 @@ void ASTRoot::insert_functions(
 }
 
 void ASTRoot::compile(std::ostream &out) {
-  std::string last_op = "";
+  std::string last_op;
+  bc::BuildContext_ptr build_context =
+      std::make_unique<by::bc::BuildContext>(file);
   try {
-    bc::BuildContext_ptr build_context =
-        std::make_unique<by::bc::BuildContext>(file);
     last_op = "Declaring Functions";
     insert_functions(build_context);
 
@@ -77,6 +79,9 @@ void ASTRoot::compile(std::ostream &out) {
   } catch (const std::exception &e) {
     std::cerr << "Compilation failed while " << last_op << std::endl;
     std::cerr << e.what() << std::endl;
+    for (const auto &funk : *build_context) {
+      std::cerr << funk << std::endl;
+    }
     exit(1);
   }
 }

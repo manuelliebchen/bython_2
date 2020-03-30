@@ -17,20 +17,15 @@
 #include "constant.h"
 #include "type/type_name.h"
 
-namespace by {
-namespace ast {
-class ASTBlockExpression;
-} // namespace ast
-} // namespace by
-
 namespace by::ast {
+class ASTBlockExpression;
 
 ASTStringConstant::ASTStringConstant(const std::shared_ptr<peg::Ast> &ast,
                                      ASTBlockExpression *parent)
     : ASTConstant(ast, parent, "String") {
   value = ast->token;
   auto p = value.find(R"(\n)");
-  if (p != value.npos) {
+  if (p != std::string::npos) {
     value.replace(p, 2, "\n");
   }
 }
@@ -54,5 +49,5 @@ auto ASTStringConstant::build_ir(std::unique_ptr<bc::BuildContext> &bc) const
       gdata_loc, type::TypeName::String->get_llvm_type(bc->context));
 }
 
-std::string ASTStringConstant::get_value() const { return value; }
-} /* namespace by::ast */
+auto ASTStringConstant::get_value() const -> std::string { return value; }
+} // namespace by::ast

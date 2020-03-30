@@ -18,13 +18,8 @@
 #include "peglib.h"
 #include "type/type_name.h"
 
-namespace by {
-namespace ast {
-class ASTBlockExpression;
-} // namespace ast
-} // namespace by
-
 namespace by::ast {
+class ASTBlockExpression;
 
 ASTArithmeticExpression::ASTArithmeticExpression(
     const std::shared_ptr<peg::Ast> &ast, ASTBlockExpression *parent,

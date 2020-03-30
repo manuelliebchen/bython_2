@@ -7,7 +7,8 @@
 
 #include "integer_constant.h"
 
-#include <limits>                 // for numeric_limits, numeric_limits<...
+#include <limits> // for numeric_limits, numeric_limits<...
+
 #include <llvm/IR/Constants.h>    // for ConstantInt
 #include <llvm/IR/DerivedTypes.h> // for IntegerType
 
@@ -16,9 +17,6 @@
 
 namespace by::ast {
 class ASTBlockExpression;
-}
-
-namespace by::ast {
 
 ASTIntegerConstant::ASTIntegerConstant(const std::shared_ptr<peg::Ast> &ast,
                                        ASTBlockExpression *parent)

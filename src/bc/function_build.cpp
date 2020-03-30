@@ -33,4 +33,10 @@ auto FunctionBuilder::build_ir(std::unique_ptr<BuildContext> &bc,
     -> llvm::Value * {
   return functional(bc, std::move(parameter));
 }
+
+auto operator<<(std::ostream &os, const FunctionBuilder &funkb)
+    -> std::ostream & {
+  os << "funk " << funkb.name << " " << std::to_string(*funkb.type);
+  return os;
+};
 } // namespace by::bc

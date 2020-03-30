@@ -73,9 +73,11 @@ auto TypeName::make(const TypeName &type) -> std::shared_ptr<const TypeName> {
 }
 
 auto TypeName::operator=(const TypeName &type) -> TypeName & {
-  name = type.name;
-  for (const auto &subtype : type.subtypes) {
-    subtypes.push_back(std::make_shared<const TypeName>(*subtype));
+  if (&type != this) {
+    name = type.name;
+    for (const auto &subtype : type.subtypes) {
+      subtypes.push_back(std::make_shared<const TypeName>(*subtype));
+    }
   }
   return *this;
 }

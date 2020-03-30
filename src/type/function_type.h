@@ -29,6 +29,8 @@ struct FunctionType {
 
   FunctionType(const std::shared_ptr<peg::Ast> &ast);
 
+
+  FunctionType();
   FunctionType(TypeName_ptr);
   FunctionType(TypeName_ptr, TypeName_ptr);
   FunctionType(TypeName_ptr, TypeName_ptr, TypeName_ptr);

@@ -41,7 +41,6 @@ public:
   BuildContext(const std::string&);
 
   const FunctionBuilder& find(const std::string&, const std::vector<type::TypeName_ptr>& ) const;
-  const FunctionBuilder& find(const std::string&) const;
 
   void push_back_call(const std::string&, const type::FunctionType_ptr&);
   void push_back_call(const std::string&, const type::FunctionType&);

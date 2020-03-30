@@ -37,6 +37,7 @@ class ASTCallExpression : public ASTExpression {
 private:
   std::string name;
   std::vector<std::shared_ptr<ASTExpression>> arguments;
+  std::vector<type::TypeName_ptr> parameter_type;
 
 public:
   ASTCallExpression(const std::shared_ptr<peg::Ast> &, ASTBlockExpression *);

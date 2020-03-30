@@ -39,28 +39,23 @@ auto BuildContext::find(const std::string &name,
                         const std::vector<type::TypeName_ptr> &type) const
     -> const FunctionBuilder & {
   auto func = find_if(begin(), end(), [&](const FunctionBuilder &func) -> bool {
-    return func.get_name() == name && func.get_type()->param_equal(type);
+    if (func.get_name() == name) {
+      if (func.get_type()->param_equal(type)) {
+        return true;
+      }
+    }
+    return false;
   });
   if (func != end()) {
     return *func;
   }
+
   std::string types;
   for (auto &ty : type) {
     types += std::to_string(*ty) + ", ";
   }
   throw std::runtime_error("Could not find function: " + name + " with type " +
                            types);
-}
-
-auto BuildContext::find(const std::string &name) const
-    -> const FunctionBuilder & {
-  auto func = find_if(begin(), end(), [&](const FunctionBuilder &func) -> bool {
-    return func.get_name() == name;
-  });
-  if (func != end()) {
-    return *func;
-  }
-  throw std::runtime_error("Could not find function: " + name);
 }
 
 void BuildContext::remove(const std::string &name) {
@@ -109,6 +104,12 @@ void BuildContext::push_back_load(const std::string &name,
 }
 
 void BuildContext::build_buildin() {
+  emplace_back("Null", -1, type::FunctionType{type::TypeName::Null},
+               [&](BuildContext_ptr &bc, const std::vector<llvm::Value *> &
+                   /* parameters */) -> llvm::Value * {
+                 return llvm::ConstantPointerNull::get(
+                     llvm::Type::getInt8PtrTy(bc->context));
+               });
   emplace_back(
       "", 0, type::FunctionType{type::TypeName::Float, type::TypeName::Int},
       [&](BuildContext_ptr &bc,
@@ -305,8 +306,8 @@ void BuildContext::build_buildin() {
   }
   build_all_list_operator(type::TypeName::String);
 
-  push_back_call("b_init", type::FunctionType{type::TypeName::Void});
-  push_back_call("b_deinit", type::FunctionType{type::TypeName::Void});
+  push_back_call("b_init", type::FunctionType());
+  push_back_call("b_deinit", type::FunctionType());
 }
 
 void BuildContext::build_all_list_operator(const type::TypeName_ptr &type) {
@@ -318,6 +319,13 @@ void BuildContext::build_all_list_operator(const type::TypeName_ptr &type) {
   }
 
   auto list_type = type::TypeName::make({"List", {type}});
+
+  emplace_back(
+      "", 0, type::FunctionType{type::TypeName::Null, list_type},
+      [&](BuildContext_ptr & /* bc */,
+          const std::vector<llvm::Value *> &parameters) -> llvm::Value * {
+        return parameters[0];
+      });
 
   push_back_call("list_peek_" + type_name, type::FunctionType{type, list_type});
   push_back_call("list_push_" + type_name,
@@ -334,25 +342,29 @@ void BuildContext::build_all_list_operator(const type::TypeName_ptr &type) {
       ":", 4, type::FunctionType{list_type, type, list_type},
       [=](BuildContext_ptr &bc,
           const std::vector<llvm::Value *> &parameters) -> llvm::Value * {
-        return bc->find("list_push_" + type_name).build_ir(bc, parameters);
+        return bc->find("list_push_" + type_name, {type, list_type})
+            .build_ir(bc, parameters);
       });
   emplace_back(
       ":", 4, type::FunctionType{list_type, type, type::TypeName::Null},
       [=](BuildContext_ptr &bc,
           const std::vector<llvm::Value *> &parameters) -> llvm::Value * {
-        return bc->find("list_push_" + type_name).build_ir(bc, parameters);
+        return bc->find("list_push_" + type_name, {type, type::TypeName::Null})
+            .build_ir(bc, parameters);
       });
   emplace_back(
       ":", 4, type::FunctionType{list_type, list_type, list_type},
       [=](BuildContext_ptr &bc,
           const std::vector<llvm::Value *> &parameters) -> llvm::Value * {
-        return bc->find("list_concatenate").build_ir(bc, parameters);
+        return bc->find("list_concatenate", {list_type, list_type})
+            .build_ir(bc, parameters);
       });
   emplace_back(
       ":", 4, type::FunctionType{list_type, list_type, type::TypeName::Null},
       [=](BuildContext_ptr &bc,
           const std::vector<llvm::Value *> &parameters) -> llvm::Value * {
-        return bc->find("list_concatenate").build_ir(bc, parameters);
+        return bc->find("list_concatenate", {list_type, type::TypeName::Null})
+            .build_ir(bc, parameters);
       });
 }
 

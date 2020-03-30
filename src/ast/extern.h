@@ -37,7 +37,7 @@ namespace by::ast {
 /**
  * AST node for extern declarations of functions
  */
-class ASTExtern : public ASTExpression {
+class ASTExtern {
 protected:
   /**
    * Name of the function
@@ -48,15 +48,14 @@ protected:
 public:
   ASTExtern(const std::shared_ptr<peg::Ast> &);
 
-  type::TypeName_ptr determine_type(std::unique_ptr<bc::BuildContext> &);
+  void insert_functions(
+      std::unique_ptr<by::bc::BuildContext> &) const;
 
   /**
    * returns name of the function
    */
   std::string get_name() const;
   type::FunctionType_ptr get_function_type() const {return function_type;};
-
-  llvm::Value *build_ir(std::unique_ptr<by::bc::BuildContext> &) const;
 
   friend std::ostream &operator<<(std::ostream &, const ASTExtern &);
 };

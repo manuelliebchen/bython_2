@@ -18,9 +18,8 @@ namespace by {
 namespace bc {
 class BuildContext;
 } // namespace bc
-} // namespace by
 
-namespace by::ast {
+namespace ast {
 
 ASTVariableDeclaration::ASTVariableDeclaration(
     const std::shared_ptr<peg::Ast> &ast, ASTBlockExpression *parent)
@@ -33,13 +32,13 @@ ASTVariableDeclaration::ASTVariableDeclaration(
   }
 }
 
-auto ASTVariableDeclaration::determine_type(
-    std::unique_ptr<bc::BuildContext> &bc) -> by::type::TypeName_ptr {
+auto ASTVariableDeclaration::determine_type(std::unique_ptr<bc::BuildContext> &
+                                            /*bc*/) -> by::type::TypeName_ptr {
   return type;
 }
 
 auto ASTVariableDeclaration::build_ir(
-    std::unique_ptr<bc::BuildContext> &bc) const -> llvm::Value * {
+    std::unique_ptr<bc::BuildContext> & /* bc */) const -> llvm::Value * {
   return nullptr;
 }
 
@@ -47,4 +46,5 @@ auto ASTVariableDeclaration::get_name() const -> const std::string & {
   return name;
 }
 
-} // namespace by::ast
+} // namespace ast
+} // namespace by

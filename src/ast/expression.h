@@ -59,7 +59,11 @@ protected:
    */
   type::TypeName_ptr type;
 
-  ASTExpression(const std::shared_ptr<peg::Ast> &, ASTBlockExpression *);
+  ASTExpression() = delete;
+  /**
+   * ctor to copy pointers
+   */
+  ASTExpression(std::shared_ptr<peg::Ast>, ASTBlockExpression *);
 
   /**
    * Creates expression from given input, this will not be an ASTExpression.
