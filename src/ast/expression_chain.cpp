@@ -6,12 +6,14 @@
 #include <utility>
 #include <vector>
 
+#include <peglib.h>
+
 #include "arithmetic_expression.h"
 #include "ast/ast_error.h"
 #include "ast/expression.h"
 #include "bc/build_context.h"
 #include "bc/function_build.h"
-#include "peglib.h"
+#include <bc/function_priority.h>
 
 namespace by::ast {
 class ASTBlockExpression;
@@ -26,28 +28,15 @@ ExpressionChain::ExpressionChain(
 auto ExpressionChain::determine_type(std::unique_ptr<bc::BuildContext> &bc)
     -> by::type::TypeName_ptr {
 
-  int min_prio = 0;
-  int max_prio = 0;
-  for (auto &fun : *bc) {
-    int prio = fun.get_priority();
-    if (prio < min_prio) {
-      min_prio = prio;
-    }
-    if (prio > max_prio) {
-      max_prio = prio;
-    }
-  }
-
-  for (int i = min_prio; i <= max_prio; ++i) {
-    for (auto &fun : *bc) {
-      if (fun.get_priority() == i) {
-        for (size_t j = 0; j < operators.size(); ++j) {
-          if (fun.get_name() == operators[j]) {
-            expressions[j] = std::make_shared<ASTArithmeticExpression>(
-                ast, parent, expressions[j], operators[j], expressions[j + 1]);
-            expressions.erase(expressions.begin() + j + 1);
-            operators.erase(operators.begin() + j);
-          }
+  for (int i = bc::FunctionPriority::OPERATOR_DOT;
+       i <= bc::FunctionPriority::OPERATOR_LIST; ++i) {
+    for (auto &fun : bc->get(static_cast<bc::FunctionPriority>(i))) {
+      for (size_t j = 0; j < operators.size(); ++j) {
+        if (fun.get_name() == operators[j]) {
+          expressions[j] = std::make_shared<ASTArithmeticExpression>(
+              ast, parent, expressions[j], operators[j], expressions[j + 1]);
+          expressions.erase(expressions.begin() + j + 1);
+          operators.erase(operators.begin() + j);
         }
       }
     }

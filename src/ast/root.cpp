@@ -79,9 +79,6 @@ void ASTRoot::compile(std::ostream &out) {
   } catch (const std::exception &e) {
     std::cerr << "Compilation failed while " << last_op << std::endl;
     std::cerr << e.what() << std::endl;
-    for (const auto &funk : *build_context) {
-      std::cerr << funk << std::endl;
-    }
     exit(1);
   }
 }

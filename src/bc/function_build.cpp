@@ -15,13 +15,13 @@ class Value;
 
 namespace by::bc {
 
-FunctionBuilder::FunctionBuilder(std::string name, int priority,
+FunctionBuilder::FunctionBuilder(std::string name, FunctionPriority priority,
                                  type::FunctionType_ptr type,
                                  build_functional functional)
     : name(std::move(name)), priority(priority), type(std::move(type)),
       functional(std::move(functional)) {}
 
-FunctionBuilder::FunctionBuilder(std::string name, int priority,
+FunctionBuilder::FunctionBuilder(std::string name, FunctionPriority priority,
                                  const type::FunctionType &type,
                                  build_functional functional)
     : name(std::move(name)), priority(priority),

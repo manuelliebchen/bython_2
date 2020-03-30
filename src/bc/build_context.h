@@ -26,21 +26,28 @@
 #include "../type/function_type.h"
 #include "../type/type_name.h"
 #include "function_build.h"
+#include "function_priority.h"
 
 namespace by {
 namespace bc {
 class FunctionBuilder;
 
-class BuildContext : public std::vector<FunctionBuilder> {
+class BuildContext {
 public:
   llvm::LLVMContext context;
   llvm::IRBuilder<> builder{context};
   llvm::Module module;
   llvm::DataLayout data_layout;
 
+  std::vector<FunctionBuilder> functions;
+
   BuildContext(const std::string&);
 
+  std::vector<FunctionBuilder> get(FunctionPriority) const;
+
   const FunctionBuilder& find(const std::string&, const std::vector<type::TypeName_ptr>& ) const;
+  type::TypeName_ptr get_type(const std::string&, const std::vector<type::TypeName_ptr>& ) const;
+//  llvm::Value* build(const std::string&, const std::vector<type::TypeName_ptr>&, std::vector<llvm::Value *>) const;
 
   void push_back_call(const std::string&, const type::FunctionType_ptr&);
   void push_back_call(const std::string&, const type::FunctionType&);

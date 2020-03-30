@@ -16,6 +16,7 @@
 #include <vector>
 
 #include "build_context.h"
+#include "function_priority.h"
 
 namespace llvm {
 class Value;
@@ -29,16 +30,17 @@ using build_functional =std::function<llvm::Value*( std::unique_ptr<BuildContext
 class FunctionBuilder {
 protected:
 	std::string name;
-	int priority;
+	FunctionPriority priority;
 	type::FunctionType_ptr type;
 	build_functional functional;
 
 public:
-	FunctionBuilder(std::string, int, type::FunctionType_ptr, build_functional);
-	FunctionBuilder(std::string, int, const type::FunctionType&, build_functional);
+
+	FunctionBuilder(std::string, FunctionPriority, type::FunctionType_ptr, build_functional);
+	FunctionBuilder(std::string, FunctionPriority, const type::FunctionType&, build_functional);
 
 	std::string get_name() const {return name;};
-	int get_priority() const { return priority;};
+	FunctionPriority get_priority() const { return priority;};
 	type::FunctionType_ptr get_type() const {
 		  return type;};
 
