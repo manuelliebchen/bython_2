@@ -59,8 +59,6 @@ void ASTRoot::insert_functions(
 
 void ASTRoot::compile(std::ostream &out) {
   std::string last_op;
-  std::cerr << "Compiling: " << std::endl;
-  std::cerr << *this << std::endl;
   bc::BuildContext_ptr build_context =
       std::make_unique<by::bc::BuildContext>(file);
   try {
@@ -83,7 +81,6 @@ void ASTRoot::compile(std::ostream &out) {
     build_context->module.print(rso, nullptr);
   } catch (const std::exception &e) {
     std::cerr << "Compilation failed while " << last_op << std::endl;
-    std::cerr << build_context->functions << std::endl;
     std::cerr << e.what() << std::endl;
     exit(1);
   }

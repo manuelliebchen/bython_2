@@ -55,15 +55,14 @@ auto ASTBlockExpression::determine_type(std::unique_ptr<bc::BuildContext> &bc)
     for (auto &exp : expressions) {
       exp->determine_type(bc);
     }
-  }
 
-  if (end_expression) {
-    if (*type == *type::TypeName::None) {
+    if (end_expression) {
       type = end_expression->determine_type(bc);
+    } else {
+      type = type::TypeName::Void;
     }
-    return type;
   }
-  return type::TypeName::Void;
+  return type;
 }
 
 auto ASTBlockExpression::find_variable_type(const std::string &name) const

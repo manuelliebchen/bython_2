@@ -34,8 +34,7 @@
 
 namespace by::ast {
 
-ASTFunction::ASTFunction(const std::shared_ptr<peg::Ast> &ast)
-    : ASTExpression(ast, nullptr) {
+ASTFunction::ASTFunction(const std::shared_ptr<peg::Ast> &ast) : ast(ast) {
   size_t varscount = ast->nodes.size() - 2;
   name = std::to_string(ast->nodes[0]);
   if (const std::shared_ptr<peg::Ast> &astreturntype = *(ast->nodes.end() - 2);
@@ -46,25 +45,24 @@ ASTFunction::ASTFunction(const std::shared_ptr<peg::Ast> &ast)
     type = type::TypeName::None;
   }
 
-  type::FunctionType function_type(type);
+  std::vector<type::TypeName_ptr> types;
   for (size_t i = 0; i < varscount; ++i) {
     parameters.push_back(
-        std::make_shared<ASTVariableDeclaration>(ast->nodes[1 + i], parent));
-    function_type.parameters.push_back(parameters.back()->get_type());
+        std::make_shared<ASTVariableDeclaration>(ast->nodes[1 + i]));
+    types.push_back(parameters.back()->get_type());
   }
-  this->function_type =
-      std::make_shared<const type::FunctionType>(function_type);
+  this->function_type = std::make_shared<const type::FunctionType>(type, types);
 
   blockexpression = std::make_shared<ASTBlockExpression>(
-      parameters, ast->nodes.back(), parent);
+      parameters, ast->nodes.back(), nullptr);
 }
 
 auto ASTFunction::determine_type(std::unique_ptr<bc::BuildContext> &bc)
     -> type::TypeName_ptr {
   type::TypeName_ptr blocktype = blockexpression->determine_type(bc);
   if (*blocktype != *type) {
-    throw by::type::type_deduction_exeption(ast, type,
-                                            blockexpression->get_type());
+    throw type::type_deduction_exeption(ast, type,
+                                        blockexpression->determine_type(bc));
   }
   return type;
 }

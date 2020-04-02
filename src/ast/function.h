@@ -42,13 +42,19 @@ namespace by::ast {
  * AST node for function declarations
  */
 
-class ASTFunction : public ASTExpression {
+class ASTFunction {
 protected:
+  /**
+   * Pointer to peg::Ast object of this AST node
+   */
+  const std::shared_ptr<peg::Ast> ast;
+
   /**
    * name of the functino
    */
   std::string name;
 
+  type::TypeName_ptr type;
   type::FunctionType_ptr function_type;
 
   /**

@@ -13,7 +13,8 @@
 #include <utility>
 #include <vector>
 
-#include "../type/type_name.h"
+#include <type/type_name.h>
+
 #include "arithmetic_expression.h"
 #include "block_expression.h"
 #include "call_expression.h"
@@ -30,7 +31,12 @@ ASTExpression::ASTExpression(std::shared_ptr<peg::Ast> ast,
                              ASTBlockExpression *parent)
     : ast(std::move(ast)), parent(parent), type(type::TypeName::None) {}
 
-auto ASTExpression::get_type() const -> by::type::TypeName_ptr { return type; }
+auto ASTExpression::get_type() const -> by::type::TypeName_ptr {
+  if (!(*type == *type::TypeName::None)) {
+    return type;
+  }
+  throw ast_error(ast, "Type was not determine");
+}
 
 auto operator<<(std::ostream &os, const by::ast::ASTExpression &exp)
     -> std::ostream & {
@@ -51,7 +57,14 @@ auto operator<<(std::ostream &os, const by::ast::ASTExpression &exp)
     os << *dyn;
   } else if (const auto *dyn = dynamic_cast<const ASTLetStatement *>(&exp)) {
     os << *dyn;
-  } else if (const auto *dyn = dynamic_cast<const ASTConstant *>(&exp)) {
+  } else if (const auto *dyn = dynamic_cast<const ASTConstant<bool> *>(&exp)) {
+    os << *dyn;
+  } else if (const auto *dyn = dynamic_cast<const ASTConstant<int> *>(&exp)) {
+    os << *dyn;
+  } else if (const auto *dyn = dynamic_cast<const ASTConstant<float> *>(&exp)) {
+    os << *dyn;
+  } else if (const auto *dyn =
+                 dynamic_cast<const ASTConstant<std::string> *>(&exp)) {
     os << *dyn;
   } else if (const auto *dyn =
                  dynamic_cast<const ASTVariableExpression *>(&exp)) {

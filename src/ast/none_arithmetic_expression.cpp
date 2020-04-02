@@ -20,15 +20,12 @@
 
 #include "ast_error.h"
 #include "block_expression.h"
-#include "boolean_constant.h"
 #include "call_expression.h"
+#include "constant.h"
 #include "expression.h"
 #include "expression_chain.h"
-#include "float_constant.h"
 #include "if_expression.h"
-#include "integer_constant.h"
 #include "let_statement.h"
-#include "string_constant.h"
 #include "variable_expression.h"
 
 namespace by::ast {
@@ -59,13 +56,13 @@ ASTNoneArithmeticExpression::ASTNoneArithmeticExpression(
   } else if (expression->original_name == "VariableExpression") {
     rhs = std::make_shared<ASTVariableExpression>(expression, parent);
   } else if (expression->original_name == "FloatConstant") {
-    rhs = std::make_shared<ASTFloatConstant>(expression, parent);
+    rhs = std::make_shared<ASTConstant<float>>(expression, parent);
   } else if (expression->original_name == "IntegerConstant") {
-    rhs = std::make_shared<ASTIntegerConstant>(expression, parent);
+    rhs = std::make_shared<ASTConstant<int>>(expression, parent);
   } else if (expression->original_name == "BooleanConstant") {
-    rhs = std::make_shared<ASTBooleanConstant>(expression, parent);
+    rhs = std::make_shared<ASTConstant<bool>>(expression, parent);
   } else if (expression->original_name == "StringConstant") {
-    rhs = std::make_shared<ASTStringConstant>(expression, parent);
+    rhs = std::make_shared<ASTConstant<std::string>>(expression, parent);
   } else {
     throw ast_error(ast, std::string("Expected Expression but was ") +
                              expression->original_name);

@@ -28,19 +28,25 @@ class ASTBlockExpression;
 
 namespace by::ast {
 
+template <typename T>
 class ASTConstant : public ASTExpression {
 protected:
-  std::string const_string;
-  ASTConstant(const std::shared_ptr<peg::Ast> &, ASTBlockExpression *,
-              std::string);
+  T value;
 
 public:
-  by::type::TypeName_ptr determine_type(std::unique_ptr<bc::BuildContext> &);
+  ASTConstant(const std::shared_ptr<peg::Ast> &, ASTBlockExpression *);
 
-  friend std::ostream &operator<<(std::ostream &, const ASTConstant &);
+  by::type::TypeName_ptr determine_type(std::unique_ptr<bc::BuildContext> &);
+  llvm::Value *build_ir(std::unique_ptr<bc::BuildContext> &) const;
+
+  T get_value() const;
+
+  template <typename U>
+  friend std::ostream &operator<<(std::ostream &, const ASTConstant<U> &);
 };
 
-std::ostream &operator<<(std::ostream &, const ASTConstant &);
+template <typename U>
+std::ostream &operator<<(std::ostream &, const ASTConstant<U> &);
 
 } /* namespace by::ast */
 
