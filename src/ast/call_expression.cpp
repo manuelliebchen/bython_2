@@ -11,9 +11,8 @@
 #include <stdexcept>
 
 #include "../bc/build_context.h"
-#include "../type/function_type.h"
 #include "ast/ast_error.h"
-#include "bc/function_build.h"
+#include "bc/function_manager.h"
 #include "expression.h"
 #include "type/type_name.h"
 
@@ -35,13 +34,11 @@ ASTCallExpression::ASTCallExpression(const std::shared_ptr<peg::Ast> &ast,
 
 auto ASTCallExpression::determine_type(std::unique_ptr<bc::BuildContext> &bc)
     -> by::type::TypeName_ptr {
-  for (auto &arg : arguments) {
-    parameter_type.push_back(arg->determine_type(bc));
-  }
-  try {
-    type = bc->find(name, parameter_type).get_type()->return_type;
-  } catch (std::out_of_range &oor) {
-    throw ast_error(ast, "Function not found: " + name);
+  if (*type == *type::TypeName::None) {
+    for (auto &arg : arguments) {
+      parameter_type.push_back(arg->determine_type(bc));
+    }
+    type = bc->functions.get_type(name, parameter_type);
   }
   return type;
 }
@@ -53,7 +50,20 @@ auto ASTCallExpression::build_ir(std::unique_ptr<bc::BuildContext> &bc) const
     llvm_args.emplace_back(arg->build_ir(bc));
   }
 
-  return bc->find(name, parameter_type).build_ir(bc, llvm_args);
+  return bc->functions.build(bc, name, parameter_type, llvm_args);
+}
+
+auto operator<<(std::ostream &os, const ASTCallExpression &call)
+    -> std::ostream & {
+  os << call.name << "(";
+  if (!call.arguments.empty()) {
+    os << *call.arguments.front();
+    for (size_t i = 1; i < call.arguments.size(); ++i) {
+      os << ", " << *call.arguments[i];
+    }
+  }
+  os << ")";
+  return os;
 }
 
 } // namespace ast

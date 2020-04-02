@@ -49,11 +49,8 @@ private:
                                   const ASTNoneArithmeticExpression &);
 };
 
-inline std::ostream &operator<<(std::ostream &os,
-                                const ASTNoneArithmeticExpression &none) {
-  os << none.UnaryOperator << *none.rhs;
-  return os;
-}
+std::ostream &operator<<(std::ostream &,
+                                  const ASTNoneArithmeticExpression &);
 
 } /* namespace by::ast */
 

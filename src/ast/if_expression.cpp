@@ -40,15 +40,17 @@ ASTIfExpression::ASTIfExpression(const std::shared_ptr<peg::Ast> &ast,
 
 auto ASTIfExpression::determine_type(std::unique_ptr<bc::BuildContext> &bc)
     -> by::type::TypeName_ptr {
-  type::TypeName_ptr condition_type = condition->determine_type(bc);
-  if (*condition_type != type::TypeName("Bool")) {
-    throw type::type_deduction_exeption(
-        ast, std::make_shared<const type::TypeName>("Bool"), condition_type);
-  }
-  type = block->determine_type(bc);
-  if (alternativ) {
-    type = std::make_shared<const by::type::TypeName>(
-        type->deduct_type(*alternativ->determine_type(bc)));
+  if (*type == *type::TypeName::None) {
+    type::TypeName_ptr condition_type = condition->determine_type(bc);
+    if (*condition_type != type::TypeName("Bool")) {
+      throw type::type_deduction_exeption(
+          ast, std::make_shared<const type::TypeName>("Bool"), condition_type);
+    }
+    type = block->determine_type(bc);
+    if (alternativ) {
+      type = std::make_shared<const by::type::TypeName>(
+          type->deduct_type(*alternativ->determine_type(bc)));
+    }
   }
   return type;
 }
@@ -114,6 +116,15 @@ auto ASTIfExpression::build_ir(std::unique_ptr<bc::BuildContext> &bc) const
   bc->builder.SetInsertPoint(merge_block);
 
   return phi_node;
+}
+
+auto operator<<(std::ostream &os, const ASTIfExpression &ifexp)
+    -> std::ostream & {
+  os << "if " << *ifexp.condition << " " << *ifexp.block;
+  if (ifexp.alternativ != nullptr) {
+    os << " else " << *ifexp.alternativ;
+  }
+  return os;
 }
 
 } /* namespace by::ast */

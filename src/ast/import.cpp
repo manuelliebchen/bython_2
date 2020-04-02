@@ -8,13 +8,12 @@
 #include "import.h"
 
 #include <fstream>
+#include <iterator>
 #include <ostream>
+#include <stdexcept>
 #include <vector>
 
-#include "../type/function_type.h"
-#include "../type/type_name.h"
-#include "bc/build_context.h"
-#include "expression.h"
+#include "ast/root.h"
 #include "peglib.h"
 #include "string_constant.h"
 

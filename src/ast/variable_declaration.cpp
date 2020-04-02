@@ -46,5 +46,11 @@ auto ASTVariableDeclaration::get_name() const -> const std::string & {
   return name;
 }
 
+auto operator<<(std::ostream &os, const ASTVariableDeclaration &var)
+    -> std::ostream & {
+  os << var.name << ": " << *var.type;
+  return os;
+}
+
 } // namespace ast
 } // namespace by

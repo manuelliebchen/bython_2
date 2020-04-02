@@ -21,6 +21,7 @@
 #include "../type/type_name.h"
 #include "variable_declaration.h"
 #include "root.h"
+#include "ast/extern.h"
 
 namespace by {
 namespace bc {
@@ -33,6 +34,7 @@ class Value;
 
 namespace by::ast {
 class ASTRoot;
+
 /**
  * AST node for extern declarations of functions
  */

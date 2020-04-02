@@ -13,6 +13,7 @@
 #include "../type/function_type.h"
 #include "../type/type_name.h"
 #include "bc/build_context.h"
+#include "bc/function_manager.h"
 #include "expression.h"
 #include "peglib.h"
 
@@ -27,12 +28,12 @@ auto ASTExtern::get_name() const -> std::string { return name; }
 
 void ASTExtern::insert_functions(
     std::unique_ptr<by::bc::BuildContext> &bc) const {
-  bc->push_back_call(name, function_type);
+  bc->functions.push_back_call(name, function_type);
 }
 
 auto operator<<(std::ostream &os, const ASTExtern &func) -> std::ostream & {
-  os << "extern func " << func.name << " = ";
-  os << " -> " << *func.function_type << " ";
+  os << "extern func " << func.name << " " << *func.function_type << " ";
+
   return os;
 };
 

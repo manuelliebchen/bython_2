@@ -49,15 +49,7 @@ public:
   friend std::ostream &operator<<(std::ostream &, const ASTCallExpression &);
 };
 
-inline std::ostream &operator<<(std::ostream &os,
-                                const ASTCallExpression &call) {
-  os << call.name << "( ";
-  for (auto &arg : call.arguments) {
-    os << *arg << ", ";
-  }
-  os << ")";
-  return os;
-}
+std::ostream &operator<<(std::ostream &, const ASTCallExpression &);
 
 } /* namespace by::ast */
 

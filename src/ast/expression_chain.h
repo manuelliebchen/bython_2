@@ -34,7 +34,11 @@ public:
   by::type::TypeName_ptr determine_type(std::unique_ptr<bc::BuildContext> &);
 
   llvm::Value *build_ir(std::unique_ptr<bc::BuildContext> &) const;
+  friend std::ostream &operator<<(std::ostream &, const ExpressionChain &);
 };
+
+std::ostream &operator<<(std::ostream &, const ExpressionChain &);
+
 }
 
 #endif //__EXPRESSION_CHAIN_H

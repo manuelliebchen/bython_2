@@ -26,7 +26,7 @@
 #include "../bc/build_context.h"
 #include "../type/function_type.h"
 #include "../type/type_name.h"
-#include "bc/function_build.h"
+#include "bc/function_manager.h"
 #include "block_expression.h"
 #include "expression.h"
 #include "peglib.h"
@@ -74,7 +74,7 @@ auto ASTFunction::get_name() const -> std::string { return name; }
 void ASTFunction::insertFunction(
     std::unique_ptr<by::bc::BuildContext> &bc) const {
   if (name != "main") {
-    bc->push_back_call(name, this->function_type);
+    bc->functions.push_back_call(name, this->function_type);
   } else {
     std::vector<llvm::Type *> llvm_parameters{
         llvm::Type::getInt32Ty(bc->context),
@@ -95,7 +95,7 @@ auto ASTFunction::build_ir(std::unique_ptr<by::bc::BuildContext> &bc) const
   function->getBasicBlockList().push_back(entry_block);
   bc->builder.SetInsertPoint(entry_block);
   if (name == "main") {
-    bc->find("b_init", {}).build_ir(bc, {});
+    bc->functions.build(bc, "b_init", {}, {});
 
     std::string arg_name = parameters[0]->get_name();
 
@@ -118,7 +118,7 @@ auto ASTFunction::build_ir(std::unique_ptr<by::bc::BuildContext> &bc) const
 
     bc->builder.CreateStore(bc->builder.CreateCall(function_callee, llvm_args),
                             variable_value);
-    bc->push_back_load(arg_name, type::TypeName::List);
+    bc->functions.push_back_load(arg_name, type::TypeName::List);
 
   } else {
     unsigned idx = 0;
@@ -128,14 +128,14 @@ auto ASTFunction::build_ir(std::unique_ptr<by::bc::BuildContext> &bc) const
       llvm::AllocaInst *variable_value = bc->builder.CreateAlloca(
           arg.getType(), nullptr, llvm::Twine(arg_name));
       bc->builder.CreateStore(&arg, variable_value);
-      bc->push_back_load(arg_name, par->get_type());
+      bc->functions.push_back_load(arg_name, par->get_type());
     }
   }
 
   llvm::Value *return_value = blockexpression->build_ir(bc);
 
   if (name == "main") {
-    bc->find("b_deinit", {}).build_ir(bc, {});
+    bc->functions.build(bc, "b_deinit", {}, {});
   }
   if (*type) {
     bc->builder.CreateRet(return_value);
@@ -146,16 +146,15 @@ auto ASTFunction::build_ir(std::unique_ptr<by::bc::BuildContext> &bc) const
 }
 
 auto operator<<(std::ostream &os, const ASTFunction &func) -> std::ostream & {
-  os << "func " << func.name << " ";
-  if (func.parameters.empty()) {
-    os << "Void";
-  } else {
-    for (auto &para : func.parameters) {
-      os << *para << ", ";
+  os << "func " << func.name;
+  if (!func.parameters.empty()) {
+    os << " = " << *func.parameters.front();
+    for (size_t i = 1; i < func.parameters.size(); ++i) {
+      os << ", " << *func.parameters[i];
     }
   }
   if (func.type) {
-    os << "-> " << *func.type << " ";
+    os << " -> " << *func.type << " ";
   }
   os << *func.blockexpression << "\n";
   return os;

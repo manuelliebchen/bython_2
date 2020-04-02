@@ -10,6 +10,7 @@
 #include <algorithm>
 #include <ext/alloc_traits.h>
 #include <string>
+#include <utility>
 #include <vector>
 
 #include "../type/type_name.h"
@@ -39,6 +40,8 @@ auto operator<<(std::ostream &os, const by::ast::ASTExpression &exp)
     os << *dyn;
   } else if (const auto *dyn =
                  dynamic_cast<const ASTArithmeticExpression *>(&exp)) {
+    os << *dyn;
+  } else if (const auto *dyn = dynamic_cast<const ExpressionChain *>(&exp)) {
     os << *dyn;
   } else if (const auto *dyn = dynamic_cast<const ASTCallExpression *>(&exp)) {
     os << *dyn;

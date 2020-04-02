@@ -86,6 +86,19 @@ auto FunctionType::operator!=(const FunctionType &rhs) const -> bool {
 
 FunctionType::operator const TypeName &() const { return *return_type; }
 
+auto operator<<(std::ostream &os, const FunctionType &func) -> std::ostream & {
+  if (!func.parameters.empty()) {
+    os << "= " << *func.parameters.front();
+    for (size_t i = 1; i < func.parameters.size(); ++i) {
+      os << ", " << *func.parameters[i];
+    }
+  }
+  if (func.return_type) {
+    os << " -> " << *func.return_type << " ";
+  }
+  return os;
+};
+
 } // namespace by::type
 
 namespace std {

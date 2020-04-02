@@ -14,8 +14,8 @@
 #include <functional>
 #include <string>
 #include <vector>
+#include <iosfwd>
 
-#include "build_context.h"
 #include "function_priority.h"
 
 namespace llvm {
@@ -25,7 +25,7 @@ class Value;
 namespace by::bc {
 	class BuildContext;
 
-using build_functional =std::function<llvm::Value*( std::unique_ptr<BuildContext>&, std::vector<llvm::Value*>)>;
+	using build_functional =std::function<llvm::Value*( std::unique_ptr<BuildContext>&, std::vector<llvm::Value*>)>;
 
 class FunctionBuilder {
 protected:
@@ -37,7 +37,6 @@ protected:
 public:
 
 	FunctionBuilder(std::string, FunctionPriority, type::FunctionType_ptr, build_functional);
-	FunctionBuilder(std::string, FunctionPriority, const type::FunctionType&, build_functional);
 
 	std::string get_name() const {return name;};
 	FunctionPriority get_priority() const { return priority;};

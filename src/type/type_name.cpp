@@ -117,7 +117,7 @@ auto TypeName::get_llvm_type(llvm::LLVMContext &context) const -> llvm::Type * {
     return llvm::Type::getFloatTy(context);
   }
   if (name == "None") {
-    throw std::runtime_error("Could not determin type!");
+    throw std::runtime_error("Could not determin llvm type from None.");
   }
   return llvm::Type::getInt8PtrTy(context);
 }
@@ -153,12 +153,13 @@ auto TypeName::is_native() const -> bool {
   return false;
 }
 
-auto operator<<(std::ostream &os, const TypeName &type) -> std::ostream & {
-  os << type.name;
-  if (!type.subtypes.empty()) {
+auto operator<<(std::ostream &os, const TypeName &val) -> std::ostream & {
+  os << val.name;
+  if (!val.subtypes.empty()) {
     os << "[";
-    for (auto &subtype : type.subtypes) {
-      os << *subtype << ", ";
+    os << std::to_string(*val.subtypes.front());
+    for (size_t i = 1; i < val.subtypes.size(); ++i) {
+      os << "," + std::to_string(*val.subtypes[i]);
     }
     os << "]";
   }

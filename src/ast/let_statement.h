@@ -50,10 +50,7 @@ private:
   friend std::ostream &operator<<(std::ostream &, const ASTLetStatement &);
 };
 
-inline std::ostream &operator<<(std::ostream &os, const ASTLetStatement &let) {
-  os << "let " << let.var << " = " << *let.value;
-  return os;
-}
+std::ostream &operator<<(std::ostream &, const ASTLetStatement &);
 } /* namespace by::ast */
 
 #endif /* SRC_AST_ASTLETSTATEMENT_HPP_ */

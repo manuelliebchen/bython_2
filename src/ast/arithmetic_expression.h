@@ -73,11 +73,8 @@ public:
                                   const ASTArithmeticExpression &);
 };
 
-inline std::ostream &operator<<(std::ostream &os,
-                                const ASTArithmeticExpression &arit) {
-  os << *arit.lhs << " " << arit.BinaryOperator << " " << *arit.rhs;
-  return os;
-}
+std::ostream &operator<<(std::ostream &,
+                                  const ASTArithmeticExpression &);
 
 } /* namespace by::ast */
 

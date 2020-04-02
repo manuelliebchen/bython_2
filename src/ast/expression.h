@@ -15,9 +15,9 @@
 #include <string>
 #include <unordered_set>
 
-#include "../bc/build_context.h"
-#include "../type/type_name.h"
-#include "ast_error.h"
+#include "bc/build_context.h"
+#include "type/type_name.h"
+#include "ast/ast_error.h"
 
 namespace by {
 namespace bc {

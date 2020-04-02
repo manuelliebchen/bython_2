@@ -15,18 +15,20 @@
 #include <llvm/IR/Type.h>
 #include <llvm/IR/Value.h>
 
-#include "../bc/build_context.h"
+#include <bc/build_context.h>
+#include <type/type_name.h>
+
 #include "ast_error.h"
 #include "block_expression.h"
 #include "boolean_constant.h"
 #include "call_expression.h"
 #include "expression.h"
+#include "expression_chain.h"
 #include "float_constant.h"
 #include "if_expression.h"
 #include "integer_constant.h"
 #include "let_statement.h"
 #include "string_constant.h"
-#include "type/type_name.h"
 #include "variable_expression.h"
 
 namespace by::ast {
@@ -72,7 +74,9 @@ ASTNoneArithmeticExpression::ASTNoneArithmeticExpression(
 
 auto ASTNoneArithmeticExpression::determine_type(
     std::unique_ptr<bc::BuildContext> &bc) -> by::type::TypeName_ptr {
-  type = rhs->determine_type(bc);
+  if (*type == *type::TypeName::None) {
+    type = rhs->determine_type(bc);
+  }
   return type;
 }
 
@@ -94,6 +98,17 @@ auto ASTNoneArithmeticExpression::build_ir(
     return rhs_llvm;
   }
   throw ast_error(ast, "Unimplemented Unary Operator: " + UnaryOperator);
+}
+
+auto operator<<(std::ostream &os, const ASTNoneArithmeticExpression &none)
+    -> std::ostream & {
+  os << none.UnaryOperator;
+  if (const auto *dyn = dynamic_cast<const ExpressionChain *>(none.rhs.get())) {
+    os << "(" << *dyn << ")";
+  } else {
+    os << *none.rhs;
+  }
+  return os;
 }
 
 } /* namespace by::ast */
