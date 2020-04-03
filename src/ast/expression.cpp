@@ -31,13 +31,6 @@ ASTExpression::ASTExpression(std::shared_ptr<peg::Ast> ast,
                              ASTBlockExpression *parent)
     : ast(std::move(ast)), parent(parent), type(type::TypeName::None) {}
 
-auto ASTExpression::get_type() const -> by::type::TypeName_ptr {
-  if (!(*type == *type::TypeName::None)) {
-    return type;
-  }
-  throw ast_error(ast, "Type was not determine");
-}
-
 auto operator<<(std::ostream &os, const by::ast::ASTExpression &exp)
     -> std::ostream & {
 

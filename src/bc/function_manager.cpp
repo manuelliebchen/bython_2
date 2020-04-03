@@ -32,26 +32,25 @@ namespace by::bc {
 
 FunctionManager::FunctionManager(BuildContext *bc) : bc(bc) {}
 
-void FunctionManager::emplace_back(const std::string &name,
-                                   FunctionPriority prio,
+void FunctionManager::emplace_back(const std::string &name, FunctionType prio,
                                    const type::FunctionType_ptr &type,
                                    const build_functional &build) {
   FunctionBuilder fb(name, prio, type, build);
   switch (prio) {
-  case FunctionPriority::VARIABLE:
+  case FunctionType::VARIABLE:
     variables.emplace(name, fb);
     break;
-  case FunctionPriority::CAST:
+  case FunctionType::CAST:
     casts.emplace_back(fb);
     break;
-  case FunctionPriority::CALL:
+  case FunctionType::CALL:
     calls.emplace(name, fb);
     break;
-  case FunctionPriority::UNARY:
+  case FunctionType::UNARY:
     unary.emplace(name, fb);
     break;
   default:
-    int op_type = prio - FunctionPriority::OPERATOR_DOT;
+    int op_type = prio - FunctionType::OPERATOR_DOT;
     operators[op_type].emplace(name, fb);
   }
 }
@@ -149,7 +148,7 @@ void FunctionManager::push_back_call(const std::string &name,
       llvm::FunctionType::get(type->return_type->get_llvm_type(bc->context),
                               llvm_parameters, false));
   emplace_back(
-      name, FunctionPriority::CALL, type,
+      name, FunctionType::CALL, type,
       [=](BuildContext_ptr &bc,
           const std::vector<llvm::Value *> &parameters) -> llvm::Value * {
         return bc->builder.CreateCall(function_callee, parameters);
@@ -159,7 +158,7 @@ void FunctionManager::push_back_call(const std::string &name,
 void FunctionManager::push_back_load(const std::string &name,
                                      const type::TypeName_ptr &type) {
   emplace_back(
-      name, FunctionPriority::VARIABLE,
+      name, FunctionType::VARIABLE,
       std::make_shared<const type::FunctionType>(type),
       [=](BuildContext_ptr &bc, const std::vector<llvm::Value *> &
           /* unused */) -> llvm::Value * {

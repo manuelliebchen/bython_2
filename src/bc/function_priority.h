@@ -10,7 +10,7 @@
 
 namespace by::bc {
 
-enum FunctionPriority {
+enum FunctionType {
   VARIABLE = 0,
   CAST = 1,
   UNARY = 2,

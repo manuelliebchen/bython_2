@@ -89,11 +89,6 @@ public:
    */
   const std::shared_ptr<peg::Ast> &get_ast() const { return ast; };
 
-  /**
-   * return type of expression
-   */
-  virtual by::type::TypeName_ptr get_type() const;
-
   friend std::ostream &operator<<(std::ostream &,
                                   const by::ast::ASTExpression &);
 };

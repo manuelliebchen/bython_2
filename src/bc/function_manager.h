@@ -50,7 +50,7 @@ public:
 
   std::vector<std::multimap<std::string,FunctionBuilder>> get_operators() const;
 
-  void emplace_back(const std::string&, FunctionPriority, const type::FunctionType_ptr&, const build_functional&);
+  void emplace_back(const std::string&, FunctionType, const type::FunctionType_ptr&, const build_functional&);
 
   type::TypeName_ptr get_type(const std::string&, const std::vector<type::TypeName_ptr>& ) const;
   llvm::Value* build(std::unique_ptr<bc::BuildContext> &, const std::string&, const std::vector<type::TypeName_ptr>&, std::vector<llvm::Value *>) const;

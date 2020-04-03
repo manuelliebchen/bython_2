@@ -34,7 +34,7 @@ BuildContext::BuildContext(const std::string &name)
 
 void BuildContext::build_buildin() {
   functions.emplace_back(
-      "Null", FunctionPriority::VARIABLE,
+      "Null", FunctionType::VARIABLE,
       std::make_shared<const type::FunctionType>(type::TypeName::Null),
       [&](BuildContext_ptr &bc, const std::vector<llvm::Value *> &
           /* parameters */) -> llvm::Value * {
@@ -42,7 +42,7 @@ void BuildContext::build_buildin() {
             llvm::Type::getInt8PtrTy(bc->context));
       });
   functions.emplace_back(
-      "-", FunctionPriority::UNARY,
+      "-", FunctionType::UNARY,
       std::make_shared<const type::FunctionType>(type::TypeName::Int,
                                                  type::TypeName::Int),
       [&](BuildContext_ptr &bc,
@@ -50,7 +50,7 @@ void BuildContext::build_buildin() {
         return bc->builder.CreateNeg(parameters.front());
       });
   functions.emplace_back(
-      "-", FunctionPriority::UNARY,
+      "-", FunctionType::UNARY,
       std::make_shared<const type::FunctionType>(type::TypeName::Float,
                                                  type::TypeName::Float),
       [&](BuildContext_ptr &bc,
@@ -58,7 +58,7 @@ void BuildContext::build_buildin() {
         return bc->builder.CreateFNeg(parameters.front());
       });
   functions.emplace_back(
-      "!", FunctionPriority::UNARY,
+      "!", FunctionType::UNARY,
       std::make_shared<const type::FunctionType>(type::TypeName::Bool,
                                                  type::TypeName::Bool),
       [&](BuildContext_ptr &bc,
@@ -66,7 +66,7 @@ void BuildContext::build_buildin() {
         return bc->builder.CreateNot(parameters.front());
       });
   functions.emplace_back(
-      "", FunctionPriority::CAST,
+      "", FunctionType::CAST,
       std::make_shared<const type::FunctionType>(type::TypeName::Float,
                                                  type::TypeName::Int),
       [&](BuildContext_ptr &bc,
@@ -75,7 +75,7 @@ void BuildContext::build_buildin() {
             parameters[0], type::TypeName::Float->get_llvm_type(bc->context));
       });
   functions.emplace_back(
-      "==", FunctionPriority::OPERATOR_COMPARE,
+      "==", FunctionType::OPERATOR_COMPARE,
       std::make_shared<const type::FunctionType>(
           type::TypeName::Bool, type::TypeName::Int, type::TypeName::Int),
       [&](BuildContext_ptr &bc,
@@ -83,7 +83,7 @@ void BuildContext::build_buildin() {
         return bc->builder.CreateICmpEQ(parameters[0], parameters[1]);
       });
   functions.emplace_back(
-      "==", FunctionPriority::OPERATOR_COMPARE,
+      "==", FunctionType::OPERATOR_COMPARE,
       std::make_shared<const type::FunctionType>(
           type::TypeName::Bool, type::TypeName::Float, type::TypeName::Float),
       [&](BuildContext_ptr &bc,
@@ -91,7 +91,7 @@ void BuildContext::build_buildin() {
         return bc->builder.CreateFCmpOEQ(parameters[0], parameters[1]);
       });
   functions.emplace_back(
-      "!=", FunctionPriority::OPERATOR_COMPARE,
+      "!=", FunctionType::OPERATOR_COMPARE,
       std::make_shared<const type::FunctionType>(
           type::TypeName::Bool, type::TypeName::Int, type::TypeName::Int),
       [&](BuildContext_ptr &bc,
@@ -99,7 +99,7 @@ void BuildContext::build_buildin() {
         return bc->builder.CreateICmpNE(parameters[0], parameters[1]);
       });
   functions.emplace_back(
-      "!=", FunctionPriority::OPERATOR_COMPARE,
+      "!=", FunctionType::OPERATOR_COMPARE,
       std::make_shared<const type::FunctionType>(
           type::TypeName::Bool, type::TypeName::Float, type::TypeName::Float),
       [&](BuildContext_ptr &bc,
@@ -107,7 +107,7 @@ void BuildContext::build_buildin() {
         return bc->builder.CreateFCmpONE(parameters[0], parameters[1]);
       });
   functions.emplace_back(
-      ">", FunctionPriority::OPERATOR_COMPARE,
+      ">", FunctionType::OPERATOR_COMPARE,
       std::make_shared<const type::FunctionType>(
           type::TypeName::Bool, type::TypeName::Int, type::TypeName::Int),
       [&](BuildContext_ptr &bc,
@@ -115,7 +115,7 @@ void BuildContext::build_buildin() {
         return bc->builder.CreateICmpSGT(parameters[0], parameters[1]);
       });
   functions.emplace_back(
-      ">", FunctionPriority::OPERATOR_COMPARE,
+      ">", FunctionType::OPERATOR_COMPARE,
       std::make_shared<const type::FunctionType>(
           type::TypeName::Bool, type::TypeName::Float, type::TypeName::Float),
       [&](BuildContext_ptr &bc,
@@ -123,7 +123,7 @@ void BuildContext::build_buildin() {
         return bc->builder.CreateFCmpOGT(parameters[0], parameters[1]);
       });
   functions.emplace_back(
-      ">=", FunctionPriority::OPERATOR_COMPARE,
+      ">=", FunctionType::OPERATOR_COMPARE,
       std::make_shared<const type::FunctionType>(
           type::TypeName::Bool, type::TypeName::Int, type::TypeName::Int),
       [&](BuildContext_ptr &bc,
@@ -131,7 +131,7 @@ void BuildContext::build_buildin() {
         return bc->builder.CreateICmpSGE(parameters[0], parameters[1]);
       });
   functions.emplace_back(
-      ">=", FunctionPriority::OPERATOR_COMPARE,
+      ">=", FunctionType::OPERATOR_COMPARE,
       std::make_shared<const type::FunctionType>(
           type::TypeName::Bool, type::TypeName::Float, type::TypeName::Float),
       [&](BuildContext_ptr &bc,
@@ -139,7 +139,7 @@ void BuildContext::build_buildin() {
         return bc->builder.CreateFCmpOGE(parameters[0], parameters[1]);
       });
   functions.emplace_back(
-      "<", FunctionPriority::OPERATOR_COMPARE,
+      "<", FunctionType::OPERATOR_COMPARE,
       std::make_shared<const type::FunctionType>(
           type::TypeName::Bool, type::TypeName::Int, type::TypeName::Int),
       [&](BuildContext_ptr &bc,
@@ -147,7 +147,7 @@ void BuildContext::build_buildin() {
         return bc->builder.CreateICmpSLT(parameters[0], parameters[1]);
       });
   functions.emplace_back(
-      "<", FunctionPriority::OPERATOR_COMPARE,
+      "<", FunctionType::OPERATOR_COMPARE,
       std::make_shared<const type::FunctionType>(
           type::TypeName::Bool, type::TypeName::Float, type::TypeName::Float),
       [&](BuildContext_ptr &bc,
@@ -155,7 +155,7 @@ void BuildContext::build_buildin() {
         return bc->builder.CreateFCmpOLT(parameters[0], parameters[1]);
       });
   functions.emplace_back(
-      "<=", FunctionPriority::OPERATOR_COMPARE,
+      "<=", FunctionType::OPERATOR_COMPARE,
       std::make_shared<const type::FunctionType>(
           type::TypeName::Bool, type::TypeName::Int, type::TypeName::Int),
       [&](BuildContext_ptr &bc,
@@ -163,7 +163,7 @@ void BuildContext::build_buildin() {
         return bc->builder.CreateICmpSLE(parameters[0], parameters[1]);
       });
   functions.emplace_back(
-      "<=", FunctionPriority::OPERATOR_COMPARE,
+      "<=", FunctionType::OPERATOR_COMPARE,
       std::make_shared<const type::FunctionType>(
           type::TypeName::Bool, type::TypeName::Float, type::TypeName::Float),
       [&](BuildContext_ptr &bc,
@@ -171,7 +171,7 @@ void BuildContext::build_buildin() {
         return bc->builder.CreateFCmpOLE(parameters[0], parameters[1]);
       });
   functions.emplace_back(
-      "+", FunctionPriority::OPERATOR_LINE,
+      "+", FunctionType::OPERATOR_LINE,
       std::make_shared<const type::FunctionType>(
           type::TypeName::Int, type::TypeName::Int, type::TypeName::Int),
       [&](BuildContext_ptr &bc,
@@ -179,7 +179,7 @@ void BuildContext::build_buildin() {
         return bc->builder.CreateAdd(parameters[0], parameters[1]);
       });
   functions.emplace_back(
-      "+", FunctionPriority::OPERATOR_LINE,
+      "+", FunctionType::OPERATOR_LINE,
       std::make_shared<const type::FunctionType>(
           type::TypeName::Float, type::TypeName::Float, type::TypeName::Float),
       [&](BuildContext_ptr &bc,
@@ -187,7 +187,7 @@ void BuildContext::build_buildin() {
         return bc->builder.CreateFAdd(parameters[0], parameters[1]);
       });
   functions.emplace_back(
-      "-", FunctionPriority::OPERATOR_LINE,
+      "-", FunctionType::OPERATOR_LINE,
       std::make_shared<const type::FunctionType>(
           type::TypeName::Int, type::TypeName::Int, type::TypeName::Int),
       [&](BuildContext_ptr &bc,
@@ -195,7 +195,7 @@ void BuildContext::build_buildin() {
         return bc->builder.CreateSub(parameters[0], parameters[1]);
       });
   functions.emplace_back(
-      "-", FunctionPriority::OPERATOR_LINE,
+      "-", FunctionType::OPERATOR_LINE,
       std::make_shared<const type::FunctionType>(
           type::TypeName::Float, type::TypeName::Float, type::TypeName::Float),
       [&](BuildContext_ptr &bc,
@@ -203,7 +203,7 @@ void BuildContext::build_buildin() {
         return bc->builder.CreateFSub(parameters[0], parameters[1]);
       });
   functions.emplace_back(
-      "*", FunctionPriority::OPERATOR_DOT,
+      "*", FunctionType::OPERATOR_DOT,
       std::make_shared<const type::FunctionType>(
           type::TypeName::Int, type::TypeName::Int, type::TypeName::Int),
       [&](BuildContext_ptr &bc,
@@ -211,7 +211,7 @@ void BuildContext::build_buildin() {
         return bc->builder.CreateMul(parameters[0], parameters[1]);
       });
   functions.emplace_back(
-      "*", FunctionPriority::OPERATOR_DOT,
+      "*", FunctionType::OPERATOR_DOT,
       std::make_shared<const type::FunctionType>(
           type::TypeName::Float, type::TypeName::Float, type::TypeName::Float),
       [&](BuildContext_ptr &bc,
@@ -219,7 +219,7 @@ void BuildContext::build_buildin() {
         return bc->builder.CreateFMul(parameters[0], parameters[1]);
       });
   functions.emplace_back(
-      "/", FunctionPriority::OPERATOR_DOT,
+      "/", FunctionType::OPERATOR_DOT,
       std::make_shared<const type::FunctionType>(
           type::TypeName::Int, type::TypeName::Int, type::TypeName::Int),
       [&](BuildContext_ptr &bc,
@@ -227,7 +227,7 @@ void BuildContext::build_buildin() {
         return bc->builder.CreateSDiv(parameters[0], parameters[1]);
       });
   functions.emplace_back(
-      "/", FunctionPriority::OPERATOR_DOT,
+      "/", FunctionType::OPERATOR_DOT,
       std::make_shared<const type::FunctionType>(
           type::TypeName::Float, type::TypeName::Float, type::TypeName::Float),
       [&](BuildContext_ptr &bc,
@@ -235,7 +235,7 @@ void BuildContext::build_buildin() {
         return bc->builder.CreateFDiv(parameters[0], parameters[1]);
       });
   functions.emplace_back(
-      "%", FunctionPriority::OPERATOR_DOT,
+      "%", FunctionType::OPERATOR_DOT,
       std::make_shared<const type::FunctionType>(
           type::TypeName::Int, type::TypeName::Int, type::TypeName::Int),
       [&](BuildContext_ptr &bc,
@@ -243,7 +243,7 @@ void BuildContext::build_buildin() {
         return bc->builder.CreateSRem(parameters[0], parameters[1]);
       });
   functions.emplace_back(
-      "&&", FunctionPriority::OPERATOR_DOT,
+      "&&", FunctionType::OPERATOR_DOT,
       std::make_shared<const type::FunctionType>(
           type::TypeName::Bool, type::TypeName::Bool, type::TypeName::Bool),
       [&](BuildContext_ptr &bc,
@@ -251,7 +251,7 @@ void BuildContext::build_buildin() {
         return bc->builder.CreateAnd(parameters[0], parameters[1]);
       });
   functions.emplace_back(
-      "||", FunctionPriority::OPERATOR_LINE,
+      "||", FunctionType::OPERATOR_LINE,
       std::make_shared<const type::FunctionType>(
           type::TypeName::Bool, type::TypeName::Bool, type::TypeName::Bool),
       [&](BuildContext_ptr &bc,
@@ -280,7 +280,7 @@ void BuildContext::build_all_list_operator(const type::TypeName_ptr &type) {
   auto list_type = type::TypeName::make({"List", {type}});
 
   functions.emplace_back(
-      "", FunctionPriority::CAST,
+      "", FunctionType::CAST,
       std::make_shared<const type::FunctionType>(type::TypeName::Null,
                                                  list_type),
       [&](BuildContext_ptr & /* bc */,
@@ -302,7 +302,7 @@ void BuildContext::build_all_list_operator(const type::TypeName_ptr &type) {
       "list_pop",
       std::make_shared<const type::FunctionType>(list_type, list_type));
   functions.emplace_back(
-      ":", FunctionPriority::OPERATOR_LIST,
+      ":", FunctionType::OPERATOR_LIST,
       std::make_shared<const type::FunctionType>(list_type, type, list_type),
       [=](BuildContext_ptr &bc,
           const std::vector<llvm::Value *> &parameters) -> llvm::Value * {
@@ -310,7 +310,7 @@ void BuildContext::build_all_list_operator(const type::TypeName_ptr &type) {
                                    {type, list_type}, parameters);
       });
   functions.emplace_back(
-      ":", FunctionPriority::OPERATOR_LIST,
+      ":", FunctionType::OPERATOR_LIST,
       std::make_shared<const type::FunctionType>(list_type, list_type,
                                                  list_type),
       [=](BuildContext_ptr &bc,

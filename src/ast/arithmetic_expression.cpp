@@ -34,7 +34,7 @@ auto ASTArithmeticExpression::determine_type(
     function_type = std::make_shared<const type::FunctionType>(
         bc->functions.get_type(
             BinaryOperator, {lhs->determine_type(bc), rhs->determine_type(bc)}),
-        lhs->determine_type(bc), rhs->get_type());
+        lhs->determine_type(bc), rhs->determine_type(bc));
     type = function_type->return_type;
   }
   return type;
@@ -45,11 +45,11 @@ auto ASTArithmeticExpression::build_ir(
   llvm::Value *lhs_llvm = lhs->build_ir(bc);
   llvm::Value *rhs_llvm = rhs->build_ir(bc);
 
-  if (*lhs->determine_type(bc) != *lhs->get_type()) {
+  if (*lhs->determine_type(bc) != *lhs->determine_type(bc)) {
     lhs_llvm = bc->builder.CreateSIToFP(
-        lhs_llvm, lhs->get_type()->get_llvm_type(bc->context));
+        lhs_llvm, lhs->determine_type(bc)->get_llvm_type(bc->context));
   }
-  if (*rhs->get_type() != *function_type->rhs()) {
+  if (*rhs->determine_type(bc) != *function_type->rhs()) {
     rhs_llvm = bc->builder.CreateSIToFP(
         rhs_llvm, function_type->rhs()->get_llvm_type(bc->context));
   }

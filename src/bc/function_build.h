@@ -30,16 +30,16 @@ namespace by::bc {
 class FunctionBuilder {
 protected:
 	std::string name;
-	FunctionPriority priority;
+	FunctionType priority;
 	type::FunctionType_ptr type;
 	build_functional functional;
 
 public:
 
-	FunctionBuilder(std::string, FunctionPriority, type::FunctionType_ptr, build_functional);
+	FunctionBuilder(std::string, FunctionType, type::FunctionType_ptr, build_functional);
 
 	std::string get_name() const {return name;};
-	FunctionPriority get_priority() const { return priority;};
+	FunctionType get_priority() const { return priority;};
 	type::FunctionType_ptr get_type() const {
 		  return type;};
 
