@@ -8,15 +8,14 @@
 #include "import.h"
 
 #include <fstream>
+#include <iterator>
 #include <ostream>
+#include <stdexcept>
 #include <vector>
 
-#include "../type/function_type.h"
-#include "../type/type_name.h"
-#include "bc/build_context.h"
-#include "expression.h"
+#include "ast/root.h"
+#include "constant.h"
 #include "peglib.h"
-#include "string_constant.h"
 
 auto read_file(const std::string &filepath) -> std::string {
   std::ifstream ifs;
@@ -37,8 +36,8 @@ namespace by::ast {
 
 ASTImport::ASTImport(
     const std::shared_ptr<peg::Ast> &ast,
-    std::shared_ptr<std::unordered_set<std::string>> file_list) {
-  file = ASTStringConstant(ast->nodes[0], nullptr).get_value();
+    const std::shared_ptr<std::unordered_set<std::string>> &file_list) {
+  file = ASTConstant<std::string>(ast->nodes[0], nullptr).get_value();
 
   if (file_list->find(file) == file_list->end()) {
     const std::string bython_grammar = read_file(GRAMMAR_PATH);

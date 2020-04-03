@@ -14,8 +14,9 @@
 #include <functional>
 #include <string>
 #include <vector>
+#include <iosfwd>
 
-#include "build_context.h"
+#include "function_priority.h"
 
 namespace llvm {
 class Value;
@@ -24,26 +25,29 @@ class Value;
 namespace by::bc {
 	class BuildContext;
 
-using build_functional =std::function<llvm::Value*( std::unique_ptr<BuildContext>&, std::vector<llvm::Value*>)>;
+	using build_functional =std::function<llvm::Value*( std::unique_ptr<BuildContext>&, std::vector<llvm::Value*>)>;
 
 class FunctionBuilder {
 protected:
 	std::string name;
-	int priority;
+	FunctionPriority priority;
 	type::FunctionType_ptr type;
 	build_functional functional;
 
 public:
-	FunctionBuilder(std::string, int, type::FunctionType_ptr, build_functional);
-	FunctionBuilder(std::string, int, const type::FunctionType&, build_functional);
+
+	FunctionBuilder(std::string, FunctionPriority, type::FunctionType_ptr, build_functional);
 
 	std::string get_name() const {return name;};
-	int get_priority() const { return priority;};
+	FunctionPriority get_priority() const { return priority;};
 	type::FunctionType_ptr get_type() const {
 		  return type;};
 
 	llvm::Value *build_ir(std::unique_ptr<BuildContext> &,  std::vector<llvm::Value*>) const;
+  friend std::ostream &operator<<(std::ostream &, const FunctionBuilder &);
 };
+
+std::ostream &operator<<(std::ostream &, const FunctionBuilder &);
 }
 
 

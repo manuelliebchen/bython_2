@@ -15,9 +15,9 @@
 #include <string>
 #include <unordered_set>
 
-#include "../bc/build_context.h"
-#include "../type/type_name.h"
-#include "ast_error.h"
+#include "bc/build_context.h"
+#include "type/type_name.h"
+#include "ast/ast_error.h"
 
 namespace by {
 namespace bc {
@@ -59,7 +59,11 @@ protected:
    */
   type::TypeName_ptr type;
 
-  ASTExpression(const std::shared_ptr<peg::Ast> &, ASTBlockExpression *);
+  ASTExpression() = delete;
+  /**
+   * ctor to copy pointers
+   */
+  ASTExpression(std::shared_ptr<peg::Ast>, ASTBlockExpression *);
 
   /**
    * Creates expression from given input, this will not be an ASTExpression.

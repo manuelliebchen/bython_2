@@ -57,18 +57,12 @@ public:
    */
   bool register_variable(const std::string &, const by::type::TypeName_ptr &);
 
+  size_t count_generation() const;
+
   friend std::ostream &operator<<(std::ostream &, const ASTBlockExpression &);
 };
 
-inline std::ostream &operator<<(std::ostream &os,
-                                const ASTBlockExpression &block) {
-  os << "{\n";
-  for (auto &exp : block.expressions) {
-    os << *exp << ";" << std::endl;
-  }
-  os << "}";
-  return os;
-}
+std::ostream &operator<<(std::ostream &, const ASTBlockExpression &);
 
 } /* namespace by::ast */
 

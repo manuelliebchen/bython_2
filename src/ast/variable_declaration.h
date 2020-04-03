@@ -34,32 +34,37 @@ namespace by::ast {
 /**
  * Simple AST node to save name,type relations
  */
-class ASTVariableDeclaration : public ASTExpression {
+class ASTVariableDeclaration {
 protected:
   /**
    * Name of the variable
    */
   std::string name;
+  /**
+   * Pointer to peg::Ast object of this AST node
+   */
+  const std::shared_ptr<peg::Ast> ast;
+
+  /**
+   * type of the expression
+   */
+  type::TypeName_ptr type;
 
 public:
-  ASTVariableDeclaration(const std::shared_ptr<peg::Ast> &,
-                         ASTBlockExpression *);
-
-  llvm::Value *build_ir(std::unique_ptr<bc::BuildContext> &) const;
+  ASTVariableDeclaration(const std::shared_ptr<peg::Ast> &);
 
   const std::string &get_name() const;
 
-  by::type::TypeName_ptr determine_type(std::unique_ptr<bc::BuildContext> &);
+  /**
+   * return type of expression
+   */
+  by::type::TypeName_ptr get_type() const;
 
   friend std::ostream &operator<<(std::ostream &,
                                   const ASTVariableDeclaration &);
 };
-
-inline std::ostream &operator<<(std::ostream &os,
-                                const ASTVariableDeclaration &var) {
-  os << var.name << " : " << *var.type;
-  return os;
-}
+std::ostream &operator<<(std::ostream &,
+                                  const ASTVariableDeclaration &);
 
 } // namespace by::ast
 

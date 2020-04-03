@@ -1,5 +1,6 @@
 
 #include <bits/exception.h>
+#include <cstdlib>
 #include <cxxopts.hpp>
 #include <fstream>
 #include <iostream>
@@ -7,7 +8,6 @@
 #include <memory>
 #include <peglib.h>
 #include <stdexcept>
-#include <stdlib.h>
 #include <string>
 #include <vector>
 
@@ -29,7 +29,7 @@ auto read_file(const std::string &filepath) -> std::string {
 };
 
 auto main(int argc, char *argv[]) -> int {
-  std::string last_op = "";
+  std::string last_op;
   try {
     cxxopts::Options options(*argv, "Bython Compiler.");
     options.positional_help("input").show_positional_help();

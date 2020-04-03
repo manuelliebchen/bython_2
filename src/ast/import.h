@@ -21,6 +21,7 @@
 #include "../type/type_name.h"
 #include "variable_declaration.h"
 #include "root.h"
+#include "ast/extern.h"
 
 namespace by {
 namespace bc {
@@ -33,6 +34,7 @@ class Value;
 
 namespace by::ast {
 class ASTRoot;
+
 /**
  * AST node for extern declarations of functions
  */
@@ -45,7 +47,7 @@ protected:
   std::shared_ptr<by::ast::ASTRoot> root;
 
 public:
-  ASTImport(const std::shared_ptr<peg::Ast> &, std::shared_ptr<std::unordered_set<std::string>>);
+  ASTImport(const std::shared_ptr<peg::Ast> &,const std::shared_ptr<std::unordered_set<std::string>>&);
 
   void insert_functions(
       std::unique_ptr<by::bc::BuildContext> &) const;

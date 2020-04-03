@@ -8,7 +8,6 @@
 #include "block_expression.h"
 
 #include <ext/alloc_traits.h>
-#include <stdexcept>
 #include <unordered_map>
 #include <unordered_set>
 #include <utility>
@@ -52,15 +51,18 @@ ASTBlockExpression::ASTBlockExpression(
 
 auto ASTBlockExpression::determine_type(std::unique_ptr<bc::BuildContext> &bc)
     -> by::type::TypeName_ptr {
-  for (auto &exp : expressions) {
-    exp->determine_type(bc);
-  }
+  if (*type == *type::TypeName::None) {
+    for (auto &exp : expressions) {
+      exp->determine_type(bc);
+    }
 
-  if (end_expression) {
-    type = end_expression->determine_type(bc);
-    return type;
+    if (end_expression) {
+      type = end_expression->determine_type(bc);
+    } else {
+      type = type::TypeName::Void;
+    }
   }
-  return type::TypeName::Void;
+  return type;
 }
 
 auto ASTBlockExpression::find_variable_type(const std::string &name) const
@@ -74,7 +76,7 @@ auto ASTBlockExpression::find_variable_type(const std::string &name) const
   } else if (parent != nullptr) {
     return parent->find_variable_type(name);
   }
-  throw std::runtime_error("Could not determen type of variable: " + name);
+  return by::type::TypeName::None;
 }
 
 auto ASTBlockExpression::register_variable(const std::string &name,
@@ -101,6 +103,32 @@ auto ASTBlockExpression::build_ir(std::unique_ptr<bc::BuildContext> &bc) const
   }
 
   return ret;
+}
+
+auto ASTBlockExpression::count_generation() const -> size_t {
+  if (parent != nullptr) {
+    return parent->count_generation() + 1;
+  }
+  return 1;
+}
+
+auto operator<<(std::ostream &os, const ASTBlockExpression &block)
+    -> std::ostream & {
+  std::string tapstop = "  ";
+  std::string prestring;
+  size_t generations = block.count_generation();
+  for (size_t i = 0; i < generations - 1; ++i) {
+    prestring += tapstop;
+  }
+  os << "{\n";
+  for (auto &exp : block.expressions) {
+    os << prestring << tapstop << *exp << ";" << std::endl;
+  }
+  if (block.end_expression) {
+    os << prestring << tapstop << *block.end_expression << std::endl;
+  }
+  os << prestring << "}";
+  return os;
 }
 
 } /* namespace by::ast */

@@ -7,12 +7,10 @@
 
 #include "variable_expression.h"
 
-#include <llvm/IR/Constants.h>
-#include <llvm/IR/DerivedTypes.h>
 #include <vector>
 
 #include "../bc/build_context.h"
-#include "bc/function_build.h"
+#include "bc/function_manager.h"
 #include "block_expression.h"
 #include "expression.h"
 #include "type/type_name.h"
@@ -30,22 +28,22 @@ ASTVariableExpression::ASTVariableExpression(
 
 auto ASTVariableExpression::determine_type(
     std::unique_ptr<bc::BuildContext> &bc) -> by::type::TypeName_ptr {
-  if (name != "Null") {
-    type = parent->find_variable_type(name);
-  } else {
-    type = type::TypeName::Null;
+  if (*type == *type::TypeName::None) {
+    if (name != "Null") {
+      type = parent->find_variable_type(name);
+      if (*type == *type::TypeName::None) {
+        type = bc->functions.get_type(name, {});
+      }
+    } else {
+      type = type::TypeName::Null;
+    }
   }
   return type;
 }
 
 auto ASTVariableExpression::build_ir(
     std::unique_ptr<bc::BuildContext> &bc) const -> llvm::Value * {
-  if (name != "Null") {
-    return bc->find(name).build_ir(bc, {});
-  } else {
-    return llvm::ConstantPointerNull::get(
-        (llvm::PointerType *)type::TypeName::Null->get_llvm_type(bc->context));
-  }
+  return bc->functions.build(bc, name, {}, {});
 }
 
 } /* namespace by::ast */

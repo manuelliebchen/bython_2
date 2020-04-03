@@ -48,14 +48,7 @@ private:
   friend std::ostream &operator<<(std::ostream &, const ASTIfExpression &);
 };
 
-inline std::ostream &operator<<(std::ostream &os,
-                                const ASTIfExpression &ifexp) {
-  os << "if " << *ifexp.condition << " " << *ifexp.block;
-  if (ifexp.alternativ != nullptr) {
-    os << *ifexp.alternativ;
-  }
-  return os;
-}
+std::ostream &operator<<(std::ostream &, const ASTIfExpression &);
 
 } /* namespace by::ast */
 

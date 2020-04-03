@@ -13,18 +13,13 @@
 
 #include "../bc/build_context.h"
 #include "../type/function_type.h"
-#include "bc/function_build.h"
+#include "bc/function_manager.h"
 #include "expression.h"
 #include "peglib.h"
 #include "type/type_name.h"
 
-namespace by {
-namespace ast {
-class ASTBlockExpression;
-} // namespace ast
-} // namespace by
-
 namespace by::ast {
+class ASTBlockExpression;
 
 ASTArithmeticExpression::ASTArithmeticExpression(
     const std::shared_ptr<peg::Ast> &ast, ASTBlockExpression *parent,
@@ -35,11 +30,13 @@ ASTArithmeticExpression::ASTArithmeticExpression(
 
 auto ASTArithmeticExpression::determine_type(
     std::unique_ptr<bc::BuildContext> &bc) -> by::type::TypeName_ptr {
-
-  auto &funk_builder = bc->find(
-      BinaryOperator, {lhs->determine_type(bc), rhs->determine_type(bc)});
-  function_type = funk_builder.get_type();
-  type = function_type->return_type;
+  if (*type == *type::TypeName::None) {
+    function_type = std::make_shared<const type::FunctionType>(
+        bc->functions.get_type(
+            BinaryOperator, {lhs->determine_type(bc), rhs->determine_type(bc)}),
+        lhs->determine_type(bc), rhs->get_type());
+    type = function_type->return_type;
+  }
   return type;
 }
 
@@ -48,17 +45,23 @@ auto ASTArithmeticExpression::build_ir(
   llvm::Value *lhs_llvm = lhs->build_ir(bc);
   llvm::Value *rhs_llvm = rhs->build_ir(bc);
 
-  if (*lhs->get_type() != *function_type->lhs()) {
+  if (*lhs->determine_type(bc) != *lhs->get_type()) {
     lhs_llvm = bc->builder.CreateSIToFP(
-        lhs_llvm, function_type->lhs()->get_llvm_type(bc->context));
+        lhs_llvm, lhs->get_type()->get_llvm_type(bc->context));
   }
   if (*rhs->get_type() != *function_type->rhs()) {
     rhs_llvm = bc->builder.CreateSIToFP(
         rhs_llvm, function_type->rhs()->get_llvm_type(bc->context));
   }
 
-  return bc->find(BinaryOperator, function_type->parameters)
-      .build_ir(bc, {lhs_llvm, rhs_llvm});
+  return bc->functions.build(bc, BinaryOperator, function_type->parameters,
+                             {lhs_llvm, rhs_llvm});
+}
+
+auto operator<<(std::ostream &os, const ASTArithmeticExpression &arit)
+    -> std::ostream & {
+  os << *arit.lhs << " " << arit.BinaryOperator << " " << *arit.rhs;
+  return os;
 }
 
 } /* namespace by::ast */

@@ -13,7 +13,7 @@ set( CMAKE_CXX_FLAGS "-O2 -Wall -pthread")
 
 OPTION(CLANG_TIDY "Use clang-tidy warnings" ON)
 if(CLANG_TIDY)
-	set( CMAKE_CXX_CLANG_TIDY "clang-tidy;-checks=*,-fuchsia-*,-readability-magic-numbers,-cppcoreguidelines-avoid-magic-numbers,-cert-dcl58-cpp,-cert-err58-cpp")
+	set( CMAKE_CXX_CLANG_TIDY "clang-tidy;-checks=*,-fuchsia-*,-cert-dcl58-cpp,-cert-err58-cpp")
 endif()
 
 add_subdirectory(src)

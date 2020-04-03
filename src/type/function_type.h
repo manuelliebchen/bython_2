@@ -29,6 +29,8 @@ struct FunctionType {
 
   FunctionType(const std::shared_ptr<peg::Ast> &ast);
 
+
+  FunctionType();
   FunctionType(TypeName_ptr);
   FunctionType(TypeName_ptr, TypeName_ptr);
   FunctionType(TypeName_ptr, TypeName_ptr, TypeName_ptr);
@@ -46,7 +48,11 @@ struct FunctionType {
   operator const TypeName&() const;
 
   friend std::string to_string(by::type::FunctionType const &);
+
+  friend std::ostream &operator<<(std::ostream &, const FunctionType &);
 };
+
+std::ostream &operator<<(std::ostream &, const FunctionType &);
 
 using FunctionType_ptr = std::shared_ptr<const FunctionType>;
 using function_map = std::unordered_map<std::string, FunctionType_ptr>;

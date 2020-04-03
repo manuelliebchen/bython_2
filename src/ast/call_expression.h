@@ -37,6 +37,7 @@ class ASTCallExpression : public ASTExpression {
 private:
   std::string name;
   std::vector<std::shared_ptr<ASTExpression>> arguments;
+  std::vector<type::TypeName_ptr> parameter_type;
 
 public:
   ASTCallExpression(const std::shared_ptr<peg::Ast> &, ASTBlockExpression *);
@@ -48,15 +49,7 @@ public:
   friend std::ostream &operator<<(std::ostream &, const ASTCallExpression &);
 };
 
-inline std::ostream &operator<<(std::ostream &os,
-                                const ASTCallExpression &call) {
-  os << call.name << "( ";
-  for (auto &arg : call.arguments) {
-    os << *arg << ", ";
-  }
-  os << ")";
-  return os;
-}
+std::ostream &operator<<(std::ostream &, const ASTCallExpression &);
 
 } /* namespace by::ast */
 

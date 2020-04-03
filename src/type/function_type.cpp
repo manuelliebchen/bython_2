@@ -30,6 +30,8 @@ FunctionType::FunctionType(const std::shared_ptr<peg::Ast> &ast) {
   }
 }
 
+FunctionType::FunctionType() : return_type(TypeName::Void) {}
+
 FunctionType::FunctionType(TypeName_ptr returntype)
     : return_type(std::move(returntype)) {}
 
@@ -64,7 +66,7 @@ auto FunctionType::param_equal(const std::vector<TypeName_ptr> &rhs) const
     return false;
   }
   for (size_t i = 0; i < parameters.size(); ++i) {
-    if (*parameters[i] != *rhs[i]) {
+    if (*parameters[i] != *rhs[i] && *rhs[i] != *TypeName::Null) {
       return false;
     }
   }
@@ -84,19 +86,33 @@ auto FunctionType::operator!=(const FunctionType &rhs) const -> bool {
 
 FunctionType::operator const TypeName &() const { return *return_type; }
 
+auto operator<<(std::ostream &os, const FunctionType &func) -> std::ostream & {
+  if (!func.parameters.empty()) {
+    os << "= " << *func.parameters.front();
+    for (size_t i = 1; i < func.parameters.size(); ++i) {
+      os << ", " << *func.parameters[i];
+    }
+  }
+  if (func.return_type) {
+    os << " -> " << *func.return_type << " ";
+  }
+  return os;
+};
+
 } // namespace by::type
 
 namespace std {
 
 auto to_string(by::type::FunctionType const &func) -> std::string {
-  std::string str = std::to_string(*func.return_type) + "(";
+  std::string str;
   if (!func.parameters.empty()) {
-    str += std::to_string(func.parameters[0]);
+    str += "= " + std::to_string(*func.parameters.front());
     for (size_t i = 1; i < func.parameters.size(); ++i) {
-      str += "," + std::to_string(func.parameters[i]);
+      str += ", " + std::to_string(*func.parameters[i]);
     }
+    str += " ";
   }
-  str += ")";
+  str += "-> " + std::to_string(*func.return_type);
   return str;
 }
 } // namespace std

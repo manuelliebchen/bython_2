@@ -8,17 +8,18 @@
 #include "let_statement.h"
 
 #include <algorithm>
-#include <ctype.h>
+#include <cctype>
+#include <vector>
+
 #include <llvm/ADT/Twine.h>
 #include <llvm/IR/IRBuilder.h>
 #include <llvm/IR/Instructions.h>
 #include <llvm/IR/Value.h>
 #include <type/type_name.h>
-#include <vector>
 
 #include "../bc/build_context.h"
 #include "ast/ast_error.h"
-#include "bc/function_build.h"
+#include "bc/function_manager.h"
 #include "block_expression.h"
 #include "expression.h"
 
@@ -38,24 +39,26 @@ ASTLetStatement::ASTLetStatement(const std::shared_ptr<peg::Ast> &ast,
 
 auto ASTLetStatement::determine_type(std::unique_ptr<bc::BuildContext> &bc)
     -> by::type::TypeName_ptr {
-  if (tail != "") {
-    tailtype = value->determine_type(bc);
-    if (tailtype && !tailtype->subtypes.empty()) {
-      type = tailtype->subtypes[0];
-      if (tailtype->name != "List") {
-        throw type::type_deduction_exeption(ast, type::TypeName::List,
-                                            tailtype);
+  if (*type == *type::TypeName::None) {
+    if (!tail.empty()) {
+      tailtype = value->determine_type(bc);
+      if (tailtype && !tailtype->subtypes.empty()) {
+        if (tailtype->name != "List") {
+          throw type::type_deduction_exeption(ast, type::TypeName::List,
+                                              tailtype);
+        }
+        type = tailtype->subtypes[0];
+        bc->functions.push_back_load(tail, tailtype);
+        parent->register_variable(tail, tailtype);
+        bc->functions.push_back_load(var, type);
+        parent->register_variable(var, type);
+      } else {
+        throw ast_error(ast, "List has no Subtype.");
       }
-      bc->push_back_load(tail, tailtype);
-      parent->register_variable(tail, tailtype);
-      bc->push_back_load(var, type);
-      parent->register_variable(var, type);
     } else {
-      throw ast_error(ast, "List has no Subtype.");
+      type = value->determine_type(bc);
+      parent->register_variable(var, type);
     }
-  } else {
-    type = value->determine_type(bc);
-    parent->register_variable(var, type);
   }
   return type;
 }
@@ -65,7 +68,7 @@ auto ASTLetStatement::build_ir(std::unique_ptr<bc::BuildContext> &bc) const
   llvm::Value *rhs_llvm = value->build_ir(bc);
   llvm::AllocaInst *variable_value = bc->builder.CreateAlloca(
       type->get_llvm_type(bc->context), nullptr, llvm::Twine(var));
-  if (tail != "") {
+  if (!tail.empty()) {
     std::string type_name = "record";
     if (type->is_native()) {
       type_name = type->name;
@@ -73,22 +76,33 @@ auto ASTLetStatement::build_ir(std::unique_ptr<bc::BuildContext> &bc) const
                      ::tolower);
     }
 
-    llvm::Value *head_ir =
-        bc->find("list_peek_" + type_name).build_ir(bc, {rhs_llvm});
+    llvm::Value *head_ir = bc->functions.build(bc, "list_peek_" + type_name,
+                                               {tailtype}, {rhs_llvm});
 
-    llvm::Value *tail_ir = bc->find("list_pop").build_ir(bc, {rhs_llvm});
+    llvm::Value *tail_ir =
+        bc->functions.build(bc, "list_pop", {tailtype}, {rhs_llvm});
     llvm::AllocaInst *tail_value = bc->builder.CreateAlloca(
         tailtype->get_llvm_type(bc->context), nullptr, llvm::Twine(tail));
     bc->builder.CreateStore(tail_ir, tail_value);
-    bc->push_back_load(tail, tailtype);
+    bc->functions.push_back_load(tail, tailtype);
 
     rhs_llvm = head_ir;
   }
 
   bc->builder.CreateStore(rhs_llvm, variable_value);
-  bc->push_back_load(var, type);
+  bc->functions.push_back_load(var, type);
 
   return variable_value;
+}
+
+auto operator<<(std::ostream &os, const ASTLetStatement &let)
+    -> std::ostream & {
+  os << "let " << let.var;
+  if (!let.tail.empty()) {
+    os << " : " << let.tail;
+  }
+  os << " = " << *let.value;
+  return os;
 }
 
 } /* namespace by::ast */
