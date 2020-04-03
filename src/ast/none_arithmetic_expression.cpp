@@ -68,7 +68,7 @@ ASTNoneArithmeticExpression::ASTNoneArithmeticExpression(
 auto ASTNoneArithmeticExpression::determine_type(
     std::unique_ptr<bc::BuildContext> &bc) -> by::type::TypeName_ptr {
   if (*type == *type::TypeName::None) {
-	  type = rhs->determine_type(bc);
+    type = rhs->determine_type(bc);
     if (!UnaryOperator.empty()) {
       type = bc->functions.get_type(UnaryOperator, {type});
     }
@@ -83,17 +83,6 @@ auto ASTNoneArithmeticExpression::build_ir(
   };
   return bc->functions.build(bc, UnaryOperator, {rhs->determine_type(bc)},
                              {rhs->build_ir(bc)});
-}
-
-auto operator<<(std::ostream &os, const ASTNoneArithmeticExpression &none)
-    -> std::ostream & {
-  os << none.UnaryOperator;
-  if (const auto *dyn = dynamic_cast<const ExpressionChain *>(none.rhs.get())) {
-    os << "(" << *dyn << ")";
-  } else {
-    os << *none.rhs;
-  }
-  return os;
 }
 
 auto operator<<(std::ostream &os, const ASTNoneArithmeticExpression &none)
